@@ -3,17 +3,37 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search, User, Menu, X, ChevronDown, Info, MessageCircle, HelpCircle, FileCheck, ArrowRight } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Header() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+
+    // Lock body scroll when menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isMenuOpen]);
 
     const companyLinks = [
         { name: 'About Us', href: '/about-us', icon: <Info className="w-4 h-4" />, desc: 'Our mission and story' },
         { name: 'Contact Us', href: '/contact-us', icon: <MessageCircle className="w-4 h-4" />, desc: 'Get in touch' },
         { name: 'Frequently Asked Question', href: '/faq', icon: <HelpCircle className="w-4 h-4" />, desc: 'Find quick answers' },
         { name: 'Review Guidelines', href: '/review-guidelines', icon: <FileCheck className="w-4 h-4" />, desc: 'How we test products' },
+    ];
+
+    const mobileMainLinks = [
+        { name: 'Health Topics', href: '/health-topics' },
+        { name: 'Brands', href: '/brands' },
+        { name: 'Supplements', href: '/supplements' },
+        { name: 'Expert Picks', href: '/expert-picks' },
+        { name: 'Reviews', href: '/product-reviews' },
     ];
 
     return (
@@ -111,40 +131,45 @@ export default function Header() {
                 </div>
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile Menu Overlay */}
             {isMenuOpen && (
-                <div className="lg:hidden fixed inset-0 top-[81px] bg-white transition-all duration-500 z-50 overflow-y-auto px-6 py-10 animate-in fade-in slide-in-from-top-4">
-                    <div className="space-y-2">
-                        {['Health Topics', 'Brands', 'Supplements', 'Expert Picks', 'Reviews'].map((link) => (
-                            <Link
-                                key={link}
-                                href={`/${link.toLowerCase().replace(' ', '-')}`}
-                                className="block text-2xl font-black text-gray-900 px-4 py-4 hover:text-blue-600 transition-colors border-b border-gray-50"
-                                onClick={() => setIsMenuOpen(false)}
-                            >
-                                {link}
-                            </Link>
-                        ))}
+                <div
+                    className="lg:hidden fixed inset-0 top-20 bg-white transition-all duration-500 z-[100] overflow-y-auto"
+                    style={{ height: 'calc(100vh - 80px)' }}
+                >
+                    <div className="px-6 py-10 animate-in fade-in slide-in-from-top-4 duration-300">
+                        <div className="space-y-2">
+                            {mobileMainLinks.map((link) => (
+                                <Link
+                                    key={link.name}
+                                    href={link.href}
+                                    className="block text-2xl font-black text-gray-900 px-4 py-4 hover:text-blue-600 transition-colors border-b border-gray-50 uppercase tracking-tighter"
+                                    onClick={() => setIsMenuOpen(false)}
+                                >
+                                    {link.name}
+                                </Link>
+                            ))}
 
-                        <div className="pt-10 space-y-2">
-                            <div className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 px-4 mb-6">Corporate Directory</div>
-                            <div className="grid grid-cols-1 gap-4">
-                                {companyLinks.map((link) => (
-                                    <Link
-                                        key={link.href}
-                                        href={link.href}
-                                        className="flex items-center gap-4 px-5 py-5 bg-gray-50 hover:bg-blue-50 rounded-[2rem] transition-all group"
-                                        onClick={() => setIsMenuOpen(false)}
-                                    >
-                                        <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 group-hover:text-blue-600 shadow-sm transition-all">
-                                            {link.icon}
-                                        </div>
-                                        <div className="flex-1">
-                                            <p className="text-[13px] font-black uppercase tracking-widest text-gray-800">{link.name}</p>
-                                            <p className="text-[11px] font-medium text-gray-400">{link.desc}</p>
-                                        </div>
-                                    </Link>
-                                ))}
+                            <div className="pt-10 space-y-2">
+                                <div className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 px-4 mb-6">Corporate Directory</div>
+                                <div className="grid grid-cols-1 gap-4 pb-20">
+                                    {companyLinks.map((link) => (
+                                        <Link
+                                            key={link.href}
+                                            href={link.href}
+                                            className="flex items-center gap-4 px-5 py-5 bg-gray-50 hover:bg-blue-50 rounded-[2rem] transition-all group"
+                                            onClick={() => setIsMenuOpen(false)}
+                                        >
+                                            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-gray-400 group-hover:text-blue-600 shadow-sm transition-all border border-gray-100">
+                                                {link.icon}
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-[13px] font-black uppercase tracking-widest text-gray-800">{link.name}</p>
+                                                <p className="text-[11px] font-medium text-gray-400">{link.desc}</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
