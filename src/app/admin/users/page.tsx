@@ -47,9 +47,9 @@ export default function UsersAdmin() {
                     </thead>
                     <tbody className="divide-y divide-gray-50 text-sm">
                         {[
-                            { name: 'Super Admin', email: 'admin@healthhub.pro', role: 'SUPER_ADMIN', count: 42, color: 'text-purple-600 bg-purple-50' },
-                            { name: 'Sarah Johnson', email: 'sarah@healthhub.pro', role: 'EDITOR', count: 128, color: 'text-blue-600 bg-blue-50' },
-                            { name: 'Mark Miller', email: 'mark@healthhub.pro', role: 'WRITER', count: 15, color: 'text-green-600 bg-green-50' },
+                            { name: 'Super Admin', email: 'admin@healthlinereview.com', role: 'SUPER_ADMIN', count: 42, color: 'text-purple-600 bg-purple-50' },
+                            { name: 'Sarah Johnson', email: 'sarah@healthlinereview.com', role: 'EDITOR', count: 128, color: 'text-blue-600 bg-blue-50' },
+                            { name: 'Mark Miller', email: 'mark@healthlinereview.com', role: 'WRITER', count: 15, color: 'text-green-600 bg-green-50' },
                         ].map((user) => (
                             <tr key={user.email} className="hover:bg-gray-50 transition-colors group">
                                 <td className="px-6 py-4">

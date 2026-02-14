@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search, User, Menu, X, ChevronDown, Info, MessageCircle, HelpCircle, FileCheck, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
@@ -20,13 +21,16 @@ export default function Header() {
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex items-center justify-between h-20 md:h-24">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-3 shrink-0 group">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-600/20 group-hover:scale-110 transition-transform duration-500">
-                            <span className="text-white font-black text-xl md:text-2xl">H</span>
+                    <Link href="/" className="flex items-center shrink-0 group">
+                        <div className="relative w-56 h-16 md:w-80 md:h-24 group-hover:scale-[1.02] transition-transform duration-500">
+                            <Image
+                                src="/logo.png"
+                                alt="Health Line Review Logo"
+                                fill
+                                className="object-contain object-left md:object-center"
+                                priority
+                            />
                         </div>
-                        <span className="text-xl md:text-2xl font-black bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 tracking-tight">
-                            HealthHub Pro
-                        </span>
                     </Link>
 
                     {/* Desktop Navigation */}

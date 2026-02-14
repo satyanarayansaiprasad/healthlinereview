@@ -94,7 +94,7 @@ export default async function HealthTopics() {
                         <h2 className="text-3xl font-extrabold text-blue-600 mb-6">Health Center: Expert Perspective on Popular Health Topics</h2>
                         <div className="space-y-6 text-gray-700 leading-relaxed">
                             <p className="font-bold italic">"Precaution Is Better Than Cure" but to take precaution at a proper time it is important to encounter the health issue as early as possible and for doing so awareness about the various disease is important.</p>
-                            <p>Considering this as an objective HealthHub Pro has assembled experts to guide and share their knowledge and experience related to various health issues for both men and women. We provide all the information on fitness, health, relationships, pregnancy, weight-loss, nutrition and muscle building. This is our one-in-all platform for what you need to know about any health issues.</p>
+                            <p>Considering this as an objective Health Line Review has assembled experts to guide and share their knowledge and experience related to various health issues for both men and women. We provide all the information on fitness, health, relationships, pregnancy, weight-loss, nutrition and muscle building. This is our one-in-all platform for what you need to know about any health issues.</p>
                             <p>Connect with us and get access to best-in-class experts selected by our editorial team.</p>
                         </div>
                     </div>

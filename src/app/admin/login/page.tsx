@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { Mail, Lock, Loader2 } from 'lucide-react';
 
 export default function AdminLogin() {
@@ -18,7 +19,7 @@ export default function AdminLogin() {
 
         try {
             // Mock login for now
-            if (email === 'admin@healthhub.pro' && password === 'admin123') {
+            if (email === 'admin@healthlinereview.com' && password === 'admin123') {
                 // Set a cookie (ideally done via API)
                 document.cookie = `token=mock-token; path=/`;
                 router.push('/admin');
@@ -36,11 +37,16 @@ export default function AdminLogin() {
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
             <div className="max-w-md w-full bg-white rounded-2xl shadow-xl shadow-blue-900/5 p-8 md:p-12 border border-gray-100">
                 <div className="text-center mb-10">
-                    <div className="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-blue-600/20 rotate-3">
-                        <span className="text-white font-bold text-3xl">H</span>
+                    <div className="relative w-80 h-24 mx-auto mb-8 group-hover:scale-105 transition-transform duration-500">
+                        <Image
+                            src="/logo.png"
+                            alt="Health Line Review Logo"
+                            fill
+                            className="object-contain"
+                        />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-900">Admin Portal</h1>
-                    <p className="text-gray-500 mt-2">Enter your credentials to manage HealthHub</p>
+                    <p className="text-gray-500 mt-2">Enter your credentials to manage Health Line Review</p>
                 </div>
 
                 {error && (
@@ -58,7 +64,7 @@ export default function AdminLogin() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-900"
-                                placeholder="admin@healthhub.pro"
+                                placeholder="admin@healthlinereview.com"
                                 required
                             />
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -96,7 +102,7 @@ export default function AdminLogin() {
                 </form>
 
                 <p className="text-center text-gray-400 text-xs mt-10">
-                    Secure Administrative Access • Protected by HealthHub Auth
+                    Secure Administrative Access • Protected by Health Line Review Auth
                 </p>
             </div>
         </div>

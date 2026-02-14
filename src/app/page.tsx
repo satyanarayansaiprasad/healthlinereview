@@ -32,7 +32,7 @@ export default function Home() {
                                 <span className="text-blue-900">Quality Advice</span>
                             </h1>
                             <p className="text-xl md:text-2xl text-gray-700 max-w-2xl leading-relaxed font-medium">
-                                HealthHub Pro is your premier source for evidence-based health and wellness information and unbiased product reviews.
+                                Health Line Review is your premier source for evidence-based health and wellness information and unbiased product reviews.
                             </p>
 
                             <div className="flex flex-wrap gap-4 pt-4">

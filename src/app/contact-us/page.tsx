@@ -97,8 +97,8 @@ export default function ContactUs() {
                                 </div>
                                 <div className="space-y-6">
                                     {[
-                                        { icon: <Globe className="w-5 h-5" />, label: "Global Press", val: "press@healthhub.pro" },
-                                        { icon: <CheckCircle2 className="w-5 h-5" />, label: "Review Panel", val: "audit@healthhub.pro" }
+                                        { icon: <Globe className="w-5 h-5" />, label: "Global Press", val: "press@healthlinereview.com" },
+                                        { icon: <CheckCircle2 className="w-5 h-5" />, label: "Review Panel", val: "audit@healthlinereview.com" }
                                     ].map((item, i) => (
                                         <div key={i} className="flex gap-5 items-center">
                                             <div className="w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-blue-500">

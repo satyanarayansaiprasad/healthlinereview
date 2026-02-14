@@ -7,7 +7,7 @@ import Footer from "@/components/layout/Footer";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "HealthHub Pro | Expert Health Information & Reviews",
+  title: "Health Line Review | Expert Health Information & Reviews",
   description: "Your trusted source for health articles, product reviews, and wellness tips.",
   keywords: ["health", "wellness", "nutrition", "reviews", "medical advice"],
 };

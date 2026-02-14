@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!review) return { title: 'Review Not Found' };
 
     return {
-        title: `${review.productName} Review: Quality & Value Analysis | HealthHub Pro`,
+        title: `${review.productName} Review: Quality & Value Analysis | Health Line Review`,
         description: `Read our expert review of ${review.productName}. We analyze ingredients, side effects, and value for money.`,
     };
 }
@@ -37,7 +37,7 @@ export default async function ProductReviewPage({ params }: Props) {
         "@context": "https://schema.org/",
         "@type": "Product",
         "name": review.productName,
-        "image": "https://healthhub.pro/product.jpg",
+        "image": "https://healthlinereview.com/product.jpg",
         "brand": {
             "@type": "Brand",
             "name": "Trusted Brands"

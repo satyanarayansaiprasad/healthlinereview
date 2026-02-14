@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Facebook, Twitter, Instagram, Phone } from 'lucide-react';
 
 export default function Footer() {
@@ -8,11 +9,15 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
                     {/* Brand */}
                     <div className="space-y-6">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
-                                <span className="text-white font-bold text-lg">H</span>
+                        <Link href="/" className="flex items-center">
+                            <div className="relative w-64 h-16 rounded overflow-hidden">
+                                <Image
+                                    src="/logo.png"
+                                    alt="Health Line Review Logo"
+                                    fill
+                                    className="object-contain object-left"
+                                />
                             </div>
-                            <span className="text-xl font-bold text-white">HealthHub Pro</span>
                         </Link>
                         <p className="text-sm leading-relaxed max-w-xs">
                             Providing expert-reviewed health information, product reviews, and wellness tips to help you live a healthier life.
@@ -52,7 +57,7 @@ export default function Footer() {
                         <ul className="space-y-4 text-sm">
                             <li className="flex items-center space-x-3">
                                 <Mail className="w-4 h-4 text-blue-500" />
-                                <span>contact@healthhub.pro</span>
+                                <span>contact@healthlinereview.com</span>
                             </li>
                             <li className="flex items-center space-x-3">
                                 <Phone className="w-4 h-4 text-blue-500" />
@@ -64,7 +69,7 @@ export default function Footer() {
 
                 <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="text-xs text-gray-500 text-center md:text-left">
-                        © {new Date().getFullYear()} HealthHub Pro. All rights reserved. The content on this site is for informational purposes only and is not intended as medical advice.
+                        © {new Date().getFullYear()} Health Line Review. All rights reserved. The content on this site is for informational purposes only and is not intended as medical advice.
                     </p>
                     <div className="flex space-x-6 text-xs text-gray-500">
                         <Link href="/terms" className="hover:text-white">Terms of Use</Link>

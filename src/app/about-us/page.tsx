@@ -25,7 +25,7 @@ export default function AboutUs() {
                             </h1>
 
                             <p className="text-lg md:text-2xl text-gray-600 leading-relaxed font-medium max-w-2xl">
-                                HealthHub Pro is dedicated to the pursuit of medical transparency. We bridge the gap between complex science and your daily wellness journey.
+                                Health Line Review is dedicated to the pursuit of medical transparency. We bridge the gap between complex science and your daily wellness journey.
                             </p>
                         </div>
 
@@ -66,7 +66,7 @@ export default function AboutUs() {
                     <div className="space-y-10 lg:pl-12">
                         <h2 className="text-4xl md:text-6xl font-black text-gray-900 leading-tight">The Science Behind <br /> Every Sentence.</h2>
                         <p className="text-xl text-gray-500 font-medium leading-relaxed">
-                            Every article on HealthHub Pro is written by professional health journalists and vetted by our Medical Review Board—a panel of board-certified clinicians with decades of experience in diverse specialties.
+                            Every article on Health Line Review is written by professional health journalists and vetted by our Medical Review Board—a panel of board-certified clinicians with decades of experience in diverse specialties.
                         </p>
                         <ul className="space-y-4">
                             {['Evidence-Based Citations', 'Medical Board Review', 'Annual Data Audits'].map((item) => (

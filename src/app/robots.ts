@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: '/admin/',
         },
-        sitemap: 'https://healthhub.pro/sitemap.xml',
+        sitemap: 'https://healthlinereview.com/sitemap.xml',
     };
 }

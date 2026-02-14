@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     if (!article) return { title: 'Article Not Found' };
 
     return {
-        title: `${article.title} | HealthHub Pro`,
+        title: `${article.title} | Health Line Review`,
         description: article.metaDescription || '',
     };
 }
