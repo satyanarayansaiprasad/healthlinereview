@@ -8,18 +8,18 @@ export default function Home() {
         <div className="flex flex-col gap-20 pb-20">
             {/* Hero Section */}
             <section className="relative h-[650px] flex items-center overflow-hidden">
-                {/* ... (Hero content remains same) ... */}
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="/hero-bg-v2.png"
-                        alt="Advanced Medical Laboratory"
+                        src="/hero-bg-v3.png"
+                        alt="Clean Medical Wellness Background"
                         fill
-                        className="object-cover opacity-90"
+                        className="object-cover"
                         priority
                     />
-                    {/* Subtle overlay for text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/90 to-transparent z-10" />
+                    {/* Refined overlay for perfect balance and readability */}
+                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-15" />
                 </div>
 
                 <div className="container mx-auto px-4 md:px-6 relative z-20">
@@ -28,8 +28,8 @@ export default function Home() {
                         <div className="lg:col-span-7 space-y-8 animate-in slide-in-from-left duration-700">
                             <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight">
                                 Trusted Reviews,<br />
-                                <span className="text-blue-900">Honest Ratings</span> and<br />
-                                <span className="text-blue-900">Quality Advice</span>
+                                <span className="text-blue-600">Honest Ratings</span> and<br />
+                                <span className="text-blue-600">Quality Advice</span>
                             </h1>
                             <p className="text-xl md:text-2xl text-gray-700 max-w-2xl leading-relaxed font-medium">
                                 Health Line Review is your premier source for evidence-based health and wellness information and unbiased product reviews.
@@ -39,7 +39,7 @@ export default function Home() {
                                 <Link href="/health-topics" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-colors shadow-lg shadow-blue-600/20">
                                     Explore Health Topics <ArrowRight className="w-4 h-4" />
                                 </Link>
-                                <Link href="/product-reviews" className="bg-white/80 hover:bg-white text-gray-900 border border-gray-200 px-8 py-3 rounded-full font-bold text-base transition-colors backdrop-blur-sm">
+                                <Link href="/product-reviews" className="bg-white hover:bg-gray-50 text-gray-900 border border-gray-200 px-8 py-3 rounded-full font-bold text-base transition-colors shadow-sm">
                                     Latest Reviews
                                 </Link>
                             </div>
@@ -47,38 +47,27 @@ export default function Home() {
 
                         {/* Right Content - Stats/Features */}
                         <div className="hidden lg:block lg:col-span-5 animate-in slide-in-from-right duration-700 delay-200">
-                            <div className="text-center mb-10">
-                                <h2 className="text-4xl font-serif text-gray-900 mb-2">Reviewed</h2>
-                                <p className="text-4xl font-extrabold text-gray-900">Over 10K+ Products</p>
-                            </div>
-
-                            <div className="grid grid-cols-2 gap-8">
-                                <div className="text-center space-y-3 p-4 hover:bg-white/50 rounded-2xl transition-colors cursor-default">
-                                    <div className="w-16 h-16 mx-auto mb-2 text-blue-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><path d="M10 2v7.31" /><path d="M14 9.3V1.99" /><path d="M8.5 2h7" /><path d="M14 9.3a6.5 6.5 0 1 1-4 0" /><path d="M5.52 16h12.96" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-gray-900 text-lg">Find The Best Products</h3>
+                            <div className="bg-white/40 backdrop-blur-md rounded-[3rem] p-10 border border-white/50 shadow-2xl shadow-blue-900/5">
+                                <div className="text-center mb-10">
+                                    <h2 className="text-2xl font-serif text-gray-500 uppercase tracking-widest mb-2">Authenticated Reviews</h2>
+                                    <p className="text-5xl font-black text-gray-900">10,000+</p>
+                                    <p className="text-sm font-bold text-blue-600 uppercase tracking-widest mt-2">Verified Products</p>
                                 </div>
 
-                                <div className="text-center space-y-3 p-4 hover:bg-white/50 rounded-2xl transition-colors cursor-default">
-                                    <div className="w-16 h-16 mx-auto mb-2 text-blue-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" /><circle cx="5" cy="12" r="1" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-gray-900 text-lg">Up-to-Date Reviews</h3>
-                                </div>
-
-                                <div className="text-center space-y-3 p-4 hover:bg-white/50 rounded-2xl transition-colors cursor-default">
-                                    <div className="w-16 h-16 mx-auto mb-2 text-blue-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><path d="M2 12h20" /><path d="M12 2a9.7 9.7 0 0 0-4.5 18" /><path d="M12 2a9.7 9.7 0 0 1 4.5 18" /><path d="M12 22a9.7 9.7 0 0 0-4.5-18" /><path d="M12 22a9.7 9.7 0 0 1 4.5-18" /><circle cx="12" cy="12" r="3" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-gray-900 text-lg">Experienced Researchers</h3>
-                                </div>
-
-                                <div className="text-center space-y-3 p-4 hover:bg-white/50 rounded-2xl transition-colors cursor-default">
-                                    <div className="w-16 h-16 mx-auto mb-2 text-blue-600">
-                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-full h-full"><rect width="20" height="14" x="2" y="3" rx="2" /><line x1="8" x2="16" y1="21" y2="21" /><line x1="12" x2="12" y1="17" y2="21" /></svg>
-                                    </div>
-                                    <h3 className="font-bold text-gray-900 text-lg">Stay Informed</h3>
+                                <div className="grid grid-cols-2 gap-6">
+                                    {[
+                                        { icon: <Zap className="w-6 h-6" />, title: "Real-Time Data" },
+                                        { icon: <Activity className="w-6 h-6" />, title: "Expert Vetted" },
+                                        { icon: <Heart className="w-6 h-6" />, title: "Patient Safe" },
+                                        { icon: <Brain className="w-6 h-6" />, title: "Science First" }
+                                    ].map((feature, i) => (
+                                        <div key={i} className="text-center p-6 bg-white/60 rounded-3xl border border-white/80 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="w-12 h-12 mx-auto mb-4 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+                                                {feature.icon}
+                                            </div>
+                                            <h3 className="font-black text-gray-900 text-[11px] uppercase tracking-widest">{feature.title}</h3>
+                                        </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
@@ -285,8 +274,6 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Newsletter / Looking For More */}
-
             {/* Product Reviews */}
             <section className="bg-gray-50 py-20">
                 <div className="container mx-auto px-4 md:px-6">
@@ -324,10 +311,9 @@ export default function Home() {
                 </div>
             </section>
 
-            {/* Newsletter / Looking For More */}
+            {/* Newsletter / Looking For More Section */}
             <section className="bg-gray-50 py-20 md:py-32 border-t border-gray-200">
                 <div className="container mx-auto px-4 md:px-6">
-
                     {/* Looking For More CTA */}
                     <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-8 mb-20">
                         <div className="md:w-2/3 text-center md:text-left">
