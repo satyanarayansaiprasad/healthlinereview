@@ -88,7 +88,7 @@ export default async function ArticleDetailPage({ params }: Props) {
                     {/* Share Sidebar */}
                     <div className="lg:w-16 flex lg:flex-col gap-4 order-2 lg:order-1 justify-center lg:justify-start">
                         <div className="sticky top-32 space-y-4 flex lg:flex-col gap-4 items-center">
-                            <span className="hidden lg:block text-[10px] font-black text-gray-300 uppercase vertical-text tracking-widest mb-4">Share</span>
+                            <span className="hidden lg:block text-[10px] font-black text-gray-300 uppercase [writing-mode:vertical-rl] [text-orientation:mixed] tracking-widest mb-4">Share</span>
                             <button className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
                                 <Facebook className="w-5 h-5 group-hover:scale-110 transition-transform" />
                             </button>
@@ -129,13 +129,6 @@ export default async function ArticleDetailPage({ params }: Props) {
                     </div>
                 </div>
             </div>
-
-            <style jsx>{`
-               .vertical-text {
-                  writing-mode: vertical-rl;
-                  text-orientation: mixed;
-               }
-            `}</style>
         </article>
     );
 }
