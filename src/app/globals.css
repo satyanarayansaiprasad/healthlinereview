@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+@theme {
+    --font-sans: var(--font-inter);
+}
+
 :root {
     --foreground-rgb: 0, 0, 0;
     --background-start-rgb: 214, 219, 220;
@@ -9,6 +13,25 @@
 body {
     color: rgb(var(--foreground-rgb));
     background: #fbfcfd;
+}
+
+h1 {
+    font-weight: 800 !important;
+    font-family: var(--font-inter), sans-serif !important;
+}
+
+@media (max-width: 767px) {
+    h1 {
+        font-size: 36px !important;
+        line-height: 45px !important;
+    }
+}
+
+@media (min-width: 768px) {
+    h1 {
+        font-size: 72px !important;
+        line-height: 90px !important;
+    }
 }
 
 @layer utilities {
