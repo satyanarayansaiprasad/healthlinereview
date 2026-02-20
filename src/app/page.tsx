@@ -91,7 +91,7 @@ export default function Home() {
                         { name: 'Anti-Aging', img: '/cat-anti-aging.png', color: 'text-pink-500', bg: 'bg-pink-50' },
                         { name: 'Eye Cream', img: '/cat-eye-cream.png', color: 'text-indigo-500', bg: 'bg-indigo-50' },
                     ].map((item, i) => (
-                        <Link key={i} href={`/category/${item.name.toLowerCase().replace(' ', '-')}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
+                        <Link key={i} href={`/health-topics/${item.name.toLowerCase().replace(' ', '-')}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
                             <div className={`absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 ${item.bg}`} />
                             <div className="w-16 h-16 flex-shrink-0 relative rounded-2xl overflow-hidden border border-gray-100 group-hover:scale-110 transition-transform">
                                 <Image
