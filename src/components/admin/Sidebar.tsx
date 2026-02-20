@@ -1,36 +1,51 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import {
-    LayoutDashboard,
-    FileText,
     ShoppingBag,
-    Users,
-    Settings,
+    Building2,
+    Star,
+    Heart,
+    Pill,
+    Award,
     MessageSquare,
+    HelpCircle,
+    FileText,
     Mail,
-    Megaphone,
-    LogOut,
-    FolderTree,
-    Tags
+    LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
-    { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
-    { label: 'Articles', icon: FileText, href: '/admin/articles' },
-    { label: 'Product Reviews', icon: ShoppingBag, href: '/admin/reviews' },
-    { label: 'Categories', icon: FolderTree, href: '/admin/categories' },
-    { label: 'Tags', icon: Tags, href: '/admin/tags' },
-    { label: 'Users', icon: Users, href: '/admin/users' },
-    { label: 'Comments', icon: MessageSquare, href: '/admin/comments' },
-    { label: 'Ads', icon: Megaphone, href: '/admin/ads' },
-    { label: 'Subscribers', icon: Mail, href: '/admin/subscribers' },
+    { label: 'Product Reviews', icon: ShoppingBag, href: '/admin/product-reviews' },
+    { label: 'Brands', icon: Building2, href: '/admin/brands' },
+    { label: 'Featured Topics', icon: Star, href: '/admin/featured-topics' },
+    { label: 'Health Topics', icon: Heart, href: '/admin/health-topics' },
+    { label: 'Supplements', icon: Pill, href: '/admin/supplements' },
+    { label: 'Expert Picks', icon: Award, href: '/admin/expert-picks' },
+    { label: 'Reviews', icon: MessageSquare, href: '/admin/reviews' },
+    { label: 'FAQs', icon: HelpCircle, href: '/admin/faqs' },
+    { label: 'Review Guidelines', icon: FileText, href: '/admin/review-guidelines' },
+    { label: 'Contact Us', icon: Mail, href: '/admin/contact-us' },
 ];
 
 export default function AdminSidebar() {
     const pathname = usePathname();
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+            });
+            router.push('/admin/login');
+        } catch (error) {
+            console.error('Logout error:', error);
+            // Still redirect even if API call fails
+            router.push('/admin/login');
+        }
+    };
 
     return (
         <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen fixed">
@@ -45,7 +60,7 @@ export default function AdminSidebar() {
 
             <nav className="flex-1 overflow-y-auto py-6 space-y-1">
                 {menuItems.map((item) => {
-                    const isActive = pathname === item.href;
+                    const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
                     return (
                         <Link
                             key={item.label}
@@ -63,7 +78,10 @@ export default function AdminSidebar() {
             </nav>
 
             <div className="p-6 border-t border-gray-800">
-                <button className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors w-full">
+                <button 
+                    onClick={handleLogout}
+                    className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors w-full"
+                >
                     <LogOut className="w-5 h-5" />
                     <span className="font-medium text-sm">Logout</span>
                 </button>

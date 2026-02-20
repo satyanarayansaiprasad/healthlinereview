@@ -18,14 +18,23 @@ export default function AdminLogin() {
         setError('');
 
         try {
-            // Mock login for now
-            if (email === 'admin@healthlinereview.com' && password === 'admin123') {
-                // Set a cookie (ideally done via API)
-                document.cookie = `token=mock-token; path=/`;
-                router.push('/admin');
-            } else {
-                setError('Invalid email or password');
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error || 'Invalid email or password');
+                return;
             }
+
+            // Token is set as httpOnly cookie by the API
+            router.push('/admin');
         } catch (err) {
             setError('An error occurred. Please try again.');
         } finally {
@@ -64,7 +73,7 @@ export default function AdminLogin() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="w-full pl-12 pr-4 py-4 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all text-gray-900"
-                                placeholder="admin@healthlinereview.com"
+                                placeholder="pankajofficial708@gmail.com"
                                 required
                             />
                             <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />

@@ -1,18 +1,44 @@
 import { PrismaClient, ArticleStatus } from '@prisma/client';
+import bcrypt from 'bcryptjs';
 
 const prisma = new PrismaClient();
 
 async function main() {
     console.log('Start seeding ...');
 
-    // Seed User
+    // Seed Admin User
+    const adminEmail = 'pankajofficial708@gmail.com';
+    const adminPassword = 'Admin123.';
+    const hashedPassword = await bcrypt.hash(adminPassword, 10);
+
+    let adminUser = await prisma.user.findFirst({ where: { email: adminEmail } });
+    if (!adminUser) {
+        adminUser = await prisma.user.create({
+            data: {
+                name: 'Admin User',
+                email: adminEmail,
+                password: hashedPassword,
+                role: 'SUPER_ADMIN',
+            },
+        });
+        console.log('Created admin user:', adminUser.email);
+    } else {
+        // Update password if user exists
+        await prisma.user.update({
+            where: { id: adminUser.id },
+            data: { password: hashedPassword },
+        });
+        console.log('Updated admin user password:', adminUser.email);
+    }
+
+    // Seed User (for articles/reviews)
     let user = await prisma.user.findFirst({ where: { email: 'admin@healthhub.pro' } });
     if (!user) {
         user = await prisma.user.create({
             data: {
                 name: 'Dr. Sarah Johnson',
                 email: 'admin@healthhub.pro',
-                password: 'hashed_password_placeholder', // In real app, hash this
+                password: await bcrypt.hash('admin123', 10),
                 role: 'SUPER_ADMIN',
             },
         });
