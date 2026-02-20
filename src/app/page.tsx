@@ -1,73 +1,71 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Star, ArrowRight, Activity, Heart, Brain, Zap } from 'lucide-react';
+import { ChevronRight, Star, Clock, User, ArrowRight, Activity, Heart, Brain, Eye, Zap } from 'lucide-react';
 import FeaturedTopics from '@/components/home/FeaturedTopics';
-import { getSiteSettings } from '@/lib/site';
-import { prisma } from '@/lib/prisma';
 
-export default async function Home() {
-    const [settings, categories, topReviews, latestReviews, articleOfWeek, featuredArticles, latestArticles] = await Promise.all([
-        getSiteSettings(),
-        prisma.category.findMany({ orderBy: { name: 'asc' }, take: 6 }),
-        prisma.productReview.findMany({ orderBy: { rating: 'desc' }, take: 4 }),
-        prisma.productReview.findMany({ orderBy: { createdAt: 'desc' }, take: 4 }),
-        prisma.article.findFirst({ where: { status: 'PUBLISHED' }, orderBy: { updatedAt: 'desc' }, include: { category: true } }),
-        prisma.article.findMany({ where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'desc' }, take: 5, include: { category: true } }),
-        prisma.article.findMany({ where: { status: 'PUBLISHED' }, orderBy: { createdAt: 'desc' }, take: 3, include: { category: true } }),
-    ]);
-
-    const heroTitle = settings.heroTitle ?? 'Trusted Reviews, Honest Ratings and Quality Advice';
-    const heroSubtitle = settings.heroSubtitle ?? 'Health Line Review is your premier source for evidence-based health and wellness information and unbiased product reviews.';
-
+export default function Home() {
     return (
         <div className="flex flex-col gap-20 pb-20">
             {/* Hero Section */}
-            <section className="relative min-h-[600px] flex items-center overflow-hidden bg-gradient-to-br from-slate-50 via-white to-teal-50/30">
-                <div className="absolute inset-0 z-0 bg-gradient-to-r from-white via-white/90 to-transparent" />
+            <section className="relative h-[650px] flex items-center overflow-hidden">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0">
+                    <Image
+                        src="/hero-bg-v3.png"
+                        alt="Clean Medical Wellness Background"
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    {/* Refined overlay for perfect balance and readability */}
+                    <div className="absolute inset-0 bg-white/40 backdrop-blur-[2px] z-10" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent z-15" />
+                </div>
+
                 <div className="container mx-auto px-4 md:px-6 relative z-20">
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-                        <div className="lg:col-span-7 space-y-8">
-                            <h1 className="text-4xl md:text-6xl font-extrabold text-[var(--color-secondary)] leading-tight">
-                                {heroTitle.split(',').length > 1
-                                    ? heroTitle.split(',').map((part, i) => (
-                                        <span key={i}>
-                                            {i > 0 && <br />}
-                                            <span className={i >= 1 ? 'text-[var(--color-primary)]' : ''}>{part.trim()}</span>
-                                        </span>
-                                    ))
-                                    : heroTitle}
+                        {/* Left Content */}
+                        <div className="lg:col-span-7 space-y-8 animate-in slide-in-from-left duration-700">
+                            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 leading-tight">
+                                Trusted Reviews,<br />
+                                <span className="text-blue-600">Honest Ratings</span> and<br />
+                                <span className="text-blue-600">Quality Advice</span>
                             </h1>
-                            <p className="text-lg md:text-xl text-[var(--color-body)] max-w-2xl leading-relaxed font-medium">
-                                {heroSubtitle}
+                            <p className="text-xl md:text-2xl text-gray-700 max-w-2xl leading-relaxed font-medium">
+                                Health Line Review is your premier source for evidence-based health and wellness information and unbiased product reviews.
                             </p>
+
                             <div className="flex flex-wrap gap-4 pt-4">
-                                <Link href="/health-topics" className="bg-[var(--color-primary)] hover:opacity-90 text-white px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-all shadow-lg">
-                                    {settings.heroCtaPrimary ?? 'Explore Health Topics'} <ArrowRight className="w-4 h-4" />
+                                <Link href="/health-topics" className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full font-bold text-base flex items-center gap-2 transition-colors shadow-lg shadow-blue-600/20">
+                                    Explore Health Topics <ArrowRight className="w-4 h-4" />
                                 </Link>
-                                <Link href="/product-reviews" className="bg-white hover:bg-gray-50 text-[var(--color-secondary)] border border-gray-200 px-8 py-3 rounded-full font-bold text-base transition-colors shadow-sm">
-                                    {settings.heroCtaSecondary ?? 'Latest Reviews'}
+                                <Link href="/product-reviews" className="bg-white hover:bg-gray-50 text-gray-900 border border-gray-200 px-8 py-3 rounded-full font-bold text-base transition-colors shadow-sm">
+                                    Latest Reviews
                                 </Link>
                             </div>
                         </div>
-                        <div className="hidden lg:block lg:col-span-5">
-                            <div className="bg-white/80 backdrop-blur-md rounded-[3rem] p-10 border border-gray-100 shadow-xl">
+
+                        {/* Right Content - Stats/Features */}
+                        <div className="hidden lg:block lg:col-span-5 animate-in slide-in-from-right duration-700 delay-200">
+                            <div className="bg-white/40 backdrop-blur-md rounded-[3rem] p-10 border border-white/50 shadow-2xl shadow-blue-900/5">
                                 <div className="text-center mb-10">
-                                    <p className="text-sm font-semibold text-[var(--color-muted)] uppercase tracking-widest mb-2">Authenticated Reviews</p>
-                                    <p className="text-5xl font-black text-[var(--color-secondary)]">10,000+</p>
-                                    <p className="text-sm font-bold text-[var(--color-primary)] uppercase tracking-widest mt-2">Verified Products</p>
+                                    <h2 className="text-2xl font-serif text-gray-500 uppercase tracking-widest mb-2">Authenticated Reviews</h2>
+                                    <p className="text-5xl font-black text-gray-900">10,000+</p>
+                                    <p className="text-sm font-bold text-blue-600 uppercase tracking-widest mt-2">Verified Products</p>
                                 </div>
+
                                 <div className="grid grid-cols-2 gap-6">
                                     {[
-                                        { icon: <Zap className="w-6 h-6" />, title: 'Real-Time Data' },
-                                        { icon: <Activity className="w-6 h-6" />, title: 'Expert Vetted' },
-                                        { icon: <Heart className="w-6 h-6" />, title: 'Patient Safe' },
-                                        { icon: <Brain className="w-6 h-6" />, title: 'Science First' },
+                                        { icon: <Zap className="w-6 h-6" />, title: "Real-Time Data" },
+                                        { icon: <Activity className="w-6 h-6" />, title: "Expert Vetted" },
+                                        { icon: <Heart className="w-6 h-6" />, title: "Patient Safe" },
+                                        { icon: <Brain className="w-6 h-6" />, title: "Science First" }
                                     ].map((feature, i) => (
-                                        <div key={i} className="text-center p-6 bg-teal-50/50 rounded-3xl border border-teal-100/50 hover:shadow-md transition-all group">
-                                            <div className="w-12 h-12 mx-auto mb-4 bg-teal-100 text-[var(--color-primary)] rounded-2xl flex items-center justify-center group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all duration-300">
+                                        <div key={i} className="text-center p-6 bg-white/60 rounded-3xl border border-white/80 shadow-sm hover:shadow-md transition-all group">
+                                            <div className="w-12 h-12 mx-auto mb-4 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
                                                 {feature.icon}
                                             </div>
-                                            <h3 className="font-black text-[var(--color-secondary)] text-[11px] uppercase tracking-widest">{feature.title}</h3>
+                                            <h3 className="font-black text-gray-900 text-[11px] uppercase tracking-widest">{feature.title}</h3>
                                         </div>
                                     ))}
                                 </div>
@@ -77,22 +75,35 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Categories from DB */}
+            {/* Product Review Categories */}
             <section className="container mx-auto px-4 md:px-6">
                 <div className="text-center mb-12">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-[var(--color-primary)] mb-3 uppercase tracking-wider">Health Topics</h2>
-                    <div className="w-20 h-1.5 bg-[var(--color-primary)] mx-auto rounded-full" />
+                    <h2 className="text-2xl md:text-3xl font-extrabold text-blue-600 mb-3 uppercase tracking-wider">Product Review Categories</h2>
+                    <div className="w-20 h-1.5 bg-blue-600 mx-auto rounded-full" />
                 </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {categories.map((cat) => (
-                        <Link key={cat.id} href={`/health-topics/${cat.slug}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
-                            <div className="absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full bg-teal-100/50 transition-transform group-hover:scale-150" />
-                            <div className="w-16 h-16 flex-shrink-0 rounded-2xl bg-teal-100 text-[var(--color-primary)] flex items-center justify-center text-2xl font-black group-hover:bg-[var(--color-primary)] group-hover:text-white transition-all">
-                                {cat.name.charAt(0)}
+                    {[
+                        { name: 'Weight Loss', img: '/cat-weight-loss.png', color: 'text-orange-500', bg: 'bg-orange-50' },
+                        { name: 'Joint Pain', img: '/cat-joint-pain.png', color: 'text-blue-500', bg: 'bg-blue-50' },
+                        { name: "Men's Health", img: '/cat-mens-health.png', color: 'text-green-500', bg: 'bg-green-50' },
+                        { name: 'Brain Health', img: '/cat-brain-health.png', color: 'text-purple-500', bg: 'bg-purple-50' },
+                        { name: 'Anti-Aging', img: '/cat-anti-aging.png', color: 'text-pink-500', bg: 'bg-pink-50' },
+                        { name: 'Eye Cream', img: '/cat-eye-cream.png', color: 'text-indigo-500', bg: 'bg-indigo-50' },
+                    ].map((item, i) => (
+                        <Link key={i} href={`/category/${item.name.toLowerCase().replace(' ', '-')}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
+                            <div className={`absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 ${item.bg}`} />
+                            <div className="w-16 h-16 flex-shrink-0 relative rounded-2xl overflow-hidden border border-gray-100 group-hover:scale-110 transition-transform">
+                                <Image
+                                    src={item.img}
+                                    alt={item.name}
+                                    fill
+                                    className="object-cover"
+                                />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-[var(--color-secondary)] group-hover:text-[var(--color-primary)] transition-colors">{cat.name}</h3>
-                                <p className="text-xs text-[var(--color-muted)] mt-1 font-medium">Articles &amp; Guides</p>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                                <p className="text-xs text-gray-500 mt-1 font-medium">Verified Reviews</p>
                             </div>
                             <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
                                 <ChevronRight className="w-5 h-5 text-gray-300" />
@@ -101,46 +112,51 @@ export default async function Home() {
                     ))}
                 </div>
                 <div className="text-center mt-10">
-                    <Link href="/health-topics" className="inline-flex items-center gap-2 text-[var(--color-muted)] hover:text-[var(--color-primary)] font-bold uppercase text-sm tracking-widest transition-colors border-b-2 border-transparent hover:border-[var(--color-primary)] pb-1">
-                        View All Topics <ArrowRight className="w-4 h-4" />
+                    <Link href="/product-reviews" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 font-bold uppercase text-sm tracking-widest transition-colors border-b-2 border-transparent hover:border-blue-600 pb-1">
+                        View All Categories <ArrowRight className="w-4 h-4" />
                     </Link>
                 </div>
             </section>
 
-            {/* Our Top Picks - from DB */}
-            <section className="bg-gradient-to-b from-teal-50/50 to-white py-20 md:py-28">
+            {/* Our Top Picks */}
+            <section className="bg-gradient-to-b from-blue-50/50 to-white py-20 md:py-28">
                 <div className="container mx-auto px-4 md:px-6">
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-center text-[var(--color-secondary)] mb-16 tracking-tight">
-                        Our <span className="text-[var(--color-primary)]">Top Picks</span> For You
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-center text-gray-900 mb-16 tracking-tight">
+                        Our <span className="text-blue-600">Top Picks</span> For You
                     </h2>
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                        {topReviews.map((product, i) => (
-                            <div key={product.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center group flex flex-col h-full transform hover:-translate-y-2">
-                                <div className="aspect-square mb-6 rounded-2xl overflow-hidden relative bg-teal-50/50 flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500">
-                                    {product.featuredImage ? (
-                                        <div className="relative w-full h-full">
-                                            <Image src={product.featuredImage} alt={product.productName} fill className="object-contain drop-shadow-2xl" />
-                                        </div>
-                                    ) : (
-                                        <span className="text-6xl font-black text-teal-200">{product.productName.charAt(0)}</span>
-                                    )}
+                        {[
+                            { name: 'Ultimate H2', desc: 'Boost Of Energy', rating: 4.9, img: 'https://m.media-amazon.com/images/I/71L+3U5ZaAL._AC_SL1500_.jpg', bg: 'bg-blue-50/50' },
+                            { name: 'Polyphenol Olive Oil', desc: 'High-Quality & Rich', rating: 4.9, img: 'https://m.media-amazon.com/images/I/61SBCf15vbS._SL1500_.jpg', bg: 'bg-emerald-50/50' },
+                            { name: 'Morning Kick', desc: 'Healthy Digestion', rating: 4.8, img: 'https://m.media-amazon.com/images/I/81INSpJczkL._AC_SL1500_.jpg', bg: 'bg-orange-50/50' },
+                            { name: 'MCT Wellness', desc: 'Healthy Metabolism', rating: 4.9, img: 'https://m.media-amazon.com/images/I/71P9S1Nk4hL._AC_SL1500_.jpg', bg: 'bg-purple-50/50' },
+                        ].map((product, i) => (
+                            <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center group flex flex-col h-full transform hover:-translate-y-2">
+                                <div className={`aspect-square mb-6 rounded-2xl overflow-hidden relative ${product.bg} flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500`}>
+                                    <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700">
+                                        <Image
+                                            src={product.img}
+                                            alt={product.name}
+                                            fill
+                                            className="object-contain drop-shadow-2xl"
+                                        />
+                                    </div>
                                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border border-gray-100/50">
                                         Expert Choice
                                     </div>
                                 </div>
                                 <div className="space-y-1 mb-4 flex-grow">
-                                    <h3 className="font-black text-xl text-[var(--color-secondary)] leading-tight group-hover:text-[var(--color-primary)] transition-colors">{product.productName}</h3>
-                                    <p className="text-[var(--color-muted)] text-xs font-bold uppercase tracking-widest">{product.pros?.[0] ?? 'Reviewed'}</p>
+                                    <h3 className="font-black text-xl text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">{product.name}</h3>
+                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">{product.desc}</p>
                                 </div>
                                 <div className="flex items-center justify-center gap-1 text-yellow-400 mb-8 bg-gray-50/80 py-2.5 rounded-2xl w-full">
-                                    {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.round(product.rating) ? 'fill-current' : 'text-gray-200'}`} />
-                                    ))}
-                                    <span className="text-[var(--color-secondary)] font-extrabold text-xs ml-1">{product.rating} <span className="text-gray-300 font-medium">/ 5.0</span></span>
+                                    {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-current" />)}
+                                    <span className="text-gray-900 font-extrabold text-xs ml-1">{product.rating} <span className="text-gray-300 font-medium">/ 5.0</span></span>
                                 </div>
-                                <Link href={`/product-reviews/${product.slug}`} className="w-full py-4 bg-[var(--color-secondary)] text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-xl text-center block">
+                                <button className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 active:scale-95">
                                     Check Price
-                                </Link>
+                                </button>
                             </div>
                         ))}
                     </div>
@@ -151,23 +167,24 @@ export default async function Home() {
             <section className="container mx-auto px-4 md:px-6">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
                     <div className="lg:col-span-4 space-y-6">
-                        <h2 className="text-4xl font-extrabold text-[var(--color-primary)] uppercase tracking-wide">Brands</h2>
-                        <div className="h-1 w-16 bg-[var(--color-primary)]" />
-                        <p className="text-[var(--color-body)] leading-relaxed">
+                        <h2 className="text-4xl font-extrabold text-blue-500 uppercase tracking-wide">Brands</h2>
+                        <div className="h-1 w-16 bg-blue-500" />
+                        <p className="text-gray-600 leading-relaxed">
                             Looking for a particular brand? This Brands A-Z page is a near comprehensive listing of brands reviewed, including skin care, weight management, vitamins and supplements.
                         </p>
-                        <p className="text-[var(--color-body)] leading-relaxed">
-                            Our team of experts objectively review a wide range of products and services across the best health and wellness brands.
+                        <p className="text-gray-600 leading-relaxed">
+                            Our team of experts objectively review a wide range of products and services across the best health and wellness brands. Whether it's a well-known brand or a new company, if it's out there, we're reviewing it for you.
                         </p>
-                        <Link href="/brands" className="text-[var(--color-primary)] font-bold hover:opacity-80 inline-flex items-center gap-1 uppercase text-sm tracking-wide mt-4">
+                        <Link href="/brands" className="text-orange-500 font-bold hover:text-orange-600 inline-flex items-center gap-1 uppercase text-sm tracking-wide mt-4">
                             View All Brands <ArrowRight className="w-4 h-4" />
                         </Link>
                     </div>
+
                     <div className="lg:col-span-8">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {['Beverly Hills MD', 'CrazyBulk', 'DRMTLGY', 'Gundry MD', 'Nushape', 'ActivatedYou'].map((brand, i) => (
                                 <div key={i} className="bg-white p-8 border border-gray-100 rounded-xl flex items-center justify-center hover:shadow-md transition-shadow h-32">
-                                    <span className="text-xl font-bold text-[var(--color-secondary)] uppercase tracking-widest">{brand}</span>
+                                    <span className="text-xl font-bold text-gray-800 uppercase tracking-widest">{brand}</span>
                                 </div>
                             ))}
                         </div>
@@ -175,99 +192,116 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Experts Top Recommendations - from DB */}
+            {/* Experts Top Recommendations */}
             <section className="bg-gray-50 py-20 md:py-32">
                 <div className="container mx-auto px-4 md:px-6">
-                    <h2 className="text-3xl md:text-5xl font-extrabold text-center text-[var(--color-secondary)] mb-20 tracking-tight">
-                        Experts Recommendations For <span className="text-[var(--color-primary)] underline decoration-4 decoration-teal-200 underline-offset-4">Everyday Needs</span>
+                    <h2 className="text-3xl md:text-5xl font-extrabold text-center text-gray-900 mb-20 tracking-tight">
+                        Experts Recommendations For <span className="text-blue-600 underline decoration-4 decoration-blue-200 underline-offset-4">Everyday Needs</span>
                     </h2>
+
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                        {/* Article of the Week */}
                         <div className="space-y-8">
-                            <div className="flex items-center justify-between border-b-2 border-[var(--color-secondary)] pb-3">
-                                <h3 className="text-xl font-extrabold text-[var(--color-secondary)] uppercase tracking-widest">Article Of The Week</h3>
+                            <div className="flex items-center justify-between border-b-2 border-gray-900 pb-3">
+                                <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-widest">Article Of The Week</h3>
                             </div>
-                            {articleOfWeek ? (
-                                <Link href={`/health-topics/${articleOfWeek.category.slug}/${articleOfWeek.slug}`} className="block bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group h-full border border-gray-100">
-                                    <div className="relative aspect-[4/3] overflow-hidden bg-teal-100">
-                                        {articleOfWeek.featuredImage ? (
-                                            <Image src={articleOfWeek.featuredImage} alt={articleOfWeek.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                                        ) : (
-                                            <div className="absolute inset-0 flex items-center justify-center text-4xl font-black text-teal-300">{articleOfWeek.title.charAt(0)}</div>
-                                        )}
-                                        <div className="absolute top-4 left-4 bg-[var(--color-primary)] text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
-                                            {articleOfWeek.category.name}
-                                        </div>
+                            <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group cursor-pointer h-full border border-gray-100">
+                                <div className="relative aspect-[4/3] overflow-hidden">
+                                    <Image src="/topic-low-carb.png" alt="Healthy Teas" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
+                                        Weight Loss
                                     </div>
-                                    <div className="p-8">
-                                        <h4 className="text-2xl font-bold text-[var(--color-secondary)] group-hover:text-[var(--color-primary)] transition-colors leading-tight mb-4">{articleOfWeek.title}</h4>
-                                        <span className="text-[var(--color-primary)] font-bold text-sm uppercase tracking-wider flex items-center gap-2">Read Article <ArrowRight className="w-4 h-4" /></span>
-                                    </div>
-                                </Link>
-                            ) : (
-                                <div className="bg-white rounded-3xl p-8 border border-gray-100 text-center text-[var(--color-muted)]">No article of the week yet.</div>
-                            )}
+                                </div>
+                                <div className="p-8">
+                                    <h4 className="text-2xl font-bold text-gray-900 hover:text-blue-600 transition-colors leading-tight mb-4">
+                                        18 Best Teas For Weight Loss And Boosting Your Metabolism 2026
+                                    </h4>
+                                    <p className="text-gray-500 mb-6">Discover nature's most powerful blends for sustainable health.</p>
+                                    <span className="text-blue-600 font-bold text-sm uppercase tracking-wider flex items-center gap-2">Read Article <ArrowRight className="w-4 h-4" /></span>
+                                </div>
+                            </div>
                         </div>
+
+                        {/* Featured List */}
                         <div className="space-y-8">
-                            <div className="flex items-center justify-between border-b-2 border-[var(--color-secondary)] pb-3">
-                                <h3 className="text-xl font-extrabold text-[var(--color-secondary)] uppercase tracking-widest">Featured</h3>
+                            <div className="flex items-center justify-between border-b-2 border-gray-900 pb-3">
+                                <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-widest">Featured</h3>
                             </div>
                             <div className="space-y-6">
-                                {featuredArticles.map((article, i) => (
-                                    <Link key={article.id} href={`/health-topics/${article.category.slug}/${article.slug}`} className="group flex items-start gap-4 bg-white p-5 rounded-xl border border-gray-100 hover:border-teal-200 hover:shadow-md transition-all">
-                                        <span className="text-3xl font-extrabold text-gray-100 group-hover:text-teal-100 transition-colors">0{i + 1}</span>
-                                        <h4 className="text-lg font-bold text-[var(--color-secondary)] group-hover:text-[var(--color-primary)] transition-colors leading-snug pt-1">{article.title}</h4>
-                                    </Link>
+                                {[
+                                    '17 Best Supplements To Reduce Cortisol 2026',
+                                    '17 Best Biotin Supplements For Hair Growth',
+                                    'The 12 Best Bone Health Supplements 2026',
+                                    'The 23 Best Mood Enhancer Vitamins',
+                                    '20 Best Blood Flow Supplements For Cardio'
+                                ].map((title, i) => (
+                                    <div key={i} className="group cursor-pointer bg-white p-5 rounded-xl border border-gray-100 hover:border-blue-200 hover:shadow-md transition-all flex items-start gap-4">
+                                        <span className="text-3xl font-extrabold text-gray-100 group-hover:text-blue-100 transition-colors">0{i + 1}</span>
+                                        <h4 className="text-lg font-bold text-gray-800 group-hover:text-blue-600 transition-colors leading-snug pt-1">
+                                            {title}
+                                        </h4>
+                                    </div>
                                 ))}
-                                {featuredArticles.length === 0 && <p className="text-[var(--color-muted)] text-sm">No featured articles yet.</p>}
                             </div>
                         </div>
+
+                        {/* Latest Articles */}
                         <div className="space-y-8">
-                            <div className="flex items-center justify-between border-b-2 border-[var(--color-secondary)] pb-3">
-                                <h3 className="text-xl font-extrabold text-[var(--color-secondary)] uppercase tracking-widest">Latest Articles</h3>
+                            <div className="flex items-center justify-between border-b-2 border-gray-900 pb-3">
+                                <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-widest">Latest Articles</h3>
                             </div>
                             <div className="space-y-6">
-                                {latestArticles.map((article) => (
-                                    <Link key={article.id} href={`/health-topics/${article.category.slug}/${article.slug}`} className="flex gap-5 group bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
-                                        <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0 bg-teal-100 flex items-center justify-center text-2xl font-black text-teal-400">
-                                            {article.featuredImage ? <Image src={article.featuredImage} alt="" fill className="object-cover" /> : article.title.charAt(0)}
+                                {[
+                                    { cat: "Women's Health", title: "24 Best Supplements and Vitamins for Hormones" },
+                                    { cat: "Gut Health", title: "The 20 Best Prebiotic Supplements for 2026" },
+                                    { cat: "Nutrition", title: "6 Best Supplements for Kidney Health Guide" }
+                                ].map((article, i) => (
+                                    <div key={i} className="flex gap-5 group cursor-pointer bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
+                                        <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0">
+                                            <Image src={`/topic-fat-burning.png`} alt={article.title} fill className="object-cover" />
                                         </div>
                                         <div className="py-1">
-                                            <span className="text-[var(--color-primary)] font-bold text-xs uppercase tracking-widest mb-2 block">{article.category.name}</span>
-                                            <h4 className="text-lg font-bold text-[var(--color-secondary)] group-hover:text-[var(--color-primary)] transition-colors leading-tight">{article.title}</h4>
+                                            <span className="text-blue-500 font-bold text-xs uppercase tracking-widest mb-2 block">{article.cat}</span>
+                                            <h4 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
+                                                {article.title}
+                                            </h4>
                                         </div>
-                                    </Link>
+                                    </div>
                                 ))}
-                                {latestArticles.length === 0 && <p className="text-[var(--color-muted)] text-sm">No articles yet.</p>}
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
 
-            {/* Product Reviews - from DB */}
+            {/* Product Reviews */}
             <section className="bg-gray-50 py-20">
                 <div className="container mx-auto px-4 md:px-6">
-                    <h2 className="text-3xl font-extrabold text-[var(--color-secondary)] mb-8">Trusted Product Reviews</h2>
+                    <h2 className="section-title">Trusted Product Reviews</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {latestReviews.map((item) => (
-                            <div key={item.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
-                                <div className="w-full aspect-square rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden bg-teal-50/50 group-hover:scale-[1.02] transition-transform duration-500 shadow-inner">
-                                    {item.featuredImage ? (
-                                        <Image src={item.featuredImage} alt={item.productName} fill className="object-contain p-6" />
-                                    ) : (
-                                        <span className="text-5xl font-black text-teal-200">{item.productName.charAt(0)}</span>
-                                    )}
+                        {[
+                            { name: 'Organic Whey Protein Plus', brand: 'Verified Quality • Non-GMO', rating: 4.8, slug: 'organic-whey', img: 'https://m.media-amazon.com/images/I/7181KquqcpL._SX679_.jpg', color: 'bg-blue-50/50' },
+                            { name: 'Focus Factor Nootropic', brand: 'Brain Performance', rating: 4.2, slug: 'focus-factor', img: 'https://m.media-amazon.com/images/I/71zYzdGgvdL._AC_SL1500_.jpg', color: 'bg-purple-50/50' },
+                            { name: 'Digestive Enzymes', brand: 'Gut Health Mastery', rating: 4.7, slug: 'digestive-enzymes', img: 'https://m.media-amazon.com/images/I/71Z46KZaq-L._SL1500_.jpg', color: 'bg-emerald-50/50' },
+                            { name: 'Advanced Collagen', brand: 'Skin & Joint Support', rating: 4.9, slug: 'collagen', img: 'https://m.media-amazon.com/images/I/51yvBiyU6NL._SL1080_.jpg', color: 'bg-pink-50/50' },
+                        ].map((item, i) => (
+                            <div key={i} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
+                                <div className={`w-full aspect-square ${item.color} rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
+                                    <Image
+                                        src={item.img}
+                                        alt={item.name}
+                                        fill
+                                        className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                                    />
                                 </div>
                                 <div className="flex items-center gap-1 text-yellow-400 mb-4 bg-gray-50/80 py-1.5 px-3 rounded-full w-fit">
-                                    {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star key={s} className={`w-3 h-3 ${s <= Math.round(item.rating) ? 'fill-current' : 'text-gray-200'}`} />
-                                    ))}
-                                    <span className="text-[var(--color-secondary)] font-black ml-1 text-[10px]">{item.rating}</span>
+                                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-current" />)}
+                                    <span className="text-gray-900 font-black ml-1 text-[10px]">{item.rating}</span>
                                 </div>
-                                <h4 className="font-black text-lg text-[var(--color-secondary)] mb-2 leading-tight group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{item.productName}</h4>
-                                <p className="text-[10px] font-bold text-[var(--color-muted)] mb-8 uppercase tracking-widest">{item.pros?.[0] ?? 'Expert Reviewed'}</p>
+                                <h4 className="font-black text-lg text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight line-clamp-2">{item.name}</h4>
+                                <p className="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">{item.brand}</p>
                                 <div className="mt-auto">
-                                    <Link href={`/product-reviews/${item.slug}`} className="text-[var(--color-primary)] text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-3 transition-all">
+                                    <Link href={`/product-reviews/${item.slug}`} className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-3 transition-all">
                                         Read Analysis <ArrowRight className="w-4 h-4" />
                                     </Link>
                                 </div>
@@ -313,7 +347,7 @@ export default async function Home() {
 
                                 <h2 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight tracking-tight">
                                     Health tips,<br />
-                                    <span className="text-[var(--color-primary)]">straight to your inbox.</span>
+                                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">straight to your inbox.</span>
                                 </h2>
 
                                 <p className="text-lg md:text-xl text-slate-300 max-w-lg leading-relaxed">
@@ -352,7 +386,7 @@ export default async function Home() {
                                             className="w-full px-6 py-4 rounded-xl bg-slate-900/50 border border-slate-700 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                                         />
                                     </div>
-                                    <button className="w-full bg-[var(--color-primary)] hover:opacity-90 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg transform hover:-translate-y-0.5">
+                                    <button className="w-full bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-bold text-lg py-4 rounded-xl transition-all shadow-lg shadow-blue-900/20 transform hover:-translate-y-0.5">
                                         Subscribe Now
                                     </button>
                                 </form>
