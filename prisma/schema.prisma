@@ -122,3 +122,66 @@ model Tag {
   slug     String    @unique
   articles Article[]
 }
+
+// Dynamic site content (single row)
+model SiteSettings {
+  id              String   @id @default(uuid())
+  brandName       String   @default("Health Line Review")
+  logoUrl         String   @default("/logo.svg")
+  tagline         String?
+  primaryColor    String   @default("#0d9488")
+  secondaryColor  String   @default("#1e293b")
+  accentColor     String   @default("#0f766e")
+  heroTitle       String?
+  heroSubtitle    String?
+  heroCtaPrimary  String?
+  heroCtaSecondary String?
+  footerTagline   String?
+  contactEmail    String?
+  contactPhone    String?
+  address         String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+// Navigation links (order by order asc)
+model NavLink {
+  id        String   @id @default(uuid())
+  label     String
+  href      String
+  order     Int      @default(0)
+  parentId  String?
+  parent    NavLink?  @relation("NavLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children  NavLink[] @relation("NavLinkChildren")
+}
+
+// Footer sections with links (JSON: [{label, href}])
+model FooterSection {
+  id     String @id @default(uuid())
+  title  String
+  links  Json   // [{ label: string, href: string }]
+  order  Int    @default(0)
+}
+
+// Static page content (about, contact, faq, review-guidelines)
+model PageContent {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  content         Json     // blocks: [{ type, content }]
+  metaTitle       String?
+  metaDescription String?
+  updatedAt       DateTime @updatedAt
+}
+
+// Homepage sections (featured picks, article of week, etc.) - optional for full dynamic
+model HomeSection {
+  id          String   @id @default(uuid())
+  sectionKey  String   @unique // hero_stats, top_picks, brands_intro, etc.
+  title       String?
+  subtitle    String?
+  content     Json     // section-specific data
+  order       Int      @default(0)
+  isActive    Boolean  @default(true)
+  updatedAt   DateTime @updatedAt
+}
