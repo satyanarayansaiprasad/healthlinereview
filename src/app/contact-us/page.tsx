@@ -1,7 +1,13 @@
+import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
-import { Mail, Phone, MapPin, Send, MessageSquare, Linkedin, Twitter, Youtube, ChevronDown, Globe, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, MessageSquare, ChevronDown } from 'lucide-react';
 
-export default function ContactUs() {
+export default async function ContactUs() {
+    const settings = await prisma.siteSettings.findFirst();
+    const contactEmail = settings?.contactEmail || "contact@healthlinereview.com";
+    const contactPhone = settings?.contactPhone || "+1 (555) 000-0000";
+    const contactAddress = settings?.address || "123 Wellness Way, Medical District, NY 10001";
+
     return (
         <div className="flex flex-col pb-24 bg-[#fbfcfd] font-sans">
             {/* Minimal High-End Hero */}
@@ -14,11 +20,11 @@ export default function ContactUs() {
                             Direct Communication Channels
                         </div>
                         <h1 className="text-5xl md:text-8xl font-black text-gray-900 leading-[1.1] tracking-tighter">
-                            Let's Talk <br />
+                            Let&apos;s Talk <br />
                             <span className="text-blue-600 italic">Wellness.</span>
                         </h1>
                         <p className="text-lg md:text-2xl text-gray-600 leading-relaxed font-medium max-w-2xl">
-                            Whether you're a reader with a question or a brand looking for clinical verification, our specialized teams are ready to connect.
+                            Whether you&apos;re a reader with a question or a brand looking for clinical verification, our specialized teams are ready to connect.
                         </p>
                     </div>
                 </div>
@@ -94,21 +100,28 @@ export default function ContactUs() {
                                 <div className="space-y-4">
                                     <h3 className="text-2xl font-black">Legal Protocol</h3>
                                     <p className="text-gray-400 font-medium leading-relaxed">Our clinical team reviews all inquiries within 24-48 business hours.</p>
+                                    <div className="space-y-2 pt-2">
+                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Headquarters</p>
+                                        <div className="flex gap-3 text-sm font-medium text-gray-300">
+                                            <MapPin className="w-4 h-4 text-red-500 shrink-0 mt-1" />
+                                            <span>{contactAddress}</span>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div className="space-y-6">
                                     {[
-                                        { icon: <Globe className="w-5 h-5" />, label: "Global Press", val: "press@healthlinereview.com" },
-                                        { icon: <CheckCircle2 className="w-5 h-5" />, label: "Review Panel", val: "audit@healthlinereview.com" }
+                                        { icon: <Mail className="w-5 h-5" />, label: "Global Press", val: contactEmail, href: `mailto:${contactEmail}` },
+                                        { icon: <Phone className="w-5 h-5" />, label: "Review Panel", val: contactPhone, href: `tel:${contactPhone}` }
                                     ].map((item, i) => (
-                                        <div key={i} className="flex gap-5 items-center">
-                                            <div className="w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-blue-500">
+                                        <a key={i} href={item.href} className="flex gap-5 items-center group/item transition-colors">
+                                            <div className="w-11 h-11 bg-white/5 border border-white/10 rounded-xl flex items-center justify-center text-blue-500 group-hover/item:bg-white/10 transition-colors underline-offset-4 decoration-blue-500/0 hover:decoration-blue-500/100">
                                                 {item.icon}
                                             </div>
                                             <div>
                                                 <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 mb-0.5">{item.label}</p>
-                                                <p className="font-bold tracking-tight">{item.val}</p>
+                                                <p className="font-bold tracking-tight text-white group-hover/item:text-blue-400 transition-colors">{item.val}</p>
                                             </div>
-                                        </div>
+                                        </a>
                                     ))}
                                 </div>
                             </div>
@@ -119,3 +132,4 @@ export default function ContactUs() {
         </div>
     );
 }
+
