@@ -2,82 +2,98 @@ import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { randomUUID } from 'crypto';
+import fs from 'fs';
 
 export async function POST(req: Request) {
     console.log('--- Upload API Start ---');
     try {
-        const formData = await req.formData();
-        console.log('FormData parsed');
+        // 1. Check Content-Type
+        const contentType = req.headers.get('content-type') || '';
+        if (!contentType.includes('multipart/form-data')) {
+            return NextResponse.json({ error: 'Invalid Content-Type' }, { status: 400 });
+        }
 
-        const file = formData.get('file') as File;
+        // 2. Parse FormData
+        let formData: FormData;
+        try {
+            formData = await req.formData();
+            console.log('FormData parsed successfully');
+        } catch (parseErr: any) {
+            console.error('Error parsing FormData:', parseErr);
+            return NextResponse.json({ error: 'Failed to parse form data', details: parseErr.message }, { status: 400 });
+        }
+
+        // 3. Extract File and Folder
+        const file = formData.get('file');
         const folder = (formData.get('folder') as string) || 'brands';
-        console.log(`Uploading to folder: ${folder}`);
+        console.log(`Folder: ${folder}`);
 
-        if (!file) {
-            console.error('No file found in formData');
-            return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
+        if (!file || !(file instanceof Blob)) {
+            console.error('No file found or not a Blob');
+            return NextResponse.json({ error: 'No file uploaded or invalid file format' }, { status: 400 });
         }
 
-        if (typeof file === 'string') {
-            console.error('File entry is a string, not a File object');
-            return NextResponse.json({ error: 'Invalid file data' }, { status: 400 });
-        }
+        // 4. Extract metadata safely
+        const fileNameOriginal = (file as any).name || 'upload.bin';
+        const fileSize = file.size;
+        console.log(`Original Name: ${fileNameOriginal}, Size: ${fileSize}`);
 
-        console.log(`File Name: ${file.name}`);
-        console.log(`File Size: ${file.size} bytes`);
-        console.log(`File Type: ${file.type}`);
-
+        // 5. Convert to Buffer
         let buffer: Buffer;
         try {
             const bytes = await file.arrayBuffer();
             buffer = Buffer.from(bytes);
-            console.log('File converted to buffer');
+            console.log('Buffer created successfully');
         } catch (bufErr: any) {
-            console.error('Error converting file to buffer:', bufErr);
-            throw new Error(`Buffer conversion failed: ${bufErr.message}`);
+            console.error('Buffer conversion error:', bufErr);
+            return NextResponse.json({ error: 'Failed to process file data', details: bufErr.message }, { status: 500 });
         }
 
-        // Define upload directory
-        const uploadDir = join(process.cwd(), 'public', 'uploads', folder);
-        console.log(`Target Directory: ${uploadDir}`);
+        // 6. Define and Ensure Directory
+        const root = process.cwd();
+        const uploadDir = join(root, 'public', 'uploads', folder);
+        console.log(`Upload Directory: ${uploadDir}`);
 
-        // Ensure directory exists
         try {
-            await mkdir(uploadDir, { recursive: true });
-            console.log('Target directory verified/created');
+            if (!fs.existsSync(uploadDir)) {
+                console.log('Creating directory...');
+                await mkdir(uploadDir, { recursive: true });
+                console.log('Directory created');
+            } else {
+                console.log('Directory already exists');
+            }
         } catch (dirErr: any) {
-            console.error('Error ensuring directory exists:', dirErr);
-            // Non-fatal if directory already exists but sometimes mkdir fails unexpectedly
+            console.error('Directory error:', dirErr);
+            return NextResponse.json({ error: 'Failed to create upload directory', details: dirErr.message }, { status: 500 });
         }
 
-        // Generate unique filename
-        const originalName = file.name || 'document.bin';
-        const ext = originalName.split('.').pop() || 'bin';
-        const fileName = `${randomUUID()}.${ext}`;
-        const path = join(uploadDir, fileName);
-        console.log(`Saving to path: ${path}`);
+        // 7. Generate Random Name
+        const ext = fileNameOriginal.includes('.') ? fileNameOriginal.split('.').pop() : 'bin';
+        const newFileName = `${randomUUID()}.${ext}`;
+        const finalPath = join(uploadDir, newFileName);
+        console.log(`Final Path: ${finalPath}`);
 
-        // Save file
+        // 8. Write File
         try {
-            await writeFile(path, buffer);
-            console.log('File written to disk successfully');
+            await writeFile(finalPath, buffer);
+            console.log('File written to disk');
         } catch (writeErr: any) {
-            console.error('Error writing file to disk:', writeErr);
-            throw new Error(`Disk write failed: ${writeErr.message}`);
+            console.error('Write error:', writeErr);
+            return NextResponse.json({ error: 'Failed to write file to disk', details: writeErr.message }, { status: 500 });
         }
 
-        // Return the public URL
-        const publicUrl = `/uploads/${folder}/${fileName}`;
-        console.log(`Public URL: ${publicUrl}`);
-        console.log('--- Upload API Success ---');
+        // 9. Return URL
+        const publicUrl = `/uploads/${folder}/${newFileName}`;
+        console.log(`Success: ${publicUrl}`);
 
         return NextResponse.json({ url: publicUrl });
-    } catch (error: any) {
-        console.error('CRITICAL: Error uploading file:', error);
+
+    } catch (globalErr: any) {
+        console.error('CRITICAL UNHANDLED UPLOAD ERROR:', globalErr);
         return NextResponse.json({
-            error: 'Internal server error',
-            details: error.message,
-            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
+            error: 'Unexpected server error',
+            details: globalErr.message,
+            stack: globalErr.stack
         }, { status: 500 });
     }
 }
