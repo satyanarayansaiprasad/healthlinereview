@@ -91,26 +91,23 @@ export default async function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {[
-                        { name: 'Weight Loss', img: '/cat-weight-loss.png', color: 'text-orange-500', bg: 'bg-orange-50' },
-                        { name: 'Joint Pain', img: '/cat-joint-pain.png', color: 'text-blue-500', bg: 'bg-blue-50' },
-                        { name: "Men's Health", img: '/cat-mens-health.png', color: 'text-green-500', bg: 'bg-green-50' },
-                        { name: 'Brain Health', img: '/cat-brain-health.png', color: 'text-purple-500', bg: 'bg-purple-50' },
-                        { name: 'Anti-Aging', img: '/cat-anti-aging.png', color: 'text-pink-500', bg: 'bg-pink-50' },
-                        { name: 'Eye Cream', img: '/cat-eye-cream.png', color: 'text-indigo-500', bg: 'bg-indigo-50' },
-                    ].map((item, i) => (
-                        <Link key={i} href={`/health-topics/${item.name.toLowerCase().replace(' ', '-')}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
-                            <div className={`absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 ${item.bg}`} />
+                    {(await prisma.reviewCategory.findMany({
+                        where: { isStarred: true },
+                        take: 6,
+                        orderBy: { createdAt: 'desc' }
+                    })).map((cat, i) => (
+                        <Link key={cat.id} href={`/product-reviews?category=${cat.slug}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
+                            <div className="absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 bg-blue-50" />
                             <div className="w-16 h-16 flex-shrink-0 relative rounded-2xl overflow-hidden border border-gray-100 group-hover:scale-110 transition-transform">
                                 <Image
-                                    src={item.img}
-                                    alt={item.name}
+                                    src={cat.imageUrl}
+                                    alt={cat.name}
                                     fill
                                     className="object-cover"
                                 />
                             </div>
                             <div>
-                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                                <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{cat.name}</h3>
                                 <p className="text-xs text-gray-500 mt-1 font-medium">Verified Reviews</p>
                             </div>
                             <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0">
@@ -118,9 +115,15 @@ export default async function Home() {
                             </div>
                         </Link>
                     ))}
+                    {(await prisma.reviewCategory.count({ where: { isStarred: true } })) === 0 && (
+                        <div className="col-span-full text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-100">
+                            <Activity className="w-12 h-12 text-gray-200 mx-auto mb-4" />
+                            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No clinical categories featured yet</p>
+                        </div>
+                    )}
                 </div>
                 <div className="text-center mt-10">
-                    <Link href="/product-reviews" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 font-bold uppercase text-sm tracking-widest transition-colors border-b-2 border-transparent hover:border-blue-600 pb-1">
+                    <Link href="/product-reviews/categories" className="inline-flex items-center gap-2 text-gray-500 hover:text-blue-600 font-bold uppercase text-sm tracking-widest transition-colors border-b-2 border-transparent hover:border-blue-600 pb-1">
                         View All Categories <ArrowRight className="w-4 h-4" />
                     </Link>
                 </div>
