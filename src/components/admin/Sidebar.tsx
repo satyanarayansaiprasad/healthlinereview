@@ -13,11 +13,13 @@ import {
     HelpCircle,
     FileText,
     Mail,
-    LogOut
+    LogOut,
+    LayoutDashboard
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const menuItems = [
+    { label: 'Dashboard', icon: LayoutDashboard, href: '/admin' },
     { label: 'Product Reviews', icon: ShoppingBag, href: '/admin/product-reviews' },
     { label: 'Brands', icon: Building2, href: '/admin/brands' },
     { label: 'Featured Topics', icon: Star, href: '/admin/featured-topics' },
