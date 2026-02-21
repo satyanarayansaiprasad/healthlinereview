@@ -1,99 +1,140 @@
 import { NextResponse } from 'next/server';
 import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { randomUUID } from 'crypto';
 import fs from 'fs';
 
 export async function POST(req: Request) {
-    console.log('--- Upload API Start ---');
+    const logBatch: string[] = [`[${new Date().toISOString()}] Upload Start`];
+
+    const safeLog = (msg: string) => {
+        console.log(msg);
+        logBatch.push(msg);
+    };
+
     try {
         // 1. Check Content-Type
         const contentType = req.headers.get('content-type') || '';
         if (!contentType.includes('multipart/form-data')) {
-            return NextResponse.json({ error: 'Invalid Content-Type' }, { status: 400 });
+            return NextResponse.json({
+                error: 'Invalid Content-Type',
+                received: contentType
+            }, { status: 400 });
         }
 
         // 2. Parse FormData
         let formData: FormData;
         try {
             formData = await req.formData();
-            console.log('FormData parsed successfully');
+            safeLog('Step 1: FormData parsed');
         } catch (parseErr: any) {
-            console.error('Error parsing FormData:', parseErr);
-            return NextResponse.json({ error: 'Failed to parse form data', details: parseErr.message }, { status: 400 });
+            safeLog(`Step 1 Failure: ${parseErr.message}`);
+            return NextResponse.json({
+                error: 'FormData parse failed',
+                details: parseErr.message
+            }, { status: 400 });
         }
 
         // 3. Extract File and Folder
         const file = formData.get('file');
-        const folder = (formData.get('folder') as string) || 'brands';
-        console.log(`Folder: ${folder}`);
+        const folder = (formData.get('folder') as string) || 'uploads';
+        safeLog(`Step 2: Folder identified as "${folder}"`);
 
         if (!file || !(file instanceof Blob)) {
-            console.error('No file found or not a Blob');
-            return NextResponse.json({ error: 'No file uploaded or invalid file format' }, { status: 400 });
+            safeLog('Step 2 Failure: File is missing or not a Blob');
+            return NextResponse.json({
+                error: 'No file uploaded or invalid format',
+                type: typeof file
+            }, { status: 400 });
         }
 
-        // 4. Extract metadata safely
-        const fileNameOriginal = (file as any).name || 'upload.bin';
+        // 4. File Metadata
+        const fileNameOriginal = (file as any).name || 'unnamed_file';
         const fileSize = file.size;
-        console.log(`Original Name: ${fileNameOriginal}, Size: ${fileSize}`);
+        safeLog(`Step 3: File metadata - Name: ${fileNameOriginal}, Size: ${fileSize}`);
 
-        // 5. Convert to Buffer
+        // 5. ArrayBuffer to Buffer
         let buffer: Buffer;
         try {
             const bytes = await file.arrayBuffer();
             buffer = Buffer.from(bytes);
-            console.log('Buffer created successfully');
+            safeLog('Step 4: Buffer conversion success');
         } catch (bufErr: any) {
-            console.error('Buffer conversion error:', bufErr);
-            return NextResponse.json({ error: 'Failed to process file data', details: bufErr.message }, { status: 500 });
+            safeLog(`Step 4 Failure: ${bufErr.message}`);
+            return NextResponse.json({
+                error: 'Buffer conversion failed',
+                details: bufErr.message
+            }, { status: 500 });
         }
 
-        // 6. Define and Ensure Directory
-        const root = process.cwd();
-        const uploadDir = join(root, 'public', 'uploads', folder);
-        console.log(`Upload Directory: ${uploadDir}`);
+        // 6. Directory Resolution
+        let uploadDir: string;
+        try {
+            const root = process.cwd();
+            uploadDir = resolve(root, 'public', 'uploads', folder);
+            safeLog(`Step 5: Directory resolved to ${uploadDir}`);
+        } catch (dirResErr: any) {
+            safeLog(`Step 5 Failure: ${dirResErr.message}`);
+            return NextResponse.json({
+                error: 'Directory resolution failed',
+                details: dirResErr.message
+            }, { status: 500 });
+        }
 
+        // 7. Ensure Directory
         try {
             if (!fs.existsSync(uploadDir)) {
-                console.log('Creating directory...');
+                safeLog('Step 6: Creating directory...');
                 await mkdir(uploadDir, { recursive: true });
-                console.log('Directory created');
+                safeLog('Step 6: Directory created successfully');
             } else {
-                console.log('Directory already exists');
+                safeLog('Step 6: Directory already exists');
             }
-        } catch (dirErr: any) {
-            console.error('Directory error:', dirErr);
-            return NextResponse.json({ error: 'Failed to create upload directory', details: dirErr.message }, { status: 500 });
+        } catch (mkdirErr: any) {
+            safeLog(`Step 6 Failure: ${mkdirErr.message}`);
+            return NextResponse.json({
+                error: 'Directory creation failed',
+                details: mkdirErr.message,
+                path: uploadDir
+            }, { status: 500 });
         }
 
-        // 7. Generate Random Name
+        // 8. Generate Name and Path
         const ext = fileNameOriginal.includes('.') ? fileNameOriginal.split('.').pop() : 'bin';
         const newFileName = `${randomUUID()}.${ext}`;
         const finalPath = join(uploadDir, newFileName);
-        console.log(`Final Path: ${finalPath}`);
+        safeLog(`Step 7: Final path decided as ${finalPath}`);
 
-        // 8. Write File
+        // 9. Write to Disk
         try {
             await writeFile(finalPath, buffer);
-            console.log('File written to disk');
+            safeLog('Step 8: File written to disk successfully');
         } catch (writeErr: any) {
-            console.error('Write error:', writeErr);
-            return NextResponse.json({ error: 'Failed to write file to disk', details: writeErr.message }, { status: 500 });
+            safeLog(`Step 8 Failure: ${writeErr.message}`);
+            return NextResponse.json({
+                error: 'Disk write failed',
+                details: writeErr.message,
+                path: finalPath,
+                logs: logBatch
+            }, { status: 500 });
         }
 
-        // 9. Return URL
+        // 10. Success Return
         const publicUrl = `/uploads/${folder}/${newFileName}`;
-        console.log(`Success: ${publicUrl}`);
+        safeLog(`Step 9: Upload successful - ${publicUrl}`);
 
-        return NextResponse.json({ url: publicUrl });
+        return NextResponse.json({
+            success: true,
+            url: publicUrl,
+            metadata: { name: newFileName, size: fileSize }
+        });
 
     } catch (globalErr: any) {
-        console.error('CRITICAL UNHANDLED UPLOAD ERROR:', globalErr);
+        console.error('CRITICAL UNHANDLED ERROR:', globalErr);
         return NextResponse.json({
-            error: 'Unexpected server error',
+            error: 'Unhandled server error',
             details: globalErr.message,
-            stack: globalErr.stack
+            logs: logBatch
         }, { status: 500 });
     }
 }
