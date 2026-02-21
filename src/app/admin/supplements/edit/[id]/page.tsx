@@ -283,22 +283,27 @@ export default function EditSupplement({ params }: Props) {
 
                         <div className="space-y-4">
                             <label className="text-sm font-bold text-gray-700">Featured Image</label>
-                            <div className="relative aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden flex items-center justify-center">
-                                {featuredImage ? (
-                                    <img src={featuredImage} alt="Featured" className="w-full h-full object-cover" />
-                                ) : (
-                                    <ImageIcon className="w-10 h-10 text-gray-200" />
-                                )}
-                                <input type="file" onChange={handleUpload} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
-                                {uploading && <div className="absolute inset-0 bg-white/60 flex items-center justify-center"><Loader2 className="animate-spin" /></div>}
+                            <div className="relative group">
+                                <div className="relative aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden flex items-center justify-center">
+                                    {featuredImage ? (
+                                        <img src={featuredImage} alt="Featured" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <ImageIcon className="w-10 h-10 text-gray-200" />
+                                    )}
+                                    <input type="file" onChange={handleUpload} className="absolute inset-0 opacity-0 cursor-pointer" accept="image/*" />
+                                    {uploading && <div className="absolute inset-0 bg-white/60 flex items-center justify-center"><Loader2 className="animate-spin" /></div>}
+                                </div>
+                                <div className="mt-4 space-y-2">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Image URL (Instant Preview)</label>
+                                    <input
+                                        type="url"
+                                        value={featuredImage}
+                                        onChange={(e) => setFeaturedImage(e.target.value)}
+                                        placeholder="Paste an image URL..."
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
                             </div>
-                            <input
-                                type="url"
-                                value={featuredImage}
-                                onChange={(e) => setFeaturedImage(e.target.value)}
-                                placeholder="Image URL..."
-                                className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs"
-                            />
                         </div>
 
                         <div className="pt-4 border-t border-gray-50 space-y-4">

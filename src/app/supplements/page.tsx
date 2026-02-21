@@ -49,9 +49,8 @@ export default function SupplementsPage() {
         <div className="min-h-screen bg-[#f8fafc] pb-20">
             {/* Hero Section */}
             <div className="bg-white border-b border-gray-100 py-16 md:py-24 overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-1/3 h-full bg-blue-50/50 clip-path-slant hidden lg:block" />
-                <div className="container mx-auto px-4 relative">
-                    <div className="max-w-3xl">
+                <div className="container mx-auto px-4 relative flex flex-col lg:flex-row items-center justify-between gap-12">
+                    <div className="max-w-3xl flex-1">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-50 text-blue-600 rounded-full text-xs font-black uppercase tracking-widest mb-6 transition-all hover:bg-blue-100">
                             <TrendingUp className="w-4 h-4" /> Science Backed Reviews
                         </div>
@@ -79,6 +78,16 @@ export default function SupplementsPage() {
                                     <X className="w-4 h-4" />
                                 </button>
                             )}
+                        </div>
+                    </div>
+                    <div className="flex-1 relative hidden lg:block">
+                        <div className="absolute inset-0 bg-blue-100/50 rounded-[4rem] rotate-3 scale-95" />
+                        <div className="relative z-10 bg-white p-4 rounded-[4rem] shadow-2xl border border-gray-100">
+                            <img
+                                src="/images/supplements-hero.png"
+                                alt="Supplements"
+                                className="w-full h-auto rounded-[3.5rem] object-cover aspect-[4/3]"
+                            />
                         </div>
                     </div>
                 </div>

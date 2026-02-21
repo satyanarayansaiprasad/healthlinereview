@@ -181,9 +181,6 @@ export default function CreateSupplement() {
                                 <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
                                     <ListPlus className="w-5 h-5 text-blue-500" /> Professional Overview
                                 </h3>
-                                <div className="flex gap-2 text-xs font-bold text-gray-400">
-                                    <span>Rich Text Editor Ready</span>
-                                </div>
                             </div>
                             <textarea
                                 value={overview}
@@ -276,7 +273,7 @@ export default function CreateSupplement() {
                         <div className="space-y-4">
                             <label className="text-sm font-bold text-gray-700">Featured Image</label>
                             <div className="relative group">
-                                <div className="aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer overflow-hidden p-2">
+                                <div className="aspect-video bg-gray-50 border-2 border-dashed border-gray-200 rounded-2xl flex flex-col items-center justify-center text-gray-400 hover:border-blue-300 hover:bg-blue-50 transition-all cursor-pointer overflow-hidden p-2 relative">
                                     {featuredImage ? (
                                         <img src={featuredImage} alt="Featured" className="w-full h-full object-cover rounded-xl" />
                                     ) : (
@@ -297,17 +294,16 @@ export default function CreateSupplement() {
                                         </div>
                                     )}
                                 </div>
-                                {featuredImage && (
-                                    <div className="mt-2 flex gap-2">
-                                        <input
-                                            type="url"
-                                            value={featuredImage}
-                                            onChange={(e) => setFeaturedImage(e.target.value)}
-                                            placeholder="Or paste an image URL..."
-                                            className="w-full bg-gray-50 border border-gray-100 rounded-lg px-3 py-2 text-xs"
-                                        />
-                                    </div>
-                                )}
+                                <div className="mt-4 space-y-2">
+                                    <label className="text-[10px] font-bold text-gray-400 uppercase">Image URL (Instant Preview)</label>
+                                    <input
+                                        type="url"
+                                        value={featuredImage}
+                                        onChange={(e) => setFeaturedImage(e.target.value)}
+                                        placeholder="Paste an image URL..."
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-xl px-4 py-2 text-xs focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
                             </div>
                         </div>
 

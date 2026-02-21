@@ -3,10 +3,11 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import {
-    ChevronLeft, Share2, Facebook, Twitter, Link as LinkIcon,
+    ChevronLeft, Share2,
     ShieldCheck, CheckCircle2, MessageSquare, Anchor,
-    CheckCircle, XCircle, ArrowRight, Star
+    CheckCircle, XCircle, ArrowRight, Star, Link as LinkIcon
 } from 'lucide-react';
+import ShareButtons from '@/components/supplements/ShareButtons';
 
 export const dynamic = 'force-dynamic';
 
@@ -109,14 +110,7 @@ export default async function SupplementDetailPage({ params }: Props) {
                 <div className="flex flex-col lg:flex-row gap-16">
                     {/* Sticky Sidebar */}
                     <aside className="lg:w-16 order-2 lg:order-1">
-                        <div className="sticky top-32 space-y-4 flex lg:flex-col gap-4 items-center">
-                            <span className="hidden lg:block text-[10px] font-black text-gray-300 uppercase [writing-mode:vertical-rl] [text-orientation:mixed] tracking-widest mb-4">Share</span>
-                            {[Facebook, Twitter, LinkIcon].map((Icon, i) => (
-                                <button key={i} className="w-12 h-12 rounded-2xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 hover:text-blue-600 hover:shadow-xl hover:-translate-y-1 transition-all duration-300">
-                                    <Icon className="w-5 h-5" />
-                                </button>
-                            ))}
-                        </div>
+                        <ShareButtons title={supplement.title} />
                     </aside>
 
                     {/* Content Section */}
@@ -133,7 +127,9 @@ export default async function SupplementDetailPage({ params }: Props) {
                             <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
                                 <span className="w-2 h-8 bg-blue-600 rounded-full" /> Full Analysis & Efficacy
                             </h2>
-                            <div className="whitespace-pre-wrap">{content.overview}</div>
+                            <div className="whitespace-pre-wrap font-medium text-gray-700 leading-relaxed text-lg">
+                                {content.overview}
+                            </div>
                         </div>
 
                         {/* Advertisement Slot */}
@@ -212,30 +208,32 @@ export default async function SupplementDetailPage({ params }: Props) {
                         )}
 
                         {/* Related Articles Component */}
-                        <div className="pt-24 space-y-10">
-                            <div className="flex items-end justify-between">
-                                <h2 className="text-3xl font-black text-gray-900">Explore Health Topics</h2>
-                                <Link href="/health-topics" className="text-blue-600 font-bold flex items-center gap-2 hover:gap-4 transition-all">
-                                    View All <ArrowRight className="w-5 h-5" />
-                                </Link>
-                            </div>
-                            <div className="grid sm:grid-cols-3 gap-6">
-                                {relatedArticles.map((art) => (
-                                    <Link
-                                        href={`/health-topics/${art.category.slug}/${art.slug}`}
-                                        key={art.id}
-                                        className="group bg-white p-6 rounded-[2rem] border border-gray-100 hover:shadow-xl transition-all"
-                                    >
-                                        <div className="aspect-square bg-blue-50 rounded-2xl mb-4 overflow-hidden relative">
-                                            {art.featuredImage && <img src={art.featuredImage} alt={art.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />}
-                                        </div>
-                                        <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
-                                            {art.title}
-                                        </h4>
+                        {relatedArticles.length > 0 && (
+                            <div className="pt-24 space-y-10">
+                                <div className="flex items-end justify-between">
+                                    <h2 className="text-3xl font-black text-gray-900">Explore Health Topics</h2>
+                                    <Link href="/health-topics" className="text-blue-600 font-bold flex items-center gap-2 hover:gap-4 transition-all">
+                                        View All <ArrowRight className="w-5 h-5" />
                                     </Link>
-                                ))}
+                                </div>
+                                <div className="grid sm:grid-cols-3 gap-6">
+                                    {relatedArticles.map((art) => (
+                                        <Link
+                                            href={`/health-topics/${art.category.slug}/${art.slug}`}
+                                            key={art.id}
+                                            className="group bg-white p-6 rounded-[2rem] border border-gray-100 hover:shadow-xl transition-all"
+                                        >
+                                            <div className="aspect-square bg-blue-50 rounded-2xl mb-4 overflow-hidden relative">
+                                                {art.featuredImage && <img src={art.featuredImage} alt={art.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />}
+                                            </div>
+                                            <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
+                                                {art.title}
+                                            </h4>
+                                        </Link>
+                                    ))}
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
             </div>
