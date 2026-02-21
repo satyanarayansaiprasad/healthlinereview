@@ -127,9 +127,10 @@ export default async function SupplementDetailPage({ params }: Props) {
                             <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
                                 <span className="w-2 h-8 bg-blue-600 rounded-full" /> Full Analysis & Efficacy
                             </h2>
-                            <div className="whitespace-pre-wrap font-medium text-gray-700 leading-relaxed text-lg">
-                                {content.overview}
-                            </div>
+                            <div
+                                className="font-medium text-gray-700 leading-relaxed text-lg"
+                                dangerouslySetInnerHTML={{ __html: content.overview }}
+                            />
                         </div>
 
                         {/* Advertisement Slot */}

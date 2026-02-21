@@ -7,6 +7,7 @@ import {
     MessageSquare, CheckSquare, Search, Tag, Anchor
 } from 'lucide-react';
 import Link from 'next/link';
+import RichTextEditor from '@/components/admin/RichTextEditor';
 
 interface HealthExpert {
     id: string;
@@ -182,12 +183,10 @@ export default function CreateSupplement() {
                                     <ListPlus className="w-5 h-5 text-blue-500" /> Professional Overview
                                 </h3>
                             </div>
-                            <textarea
-                                value={overview}
-                                onChange={(e) => setOverview(e.target.value)}
-                                className="w-full min-h-[400px] p-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all placeholder:text-gray-300"
-                                placeholder="Paste your comprehensive review here..."
-                                required
+                            <RichTextEditor
+                                content={overview}
+                                onChange={setOverview}
+                                placeholder="Paste or write your comprehensive review here..."
                             />
                         </div>
 
