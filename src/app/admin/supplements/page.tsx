@@ -68,7 +68,7 @@ export default function AdminSupplementsPage() {
                 </Link>
             </div>
 
-            {/* Stats Row placeholder */}
+            {/* Stats Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
                     <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center text-blue-600">
@@ -95,8 +95,8 @@ export default function AdminSupplementsPage() {
                         <Pill className="w-6 h-6" />
                     </div>
                     <div>
-                        <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Categories</p>
-                        <h3 className="text-2xl font-black text-gray-900">Supplements</h3>
+                        <p className="text-sm font-bold text-gray-400 uppercase tracking-wider">Category</p>
+                        <h3 className="text-2xl font-black text-gray-900">Wellness</h3>
                     </div>
                 </div>
             </div>
@@ -164,9 +164,12 @@ export default function AdminSupplementsPage() {
                                             >
                                                 <ArrowUpRight className="w-5 h-5" />
                                             </Link>
-                                            <button className="p-2 text-gray-400 hover:text-gray-600">
+                                            <Link
+                                                href={`/admin/supplements/edit/${s.id}`}
+                                                className="p-2 text-gray-400 hover:text-gray-600"
+                                            >
                                                 <Edit2 className="w-5 h-5" />
-                                            </button>
+                                            </Link>
                                             <button
                                                 onClick={() => deleteSupplement(s.id)}
                                                 className="p-2 text-gray-400 hover:text-red-500"
