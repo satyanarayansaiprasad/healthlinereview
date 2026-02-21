@@ -185,3 +185,13 @@ model HomeSection {
   isActive    Boolean  @default(true)
   updatedAt   DateTime @updatedAt
 }
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logoUrl   String
+  isStarred Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

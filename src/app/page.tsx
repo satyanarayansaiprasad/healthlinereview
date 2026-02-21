@@ -2,8 +2,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, Star, Clock, User, ArrowRight, Activity, Heart, Brain, Eye, Zap } from 'lucide-react';
 import FeaturedTopics from '@/components/home/FeaturedTopics';
+import { prisma } from '@/lib/prisma';
 
-export default function Home() {
+export default async function Home() {
+    const brands = await prisma.brand.findMany({
+        take: 6,
+        orderBy: {
+            createdAt: 'desc'
+        }
+    });
+
     return (
         <div className="flex flex-col gap-20 pb-20">
             {/* Hero Section */}
@@ -181,12 +189,30 @@ export default function Home() {
                     </div>
 
                     <div className="lg:col-span-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {['Beverly Hills MD', 'CrazyBulk', 'DRMTLGY', 'Gundry MD', 'Nushape', 'ActivatedYou'].map((brand, i) => (
-                                <div key={i} className="bg-white p-8 border border-gray-100 rounded-xl flex items-center justify-center hover:shadow-md transition-shadow h-32">
-                                    <span className="text-xl font-bold text-gray-800 uppercase tracking-widest">{brand}</span>
-                                </div>
+                        <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                            {brands.map((brand, i) => (
+                                <Link
+                                    key={brand.id}
+                                    href={`/brands?search=${encodeURIComponent(brand.name)}`}
+                                    className="bg-white p-6 border border-gray-100 rounded-xl flex items-center justify-center hover:shadow-xl hover:border-blue-100 transition-all h-32 group"
+                                >
+                                    <div className="relative w-full h-full flex items-center justify-center">
+                                        <Image
+                                            src={brand.logoUrl}
+                                            alt={brand.name}
+                                            fill
+                                            className="object-contain transition-transform group-hover:scale-110"
+                                        />
+                                    </div>
+                                </Link>
                             ))}
+                            {brands.length === 0 && (
+                                [1, 2, 3, 4, 5, 6].map((i) => (
+                                    <div key={i} className="bg-gray-50 border border-dashed border-gray-200 rounded-xl flex items-center justify-center h-32 animate-pulse">
+                                        <Activity className="w-6 h-6 text-gray-200" />
+                                    </div>
+                                ))
+                            )}
                         </div>
                     </div>
                 </div>
