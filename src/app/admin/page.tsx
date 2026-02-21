@@ -1,3 +1,5 @@
+'use client';
+
 import {
     FileText,
     Users,
@@ -6,7 +8,8 @@ import {
     Activity,
     Plus,
     Settings,
-    Megaphone
+    Megaphone,
+    LogOut
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -18,6 +21,18 @@ const stats = [
 ];
 
 export default function AdminDashboard() {
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST',
+            });
+            window.location.href = '/admin/login';
+        } catch (error) {
+            console.error('Logout error:', error);
+            window.location.href = '/admin/login';
+        }
+    };
+
     return (
         <div className="space-y-10">
             <div className="flex justify-between items-center">
@@ -26,7 +41,13 @@ export default function AdminDashboard() {
                     <p className="text-gray-500">Welcome back, Super Admin</p>
                 </div>
                 <div className="flex gap-4">
-                    <Link href="/admin/articles/create" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-blue-700">
+                    <button
+                        onClick={handleLogout}
+                        className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-lg text-gray-600 hover:bg-gray-50 font-medium transition-colors"
+                    >
+                        <LogOut className="w-4 h-4" /> Logout
+                    </button>
+                    <Link href="/admin/articles/create" className="bg-blue-600 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-blue-700 transition-colors">
                         <Plus className="w-4 h-4" /> New Article
                     </Link>
                 </div>
@@ -87,7 +108,7 @@ export default function AdminDashboard() {
                         </div>
                         <h3 className="font-bold text-lg mb-2">Campaign Performance</h3>
                         <p className="text-sm text-gray-500 mb-6">Your latest health campaign is reaching 4.2k people today.</p>
-                        <button className="w-full btn-primary py-3">View Report</button>
+                        <button className="w-full bg-blue-600 text-white rounded-lg py-3 font-medium hover:bg-blue-700 transition-colors">View Report</button>
                     </div>
 
                     <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">

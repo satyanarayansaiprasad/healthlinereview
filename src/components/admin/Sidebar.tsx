@@ -39,11 +39,11 @@ export default function AdminSidebar() {
             await fetch('/api/auth/logout', {
                 method: 'POST',
             });
-            router.push('/admin/login');
+            window.location.href = '/admin/login';
         } catch (error) {
             console.error('Logout error:', error);
             // Still redirect even if API call fails
-            router.push('/admin/login');
+            window.location.href = '/admin/login';
         }
     };
 
@@ -78,7 +78,7 @@ export default function AdminSidebar() {
             </nav>
 
             <div className="p-6 border-t border-gray-800">
-                <button 
+                <button
                     onClick={handleLogout}
                     className="flex items-center space-x-3 text-gray-400 hover:text-white transition-colors w-full"
                 >
