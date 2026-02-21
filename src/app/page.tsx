@@ -197,11 +197,10 @@ export default async function Home() {
                                     className="bg-white p-6 border border-gray-100 rounded-xl flex items-center justify-center hover:shadow-xl hover:border-blue-100 transition-all h-32 group"
                                 >
                                     <div className="relative w-full h-full flex items-center justify-center">
-                                        <Image
+                                        <img
                                             src={brand.logoUrl}
                                             alt={brand.name}
-                                            fill
-                                            className="object-contain transition-transform group-hover:scale-110"
+                                            className="max-w-full max-h-full object-contain transition-transform group-hover:scale-110"
                                         />
                                     </div>
                                 </Link>

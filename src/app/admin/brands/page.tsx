@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Star, Trash2, Globe, Image as ImageIcon, Loader2, Search } from 'lucide-react';
-import Image from 'next/image';
 
 interface Brand {
     id: string;
@@ -18,6 +17,7 @@ export default function AdminBrandsPage() {
     const [name, setName] = useState('');
     const [logoUrl, setLogoUrl] = useState('');
     const [isLoading, setIsLoading] = useState(false);
+    const [uploading, setUploading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
 
@@ -37,6 +37,30 @@ export default function AdminBrandsPage() {
         }
     };
 
+    const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setUploading(true);
+        const formData = new FormData();
+        formData.append('file', file);
+
+        try {
+            const response = await fetch('/api/upload', {
+                method: 'POST',
+                body: formData,
+            });
+            const data = await response.json();
+            if (data.url) {
+                setLogoUrl(data.url);
+            }
+        } catch (error) {
+            console.error('Upload error:', error);
+        } finally {
+            setUploading(false);
+        }
+    };
+
     const handleAddBrand = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -51,6 +75,8 @@ export default function AdminBrandsPage() {
             if (response.ok) {
                 setName('');
                 setLogoUrl('');
+                const fileInput = document.getElementById('logo-upload') as HTMLInputElement;
+                if (fileInput) fileInput.value = '';
                 fetchBrands();
             }
         } catch (error) {
@@ -123,6 +149,32 @@ export default function AdminBrandsPage() {
                                 required
                             />
                         </div>
+
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">Local Image Upload</label>
+                            <div className="relative">
+                                <input
+                                    id="logo-upload"
+                                    type="file"
+                                    onChange={handleFileChange}
+                                    accept=".svg,.png,.jpg,.jpeg,.webp"
+                                    className="w-full px-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                />
+                                {uploading && (
+                                    <div className="absolute right-3 top-1/2 -translate-y-1/2">
+                                        <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                                    </div>
+                                )}
+                            </div>
+                            <p className="text-[10px] text-gray-500 mt-1">Supports SVG, PNG, JPG, JPEG, WEBP</p>
+                        </div>
+
+                        <div className="relative flex items-center gap-4">
+                            <div className="h-px bg-gray-100 flex-1"></div>
+                            <span className="text-[10px] font-bold text-gray-400 uppercase">OR</span>
+                            <div className="h-px bg-gray-100 flex-1"></div>
+                        </div>
+
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">Logo URL</label>
                             <div className="relative">
@@ -131,7 +183,7 @@ export default function AdminBrandsPage() {
                                     value={logoUrl}
                                     onChange={(e) => setLogoUrl(e.target.value)}
                                     className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    placeholder="https://example.com/logo.png"
+                                    placeholder="https://example.com/logo.svg"
                                     required
                                 />
                                 <Globe className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />

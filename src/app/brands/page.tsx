@@ -86,8 +86,8 @@ export default function BrandsPage() {
                         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                             {starredBrands.map((brand) => (
                                 <div key={brand.id} className="bg-white p-6 border border-gray-100 rounded-2xl flex flex-col items-center justify-center hover:shadow-xl transition-all h-40 group cursor-pointer text-center">
-                                    <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform">
-                                        <Image src={brand.logoUrl} alt={brand.name} fill className="object-contain" />
+                                    <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform flex items-center justify-center">
+                                        <img src={brand.logoUrl} alt={brand.name} className="max-w-full max-h-full object-contain" />
                                     </div>
                                     <h3 className="font-bold text-gray-900 text-sm">{brand.name}</h3>
                                 </div>
@@ -125,8 +125,8 @@ export default function BrandsPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
                         {filteredBrands.map((brand) => (
                             <div key={brand.id} className="bg-white p-6 border border-gray-100 rounded-2xl flex flex-col items-center justify-center hover:shadow-xl transition-all h-40 group cursor-pointer text-center">
-                                <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform">
-                                    <Image src={brand.logoUrl} alt={brand.name} fill className="object-contain" />
+                                <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform flex items-center justify-center">
+                                    <img src={brand.logoUrl} alt={brand.name} className="max-w-full max-h-full object-contain" />
                                 </div>
                                 <h3 className="font-bold text-gray-900 text-sm">{brand.name}</h3>
                             </div>
