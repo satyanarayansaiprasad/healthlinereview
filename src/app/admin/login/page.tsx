@@ -33,8 +33,8 @@ export default function AdminLogin() {
                 return;
             }
 
-            // Token is set as httpOnly cookie by the API
-            router.push('/admin');
+            // Perform a full page reload to ensure cookies are correctly synchronized and middleware can detect the new session
+            window.location.href = '/admin';
         } catch (err) {
             setError('An error occurred. Please try again.');
         } finally {
