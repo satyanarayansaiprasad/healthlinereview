@@ -173,6 +173,27 @@ model HealthExpert {
   isFeatured      Boolean  @default(false)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  supplements     Supplement[]
+}
+
+model Supplement {
+  id              String       @id @default(uuid())
+  title           String
+  slug            String       @unique
+  subtitle        String?
+  content         Json         // Overview blocks
+  featuredImage   String?
+  isHelpfulActive Boolean      @default(true)
+  faqs            Json?        // Array of {question, answer}
+  conclusion      String?
+  sources         Json?        // Array of {label, url}
+  metaTitle       String?
+  metaDescription String?
+  rank            Int          @default(0)
+  authorId        String
+  author          HealthExpert @relation(fields: [authorId], references: [id])
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
 }
 
 enum Role {
