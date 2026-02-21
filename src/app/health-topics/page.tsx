@@ -3,6 +3,8 @@ import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { ShieldCheck, Stethoscope, ClipboardCheck, ArrowRight, User, CheckCircle2, Award, Heart } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HealthTopics() {
     const categories = await prisma.category.findMany({
         orderBy: { name: 'asc' }
@@ -147,7 +149,7 @@ export default async function HealthTopics() {
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-6">
-                            {featuredExperts.length > 0 ? (
+                            {featuredExperts && featuredExperts.length > 0 ? (
                                 featuredExperts.map((expert) => (
                                     <div key={expert.id} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 hover:shadow-xl transition-all group cursor-pointer">
                                         <div className="w-16 h-16 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-all">
@@ -159,17 +161,7 @@ export default async function HealthTopics() {
                                         </div>
                                     </div>
                                 ))
-                            ) : (
-                                [1, 2, 3, 4].map((i) => (
-                                    <div key={i} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 animate-pulse">
-                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex-shrink-0" />
-                                        <div className="space-y-2 flex-1">
-                                            <div className="h-4 bg-gray-100 rounded w-3/4" />
-                                            <div className="h-3 bg-gray-50 rounded w-1/2" />
-                                        </div>
-                                    </div>
-                                ))
-                            )}
+                            ) : null}
                         </div>
 
                         <Link

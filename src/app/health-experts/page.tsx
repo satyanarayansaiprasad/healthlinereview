@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
 import { User, Award, Stethoscope, ChevronLeft } from 'lucide-react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HealthExpertsDirectory() {
     const experts = await prisma.healthExpert.findMany({
         orderBy: { name: 'asc' }

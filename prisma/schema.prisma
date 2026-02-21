@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,6 +5,174 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String          @id @default(uuid())
+  name           String
+  email          String          @unique
+  password       String
+  role           Role            @default(WRITER)
+  createdAt      DateTime        @default(now())
+  articles       Article[]
+  productReviews ProductReview[]
+}
+
+model Category {
+  id              String    @id @default(uuid())
+  name            String
+  slug            String    @unique
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime  @default(now())
+  articles        Article[]
+}
+
+model Article {
+  id              String        @id @default(uuid())
+  title           String
+  slug            String        @unique
+  content         Json
+  featuredImage   String?
+  status          ArticleStatus @default(DRAFT)
+  categoryId      String
+  authorId        String
+  metaTitle       String?
+  metaDescription String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  author          User          @relation(fields: [authorId], references: [id])
+  category        Category      @relation(fields: [categoryId], references: [id])
+  comments        Comment[]
+  tags            Tag[]         @relation("ArticleToTag")
+}
+
+model ProductReview {
+  id            String   @id @default(uuid())
+  productName   String
+  slug          String   @unique
+  rating        Float    @default(0)
+  pros          String[]
+  cons          String[]
+  ingredients   String[]
+  sideEffects   String?
+  affiliateLink String?
+  featuredImage String?
+  content       String
+  authorId      String
+  createdAt     DateTime @default(now())
+  author        User     @relation(fields: [authorId], references: [id])
+}
+
+model Comment {
+  id        String        @id @default(uuid())
+  articleId String
+  name      String
+  email     String
+  comment   String
+  status    CommentStatus @default(PENDING)
+  createdAt DateTime      @default(now())
+  article   Article       @relation(fields: [articleId], references: [id])
+}
+
+model Subscriber {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+}
+
+model Ad {
+  id         String      @id @default(uuid())
+  title      String
+  placement  AdPlacement
+  scriptCode String
+  isActive   Boolean     @default(true)
+}
+
+model Tag {
+  id       String    @id @default(uuid())
+  name     String
+  slug     String    @unique
+  articles Article[] @relation("ArticleToTag")
+}
+
+model SiteSettings {
+  id               String   @id @default(uuid())
+  brandName        String   @default("Health Line Review")
+  logoUrl          String   @default("/logo.svg")
+  tagline          String?
+  primaryColor     String   @default("#0d9488")
+  secondaryColor   String   @default("#1e293b")
+  accentColor      String   @default("#0f766e")
+  heroTitle        String?
+  heroSubtitle     String?
+  heroCtaPrimary   String?
+  heroCtaSecondary String?
+  footerTagline    String?
+  contactEmail     String?
+  contactPhone     String?
+  address          String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model NavLink {
+  id       String    @id @default(uuid())
+  label    String
+  href     String
+  order    Int       @default(0)
+  parentId String?
+  parent   NavLink?  @relation("NavLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
+  children NavLink[] @relation("NavLinkChildren")
+}
+
+model FooterSection {
+  id    String @id @default(uuid())
+  title String
+  links Json
+  order Int    @default(0)
+}
+
+model PageContent {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  content         Json
+  metaTitle       String?
+  metaDescription String?
+  updatedAt       DateTime @updatedAt
+}
+
+model HomeSection {
+  id         String   @id @default(uuid())
+  sectionKey String   @unique
+  title      String?
+  subtitle   String?
+  content    Json
+  order      Int      @default(0)
+  isActive   Boolean  @default(true)
+  updatedAt  DateTime @updatedAt
+}
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logoUrl   String
+  isStarred Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model HealthExpert {
+  id              String   @id @default(uuid())
+  name            String
+  designation     String
+  specializations String[]
+  imageUrl        String
+  isFeatured      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 enum Role {
@@ -32,177 +197,4 @@ enum AdPlacement {
   SIDEBAR
   INLINE
   FOOTER
-}
-
-model User {
-  id             String          @id @default(uuid())
-  name           String
-  email          String          @unique
-  password       String
-  role           Role            @default(WRITER)
-  articles       Article[]
-  productReviews ProductReview[]
-  createdAt      DateTime        @default(now())
-}
-
-model Category {
-  id              String    @id @default(uuid())
-  name            String
-  slug            String    @unique
-  metaTitle       String?
-  metaDescription String?
-  articles        Article[]
-  createdAt       DateTime  @default(now())
-}
-
-model Article {
-  id              String        @id @default(uuid())
-  title           String
-  slug            String        @unique
-  content         Json
-  featuredImage   String?
-  status          ArticleStatus @default(DRAFT)
-  category        Category      @relation(fields: [categoryId], references: [id])
-  categoryId      String
-  author          User          @relation(fields: [authorId], references: [id])
-  authorId        String
-  metaTitle       String?
-  metaDescription String?
-  comments        Comment[]
-  tags            Tag[]
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
-}
-
-model ProductReview {
-  id            String   @id @default(uuid())
-  productName   String
-  slug          String   @unique
-  rating        Float    @default(0)
-  pros          String[]
-  cons          String[]
-  ingredients   String[]
-  sideEffects   String?
-  affiliateLink String?
-  featuredImage String?
-  content       String
-  author        User     @relation(fields: [authorId], references: [id])
-  authorId      String
-  createdAt     DateTime @default(now())
-}
-
-model Comment {
-  id        String        @id @default(uuid())
-  article   Article       @relation(fields: [articleId], references: [id])
-  articleId String
-  name      String
-  email     String
-  comment   String
-  status    CommentStatus @default(PENDING)
-  createdAt DateTime      @default(now())
-}
-
-model Subscriber {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  createdAt DateTime @default(now())
-}
-
-model Ad {
-  id         String      @id @default(uuid())
-  title      String
-  placement  AdPlacement
-  scriptCode String
-  isActive   Boolean     @default(true)
-}
-
-model Tag {
-  id       String    @id @default(uuid())
-  name     String
-  slug     String    @unique
-  articles Article[]
-}
-
-// Dynamic site content (single row)
-model SiteSettings {
-  id              String   @id @default(uuid())
-  brandName       String   @default("Health Line Review")
-  logoUrl         String   @default("/logo.svg")
-  tagline         String?
-  primaryColor    String   @default("#0d9488")
-  secondaryColor  String   @default("#1e293b")
-  accentColor     String   @default("#0f766e")
-  heroTitle       String?
-  heroSubtitle    String?
-  heroCtaPrimary  String?
-  heroCtaSecondary String?
-  footerTagline   String?
-  contactEmail    String?
-  contactPhone    String?
-  address         String?
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-}
-
-// Navigation links (order by order asc)
-model NavLink {
-  id        String   @id @default(uuid())
-  label     String
-  href      String
-  order     Int      @default(0)
-  parentId  String?
-  parent    NavLink?  @relation("NavLinkChildren", fields: [parentId], references: [id], onDelete: Cascade)
-  children  NavLink[] @relation("NavLinkChildren")
-}
-
-// Footer sections with links (JSON: [{label, href}])
-model FooterSection {
-  id     String @id @default(uuid())
-  title  String
-  links  Json   // [{ label: string, href: string }]
-  order  Int    @default(0)
-}
-
-// Static page content (about, contact, faq, review-guidelines)
-model PageContent {
-  id              String   @id @default(uuid())
-  slug            String   @unique
-  title           String
-  content         Json     // blocks: [{ type, content }]
-  metaTitle       String?
-  metaDescription String?
-  updatedAt       DateTime @updatedAt
-}
-
-// Homepage sections (featured picks, article of week, etc.) - optional for full dynamic
-model HomeSection {
-  id          String   @id @default(uuid())
-  sectionKey  String   @unique // hero_stats, top_picks, brands_intro, etc.
-  title       String?
-  subtitle    String?
-  content     Json     // section-specific data
-  order       Int      @default(0)
-  isActive    Boolean  @default(true)
-  updatedAt   DateTime @updatedAt
-}
-
-model Brand {
-  id        String   @id @default(uuid())
-  name      String
-  slug      String   @unique
-  logoUrl   String
-  isStarred Boolean  @default(false)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model HealthExpert {
-  id              String   @id @default(uuid())
-  name            String
-  designation     String
-  specializations String[]
-  imageUrl        String
-  isFeatured      Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
 }
