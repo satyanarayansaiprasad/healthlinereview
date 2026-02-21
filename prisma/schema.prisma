@@ -195,3 +195,14 @@ model Brand {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model HealthExpert {
+  id              String   @id @default(uuid())
+  name            String
+  designation     String
+  specializations String[]
+  imageUrl        String
+  isFeatured      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}

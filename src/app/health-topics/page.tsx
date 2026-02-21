@@ -8,6 +8,11 @@ export default async function HealthTopics() {
         orderBy: { name: 'asc' }
     });
 
+    const featuredExperts = await prisma.healthExpert.findMany({
+        where: { isFeatured: true },
+        orderBy: { createdAt: 'desc' }
+    });
+
     const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
     return (
@@ -142,27 +147,37 @@ export default async function HealthTopics() {
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-6">
-                            {[
-                                { name: 'Pauline J. Jose, M.D.', role: 'Specialist in Family Medicine' },
-                                { name: 'Franz Gliederer, MD, MPH', role: 'Functional Medicine, Urgent Care Physician' },
-                                { name: 'Aneesh Singla, MD, MPH', role: 'Intervention Pain Specialist' },
-                                { name: 'Harlan Stueven, MD', role: 'Board-Certified Emergency Physician' }
-                            ].map((expert, i) => (
-                                <div key={i} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 hover:shadow-xl transition-all group cursor-pointer">
-                                    <div className="w-16 h-16 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-all">
-                                        <User className="w-8 h-8 text-blue-300" />
+                            {featuredExperts.length > 0 ? (
+                                featuredExperts.map((expert) => (
+                                    <div key={expert.id} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 hover:shadow-xl transition-all group cursor-pointer">
+                                        <div className="w-16 h-16 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-all">
+                                            <img src={expert.imageUrl} alt={expert.name} className="w-full h-full object-cover" />
+                                        </div>
+                                        <div className="text-left">
+                                            <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{expert.name}</h4>
+                                            <p className="text-xs text-gray-500 font-medium">{expert.designation}</p>
+                                        </div>
                                     </div>
-                                    <div className="text-left">
-                                        <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{expert.name}</h4>
-                                        <p className="text-xs text-gray-500 font-medium">{expert.role}</p>
+                                ))
+                            ) : (
+                                [1, 2, 3, 4].map((i) => (
+                                    <div key={i} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 animate-pulse">
+                                        <div className="w-16 h-16 rounded-full bg-gray-100 flex-shrink-0" />
+                                        <div className="space-y-2 flex-1">
+                                            <div className="h-4 bg-gray-100 rounded w-3/4" />
+                                            <div className="h-3 bg-gray-50 rounded w-1/2" />
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            )}
                         </div>
 
-                        <button className="inline-flex py-4 px-10 bg-[#84bd00] hover:bg-[#71a300] text-white rounded-full font-bold text-lg shadow-lg shadow-green-200 transition-all transform hover:-translate-y-1">
+                        <Link
+                            href="/health-experts"
+                            className="inline-flex py-4 px-10 bg-[#84bd00] hover:bg-[#71a300] text-white rounded-full font-bold text-lg shadow-lg shadow-green-200 transition-all transform hover:-translate-y-1"
+                        >
                             Meet The Team
-                        </button>
+                        </Link>
                     </div>
 
                     {/* Right: Editorial Standards */}

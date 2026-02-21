@@ -7,6 +7,7 @@ export async function POST(req: Request) {
     try {
         const formData = await req.formData();
         const file = formData.get('file') as File;
+        const folder = (formData.get('folder') as string) || 'brands';
 
         if (!file) {
             return NextResponse.json({ error: 'No file uploaded' }, { status: 400 });
@@ -16,7 +17,7 @@ export async function POST(req: Request) {
         const buffer = Buffer.from(bytes);
 
         // Define upload directory
-        const uploadDir = join(process.cwd(), 'public', 'uploads', 'brands');
+        const uploadDir = join(process.cwd(), 'public', 'uploads', folder);
 
         // Ensure directory exists
         try {
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
         await writeFile(path, buffer);
 
         // Return the public URL
-        const publicUrl = `/uploads/brands/${fileName}`;
+        const publicUrl = `/uploads/${folder}/${fileName}`;
         return NextResponse.json({ url: publicUrl });
     } catch (error) {
         console.error('Error uploading file:', error);
