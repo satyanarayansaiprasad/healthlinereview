@@ -165,14 +165,14 @@ model Brand {
 }
 
 model HealthExpert {
-  id              String   @id @default(uuid())
+  id              String       @id @default(uuid())
   name            String
   designation     String
   specializations String[]
   imageUrl        String
-  isFeatured      Boolean  @default(false)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  isFeatured      Boolean      @default(false)
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
   supplements     Supplement[]
 }
 
@@ -181,19 +181,19 @@ model Supplement {
   title           String
   slug            String       @unique
   subtitle        String?
-  content         Json         // Overview blocks
+  content         Json
   featuredImage   String?
   isHelpfulActive Boolean      @default(true)
-  faqs            Json?        // Array of {question, answer}
+  faqs            Json?
   conclusion      String?
-  sources         Json?        // Array of {label, url}
+  sources         Json?
   metaTitle       String?
   metaDescription String?
   rank            Int          @default(0)
   authorId        String
-  author          HealthExpert @relation(fields: [authorId], references: [id])
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
+  author          HealthExpert @relation(fields: [authorId], references: [id])
 }
 
 enum Role {
