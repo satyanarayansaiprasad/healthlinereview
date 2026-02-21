@@ -15,9 +15,14 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL('/admin/login', req.url));
         }
 
-        const decoded = verifyToken(token);
+        const decoded = await verifyToken(token);
         if (!decoded) {
             return NextResponse.redirect(new URL('/admin/login', req.url));
+        }
+
+        // Redirect /admin/login to /admin if already logged in
+        if (path === '/admin/login') {
+            return NextResponse.redirect(new URL('/admin', req.url));
         }
 
         // Role-based access control can be added here
