@@ -286,13 +286,16 @@ export default function CreateSupplement() {
                                         type="file"
                                         onChange={handleUpload}
                                         className="absolute inset-0 opacity-0 cursor-pointer"
-                                        accept="image/*"
+                                        accept=".png, .jpg, .jpeg, .webp, .svg"
                                     />
                                     {uploading && (
                                         <div className="absolute inset-0 bg-white/80 flex items-center justify-center">
                                             <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
                                         </div>
                                     )}
+                                </div>
+                                <div className="mt-2 text-[10px] text-gray-400 font-bold uppercase text-center bg-gray-50 py-1 rounded-lg border border-gray-100">
+                                    Supports: PNG, JPG, WEBP, SVG
                                 </div>
                                 <div className="mt-4 space-y-2">
                                     <label className="text-[10px] font-bold text-gray-400 uppercase">Image URL (Instant Preview)</label>
