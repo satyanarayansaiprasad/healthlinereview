@@ -31,20 +31,6 @@ async function main() {
         console.log('Updated admin user password:', adminUser.email);
     }
 
-    // Seed User (for articles/reviews)
-    let user = await prisma.user.findFirst({ where: { email: 'admin@healthhub.pro' } });
-    if (!user) {
-        user = await prisma.user.create({
-            data: {
-                name: 'Dr. Sarah Johnson',
-                email: 'admin@healthhub.pro',
-                password: await bcrypt.hash('admin123', 10),
-                role: 'SUPER_ADMIN',
-            },
-        });
-        console.log('Created user:', user.name);
-    }
-
     // Seed Categories
     const categories = ['Wellness', 'Nutrition', 'Mental Health', 'Fitness', 'Supplements'];
     const createdCategories = [];
@@ -73,7 +59,7 @@ async function main() {
             slug: 'science-of-sleep',
             content: '<p>Sleep is fundamental to our health.</p>',
             categoryId: createdCategories.find(c => c.slug === 'wellness')?.id,
-            authorId: user.id,
+            authorId: adminUser.id,
             status: ArticleStatus.PUBLISHED,
         },
         {
@@ -81,7 +67,7 @@ async function main() {
             slug: 'superfoods-brain-power',
             content: '<p>Eat blueberries and walnuts.</p>',
             categoryId: createdCategories.find(c => c.slug === 'nutrition')?.id,
-            authorId: user.id,
+            authorId: adminUser.id,
             status: ArticleStatus.PUBLISHED,
         },
         {
@@ -89,7 +75,7 @@ async function main() {
             slug: 'managing-anxiety',
             content: '<p>Disconnect to reconnect.</p>',
             categoryId: createdCategories.find(c => c.slug === 'mental-health')?.id,
-            authorId: user.id,
+            authorId: adminUser.id,
             status: ArticleStatus.PUBLISHED,
         },
     ];
@@ -122,7 +108,7 @@ async function main() {
             cons: ['Expensive'],
             ingredients: ['Whey Protein Concentrate'],
             content: 'Best protein on the market.',
-            authorId: user.id,
+            authorId: adminUser.id,
         },
         {
             productName: 'Focus Factor Nootropic',
@@ -132,7 +118,7 @@ async function main() {
             cons: ['Takes time to work'],
             ingredients: ['Bacopa', 'Ginkgo'],
             content: 'Solid choice for exams.',
-            authorId: user.id,
+            authorId: adminUser.id,
         }
     ];
 
