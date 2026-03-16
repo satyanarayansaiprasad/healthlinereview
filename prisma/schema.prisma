@@ -204,17 +204,9 @@ model Supplement {
   metaDescription String?
   rank            Int          @default(0)
   authorId        String
-  postType        PostType     @default(SUPPLEMENT)
-  products        Json?
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   author          HealthExpert @relation(fields: [authorId], references: [id])
-}
-
-enum PostType {
-  SUPPLEMENT
-  EXPERT_PICK
-  PRODUCT_REVIEW
 }
 
 model Faq {

@@ -6,7 +6,6 @@ export async function GET(req: Request) {
         const { searchParams } = new URL(req.url);
         const search = searchParams.get('search');
         const char = searchParams.get('char'); // A-Z, 0-9
-        const type = searchParams.get('type'); // SUPPLEMENT, EXPERT_PICK, PRODUCT_REVIEW
 
         const where: any = {};
 
@@ -23,10 +22,6 @@ export async function GET(req: Request) {
             } else {
                 where.title = { startsWith: char, mode: 'insensitive' };
             }
-        }
-
-        if (type) {
-            where.postType = type;
         }
 
         const supplements = await prisma.supplement.findMany({
@@ -53,8 +48,7 @@ export async function POST(req: Request) {
         const {
             title, slug, subtitle, content, featuredImage,
             authorId, faqs, conclusion, sources,
-            metaTitle, metaDescription, isHelpfulActive, rank,
-            postType, products
+            metaTitle, metaDescription, isHelpfulActive, rank
         } = body;
 
         if (!title || !slug || !authorId) {
@@ -78,9 +72,7 @@ export async function POST(req: Request) {
                 metaTitle: metaTitle || null,
                 metaDescription: metaDescription || null,
                 isHelpfulActive: isHelpfulActive !== undefined ? isHelpfulActive : true,
-                rank: rank ? Number(rank) : 0,
-                postType: postType || 'SUPPLEMENT',
-                products: products || null
+                rank: rank ? Number(rank) : 0
             }
         });
 

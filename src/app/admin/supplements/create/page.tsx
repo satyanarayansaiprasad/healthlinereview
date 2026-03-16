@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import {
     ArrowLeft, Save, Image as ImageIcon, Plus, Trash2, Globe, Loader2, ListPlus,
-    MessageSquare, CheckSquare, Search, Tag, Anchor, ShoppingBag, Star
+    MessageSquare, CheckSquare, Search, Tag, Anchor
 } from 'lucide-react';
 import Link from 'next/link';
 import RichTextEditor from '@/components/admin/RichTextEditor';
@@ -30,10 +30,6 @@ export default function CreateSupplement() {
     const [metaTitle, setMetaTitle] = useState('');
     const [metaDescription, setMetaDescription] = useState('');
 
-    // Post Type & Products
-    const [postType, setPostType] = useState<'SUPPLEMENT' | 'EXPERT_PICK' | 'PRODUCT_REVIEW'>('SUPPLEMENT');
-    const [products, setProducts] = useState<any[]>([]);
-
     // Dynamic lists
     const [faqs, setFaqs] = useState<{ question: string, answer: string }[]>([]);
     const [sources, setSources] = useState<{ label: string, url: string }[]>([]);
@@ -43,15 +39,9 @@ export default function CreateSupplement() {
     const [isLoading, setIsLoading] = useState(false);
     const [uploading, setUploading] = useState(false);
 
-    const searchParams = useSearchParams();
-
     useEffect(() => {
         fetchExperts();
-        const type = searchParams.get('type');
-        if (type === 'EXPERT_PICK' || type === 'PRODUCT_REVIEW' || type === 'SUPPLEMENT') {
-            setPostType(type as any);
-        }
-    }, [searchParams]);
+    }, []);
 
     const fetchExperts = async () => {
         try {
@@ -104,33 +94,6 @@ export default function CreateSupplement() {
         setSources(newSources);
     };
 
-    // Product Handlers
-    const addProduct = () => {
-        if (postType === 'EXPERT_PICK') {
-            setProducts([...products, {
-                name: '', rating: 0, imageUrl: '', content: '',
-                specs: { form: '', dosage: '', usage: '', quantity: '', ingredients: '', safety: '', companyInfo: '' },
-                buyLinks: { amazon: '', walmart: '' },
-                featuredVerdict: { title: '', rating: 0, quote: '', reviewer: '' }
-            }]);
-        } else if (postType === 'PRODUCT_REVIEW') {
-            setProducts([{ name: '', subtitle: '', description: '', imageUrl: '', buyLinks: { amazon: '', flipkart: '' } }]);
-        }
-    };
-
-    const removeProduct = (idx: number) => setProducts(products.filter((_, i) => i !== idx));
-
-    const updateProduct = (idx: number, field: string, val: any) => {
-        const newProducts = [...products];
-        const fields = field.split('.');
-        if (fields.length === 1) {
-            newProducts[idx][field] = val;
-        } else if (fields.length === 2) {
-            newProducts[idx][fields[0]][fields[1]] = val;
-        }
-        setProducts(newProducts);
-    };
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
@@ -138,8 +101,7 @@ export default function CreateSupplement() {
         const payload = {
             title, slug, subtitle, authorId, featuredImage, conclusion,
             content: { overview },
-            faqs, sources, metaTitle, metaDescription, isHelpfulActive, rank: Number(rank),
-            postType, products
+            faqs, sources, metaTitle, metaDescription, isHelpfulActive, rank: Number(rank)
         };
 
         try {
@@ -179,32 +141,6 @@ export default function CreateSupplement() {
                     >
                         {isLoading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />} Publish Post
                     </button>
-                </div>
-            </div>
-
-            {/* Post Type Selector */}
-            <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm mb-8">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 flex items-center gap-2">
-                    <Tag className="w-5 h-5 text-blue-500" /> Choose Post Type
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {[
-                        { id: 'SUPPLEMENT', label: 'Regular Supplement', desc: 'Standard informative post' },
-                        { id: 'EXPERT_PICK', label: 'Expert Picks', desc: 'Curated products with specs' },
-                        { id: 'PRODUCT_REVIEW', label: 'Product Review', desc: 'Highly recommended product' }
-                    ].map((type) => (
-                        <button
-                            key={type.id}
-                            onClick={() => setPostType(type.id as any)}
-                            className={`p-6 rounded-2xl border-2 text-left transition-all ${postType === type.id
-                                ? 'border-blue-600 bg-blue-50 ring-4 ring-blue-50'
-                                : 'border-gray-100 hover:border-gray-200 bg-white'
-                                }`}
-                        >
-                            <div className="font-bold text-gray-900 mb-1">{type.label}</div>
-                            <div className="text-xs text-gray-500">{type.desc}</div>
-                        </button>
-                    ))}
                 </div>
             </div>
 
@@ -253,230 +189,20 @@ export default function CreateSupplement() {
                                 placeholder="Paste or write your comprehensive review here..."
                             />
                         </div>
-                    </div>
 
-                    {/* Dynamic Product Fields */}
-                    {postType !== 'SUPPLEMENT' && (
-                        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">
-                            <div className="flex justify-between items-center">
-                                <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
-                                    <ShoppingBag className="w-5 h-5 text-pink-500" />
-                                    {postType === 'EXPERT_PICK' ? 'Featured Expert Picks' : 'Highly Recommended Product'}
-                                </h3>
-                                {postType === 'EXPERT_PICK' && (
-                                    <button
-                                        onClick={addProduct}
-                                        className="text-blue-600 hover:text-blue-700 font-bold text-sm flex items-center gap-1"
-                                    >
-                                        <Plus className="w-4 h-4" /> Add Product
-                                    </button>
-                                )}
-                                {(postType === 'PRODUCT_REVIEW' && products.length === 0) && (
-                                    <button
-                                        onClick={addProduct}
-                                        className="text-blue-600 hover:text-blue-700 font-bold text-sm flex items-center gap-1"
-                                    >
-                                        <Plus className="w-4 h-4" /> Initialize Review Product
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="space-y-12">
-                                {products.map((product, i) => (
-                                    <div key={i} className="p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 space-y-8 relative group">
-                                        <button
-                                            onClick={() => removeProduct(i)}
-                                            className="absolute right-6 top-6 text-gray-400 hover:text-red-500 p-2 bg-white rounded-xl shadow-sm opacity-0 group-hover:opacity-100 transition-all"
-                                        >
-                                            <Trash2 className="w-5 h-5" />
-                                        </button>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                            <div className="space-y-6">
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Product Name</label>
-                                                    <input
-                                                        type="text"
-                                                        value={product.name}
-                                                        onChange={(e) => updateProduct(i, 'name', e.target.value)}
-                                                        className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 text-sm font-bold focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
-                                                        placeholder="e.g., Carlyle Berberine HCL"
-                                                    />
-                                                </div>
-
-                                                {postType === 'PRODUCT_REVIEW' && (
-                                                    <div className="space-y-2">
-                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Sub-title</label>
-                                                        <input
-                                                            type="text"
-                                                            value={product.subtitle}
-                                                            onChange={(e) => updateProduct(i, 'subtitle', e.target.value)}
-                                                            className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
-                                                            placeholder="Short catchphrase..."
-                                                        />
-                                                    </div>
-                                                )}
-
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Product Image URL</label>
-                                                    <input
-                                                        type="url"
-                                                        value={product.imageUrl}
-                                                        onChange={(e) => updateProduct(i, 'imageUrl', e.target.value)}
-                                                        className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 text-xs focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
-                                                        placeholder="Paste image link..."
-                                                    />
-                                                </div>
-                                            </div>
-
-                                            <div className="space-y-6">
-                                                {postType === 'EXPERT_PICK' ? (
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Amazon Link</label>
-                                                            <input
-                                                                type="text"
-                                                                value={product.buyLinks.amazon}
-                                                                onChange={(e) => updateProduct(i, 'buyLinks.amazon', e.target.value)}
-                                                                className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs outline-none shadow-sm"
-                                                                placeholder="Link or Price..."
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Walmart Link</label>
-                                                            <input
-                                                                type="text"
-                                                                value={product.buyLinks.walmart}
-                                                                onChange={(e) => updateProduct(i, 'buyLinks.walmart', e.target.value)}
-                                                                className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs outline-none shadow-sm"
-                                                                placeholder="Link or Price..."
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <div className="grid grid-cols-2 gap-4">
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Amazon Link</label>
-                                                            <input
-                                                                type="text"
-                                                                value={product.buyLinks.amazon}
-                                                                onChange={(e) => updateProduct(i, 'buyLinks.amazon', e.target.value)}
-                                                                className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs outline-none shadow-sm"
-                                                                placeholder="URL..."
-                                                            />
-                                                        </div>
-                                                        <div className="space-y-2">
-                                                            <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Flipkart Link</label>
-                                                            <input
-                                                                type="text"
-                                                                value={product.buyLinks.flipkart}
-                                                                onChange={(e) => updateProduct(i, 'buyLinks.flipkart', e.target.value)}
-                                                                className="w-full bg-white border border-gray-100 rounded-xl px-4 py-3 text-xs outline-none shadow-sm"
-                                                                placeholder="URL..."
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                <div className="space-y-2">
-                                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Rating (1-5)</label>
-                                                    <input
-                                                        type="number"
-                                                        step="0.1"
-                                                        value={product.rating}
-                                                        onChange={(e) => updateProduct(i, 'rating', Number(e.target.value))}
-                                                        className="w-20 bg-white border border-gray-100 rounded-xl px-4 py-3 text-sm font-bold outline-none shadow-sm"
-                                                    />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {postType === 'EXPERT_PICK' && (
-                                            <>
-                                                <div className="pt-8 border-t border-gray-100">
-                                                    <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Specifications</h4>
-                                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                                        {Object.keys(product.specs).map((spec) => (
-                                                            <div key={spec} className="space-y-1">
-                                                                <label className="text-[9px] font-black text-gray-300 uppercase tracking-tighter">{spec.replace(/([A-Z])/g, ' $1')}</label>
-                                                                <input
-                                                                    type="text"
-                                                                    value={product.specs[spec]}
-                                                                    onChange={(e) => updateProduct(i, `specs.${spec}`, e.target.value)}
-                                                                    className="w-full bg-white border border-gray-100 rounded-xl px-3 py-2 text-xs outline-none"
-                                                                />
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-
-                                                <div className="pt-8 border-t border-gray-100">
-                                                    <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Expert Support Highlight</h4>
-                                                    <div className="bg-white p-6 rounded-2xl border border-gray-100 space-y-4">
-                                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                            <input
-                                                                type="text"
-                                                                placeholder="Highlight Title (e.g., Supports My Blood Sugar)"
-                                                                value={product.featuredVerdict.title}
-                                                                onChange={(e) => updateProduct(i, 'featuredVerdict.title', e.target.value)}
-                                                                className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs outline-none"
-                                                            />
-                                                            <div className="flex items-center gap-2">
-                                                                <Star className="w-3 h-3 text-yellow-400 fill-yellow-400" />
-                                                                <input
-                                                                    type="number"
-                                                                    step="0.1"
-                                                                    placeholder="Rating"
-                                                                    value={product.featuredVerdict.rating}
-                                                                    onChange={(e) => updateProduct(i, 'featuredVerdict.rating', Number(e.target.value))}
-                                                                    className="w-16 bg-gray-50 border-none rounded-xl px-4 py-3 text-xs outline-none"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                        <textarea
-                                                            placeholder="Expert Quote..."
-                                                            value={product.featuredVerdict.quote}
-                                                            onChange={(e) => updateProduct(i, 'featuredVerdict.quote', e.target.value)}
-                                                            className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs outline-none h-20"
-                                                        />
-                                                        <input
-                                                            type="text"
-                                                            placeholder="Reviewer Name (e.g., Gregory T. Lawson)"
-                                                            value={product.featuredVerdict.reviewer}
-                                                            onChange={(e) => updateProduct(i, 'featuredVerdict.reviewer', e.target.value)}
-                                                            className="w-full bg-gray-50 border-none rounded-xl px-4 py-3 text-xs outline-none"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </>
-                                        )}
-
-                                        <div className="pt-8 border-t border-gray-100">
-                                            <h4 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-widest">Description / Review</h4>
-                                            <textarea
-                                                value={postType === 'EXPERT_PICK' ? product.content : product.description}
-                                                onChange={(e) => updateProduct(i, postType === 'EXPERT_PICK' ? 'content' : 'description', e.target.value)}
-                                                className="w-full bg-white border border-gray-100 rounded-2xl px-6 py-4 text-sm focus:ring-2 focus:ring-blue-500 outline-none shadow-sm h-40"
-                                                placeholder="Write detailed information here..."
-                                            />
-                                        </div>
-                                    </div>
-                                ))}
-
-                                {products.length === 0 && (
-                                    <div className="py-20 text-center border-2 border-dashed border-gray-100 rounded-[3rem] bg-gray-50/50">
-                                        <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px] mb-4">No products added yet</p>
-                                        <button
-                                            onClick={addProduct}
-                                            className="bg-white px-6 py-3 rounded-xl font-bold text-blue-600 shadow-sm hover:shadow-md transition-all flex items-center gap-2 mx-auto"
-                                        >
-                                            <Plus className="w-4 h-4" /> {postType === 'EXPERT_PICK' ? 'Add Recommended Product' : 'Add Review Product'}
-                                        </button>
-                                    </div>
-                                )}
-                            </div>
+                        {/* Conclusion */}
+                        <div className="pt-6 border-t border-gray-50 space-y-4">
+                            <h3 className="text-lg font-bold text-gray-900 flex items-center gap-2">
+                                <CheckSquare className="w-5 h-5 text-green-500" /> Expert Conclusion
+                            </h3>
+                            <textarea
+                                value={conclusion}
+                                onChange={(e) => setConclusion(e.target.value)}
+                                className="w-full min-h-[150px] p-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-2 focus:ring-blue-500 focus:outline-none transition-all"
+                                placeholder="Summary of the experts final verdict..."
+                            />
                         </div>
-                    )}
+                    </div>
 
                     {/* FAQs Section */}
                     <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm space-y-6">

@@ -29,8 +29,8 @@ export default function SupplementsPage() {
     const fetchSupplements = async () => {
         setIsLoading(true);
         try {
-            let url = '/api/supplements?type=SUPPLEMENT';
-            if (filterChar) url += `&char=${filterChar}`;
+            let url = '/api/supplements';
+            if (filterChar) url += `?char=${filterChar}`;
             const res = await fetch(url);
             const data = await res.json();
             setSupplements(data);

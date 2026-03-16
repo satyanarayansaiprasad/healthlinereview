@@ -28,7 +28,7 @@ export default function AdminSupplementsPage() {
 
     const fetchSupplements = async () => {
         try {
-            const res = await fetch('/api/supplements?type=SUPPLEMENT');
+            const res = await fetch('/api/supplements');
             const data = await res.json();
             setSupplements(data);
         } catch (error) {
@@ -58,7 +58,7 @@ export default function AdminSupplementsPage() {
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold text-gray-900">Supplement Guides</h1>
-                    <p className="text-gray-500">Manage your regular informative supplement posts</p>
+                    <p className="text-gray-500">Manage your high-performance blogging content</p>
                 </div>
                 <Link
                     href="/admin/supplements/create"

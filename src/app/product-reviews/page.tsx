@@ -3,57 +3,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Star, ChevronRight, ShieldCheck, Zap, Heart, Search, Filter, ArrowRight, Award, CheckCircle2 } from 'lucide-react';
 
-interface UnifiedReview {
-    id: string;
-    productName: string;
-    slug: string;
-    rating: number;
-    image?: string;
-    pros: string[];
-    createdAt: Date;
-    type: 'legacy' | 'new';
-}
-
 export default async function ProductReviewsIndex() {
-    const legacyReviews = await prisma.productReview.findMany({
+    const reviews = await prisma.productReview.findMany({
         orderBy: { createdAt: 'desc' }
     });
-
-    const supplementReviews = await prisma.supplement.findMany({
-        where: { postType: 'PRODUCT_REVIEW' } as any,
-        include: { author: true }
-    });
-
-    const categories = await prisma.reviewCategory.findMany({
-        orderBy: { name: 'asc' }
-    });
-
-    // Merge and unify structure
-    const allReviews: UnifiedReview[] = [
-        ...legacyReviews.map(r => ({
-            id: r.id,
-            productName: r.productName,
-            slug: r.slug,
-            rating: r.rating,
-            image: (r as any).image,
-            pros: r.pros as string[],
-            createdAt: r.createdAt,
-            type: 'legacy' as const
-        })),
-        ...(supplementReviews as any[]).map(s => {
-            const product = s.products?.[0] || {};
-            return {
-                id: s.id,
-                productName: s.title,
-                slug: s.slug,
-                rating: s.rank / 20, // Mapping 0-100 to 0-5
-                image: product.imageUrl, // Using imageUrl as defined in the form
-                pros: product.pros || [],
-                createdAt: s.createdAt,
-                type: 'new' as const
-            };
-        })
-    ].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     return (
         <div className="flex flex-col gap-12 md:gap-20 pb-20 bg-[#fbfcfd] font-sans">
@@ -106,15 +59,15 @@ export default async function ProductReviewsIndex() {
                                     <input type="text" placeholder="Search brands or products..." className="w-full px-6 py-4 rounded-xl bg-gray-50 border border-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm transition-all" />
                                 </div>
                                 <div className="grid grid-cols-2 gap-3">
-                                    {categories.slice(0, 4).map(cat => (
-                                        <Link key={cat.id} href={`/product-reviews/categories?cat=${cat.slug}`} className="px-4 py-3 rounded-xl bg-white border border-gray-100 text-xs font-bold text-gray-500 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
-                                            {cat.name}
-                                        </Link>
+                                    {['Protein', 'Vitamins', 'Skincare', 'Fat Burners'].map(cat => (
+                                        <button key={cat} className="px-4 py-3 rounded-xl bg-white border border-gray-100 text-xs font-bold text-gray-500 hover:border-blue-500 hover:text-blue-600 transition-all text-left">
+                                            {cat}
+                                        </button>
                                     ))}
                                 </div>
-                                <Link href="/product-reviews/categories" className="block w-full text-center py-4 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-xl hover:bg-black transition-all">
+                                <button className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold text-sm shadow-xl hover:bg-black transition-all">
                                     Browse All Categories
-                                </Link>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -139,10 +92,10 @@ export default async function ProductReviewsIndex() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-                    {allReviews.map((review, i) => (
+                    {reviews.map((review, i) => (
                         <Link
                             key={review.id}
-                            href={review.type === 'new' ? `/supplements/${review.slug}` : `/product-reviews/${review.slug}`}
+                            href={`/product-reviews/${review.slug}`}
                             className="group flex flex-col bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:border-blue-100 transition-all duration-500 overflow-hidden"
                         >
                             <div className="aspect-square relative bg-[#fdfefe] flex items-center justify-center p-12 group-hover:bg-white transition-colors">
@@ -178,7 +131,7 @@ export default async function ProductReviewsIndex() {
                                 </h3>
 
                                 <div className="flex flex-wrap gap-2 mb-8">
-                                    {(review.pros as string[])?.slice(0, 2).map((pro: string, index: number) => (
+                                    {review.pros?.slice(0, 2).map((pro, index) => (
                                         <span key={index} className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider">
                                             <CheckCircle2 className="w-3 h-3" /> {pro}
                                         </span>
@@ -189,14 +142,14 @@ export default async function ProductReviewsIndex() {
                                     <span className="flex items-center gap-2 group-hover/btn:gap-3 transition-all">
                                         Full Analysis <ArrowRight className="w-4 h-4" />
                                     </span>
-                                    <span className="text-gray-300 group-hover:text-gray-400">{new Date(review.createdAt).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
+                                    <span className="text-gray-300 group-hover:text-gray-400">Jan 2026</span>
                                 </div>
                             </div>
                         </Link>
                     ))}
                 </div>
 
-                {allReviews.length === 0 && (
+                {reviews.length === 0 && (
                     <div className="text-center py-40 bg-white rounded-[3rem] border border-dashed border-gray-200">
                         <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
                             <Heart className="w-10 h-10 text-gray-300" />
