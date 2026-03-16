@@ -66,34 +66,7 @@ export default function AdminDashboard() {
                 ))}
             </div>
 
-            {/* Recent Activity */}
-            <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                <div className="p-6 border-b border-gray-50 flex justify-between items-center">
-                    <h2 className="font-bold text-gray-900">Recent Articles</h2>
-                    <Link href="/admin/articles" className="text-blue-600 text-sm hover:underline font-medium">View All</Link>
-                </div>
-                <div className="divide-y divide-gray-50">
-                    {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="p-6 flex items-center justify-between hover:bg-gray-50 transition-colors">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex items-center justify-center">
-                                    <FileText className="w-6 h-6 text-gray-400" />
-                                </div>
-                                <div>
-                                    <h4 className="font-bold text-gray-900 text-sm">Understanding Insulin Resistance</h4>
-                                    <p className="text-xs text-gray-500">Author: Sarah J. • 2 hours ago</p>
-                                </div>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <span className="px-2 py-1 bg-green-100 text-green-700 text-[10px] font-bold rounded uppercase tracking-wider">Published</span>
-                                <button className="text-gray-400 hover:text-gray-600">
-                                    <Settings className="w-5 h-5" />
-                                </button>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            </div>
+            {/* Remaining stats or other components could go here */}
         </div>
     );
 }
