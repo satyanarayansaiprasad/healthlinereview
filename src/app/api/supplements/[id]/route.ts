@@ -31,6 +31,19 @@ export async function PATCH(
         const { id } = await params;
         const body = await req.json();
 
+        // Check if slug is taken by another supplement
+        if (body.slug) {
+            const existing = await prisma.supplement.findFirst({
+                where: {
+                    slug: body.slug,
+                    NOT: { id: id }
+                }
+            });
+            if (existing) {
+                return NextResponse.json({ error: 'Slug already exists' }, { status: 400 });
+            }
+        }
+
         const supplement = await prisma.supplement.update({
             where: { id },
             data: body,

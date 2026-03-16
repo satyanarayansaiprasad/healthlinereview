@@ -8,7 +8,9 @@ import {
     Grid, MessageSquare, ChevronRight
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import Image from 'next/image';
+import { format } from 'date-fns';
 
 interface Category {
     id: string;
@@ -18,12 +20,25 @@ interface Category {
     isStarred: boolean;
 }
 
+interface ReviewPost {
+    id: string;
+    title: string;
+    slug: string;
+    author: { name: string };
+    createdAt: string;
+    rank: number;
+}
+
 export default function ProductReviewsAdmin() {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
+
+    // Reviews states
+    const [reviews, setReviews] = useState<ReviewPost[]>([]);
+    const [isReviewsLoading, setIsReviewsLoading] = useState(true);
 
     // Modal / Form states
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -37,7 +52,22 @@ export default function ProductReviewsAdmin() {
 
     useEffect(() => {
         fetchCategories();
+        fetchReviews();
     }, []);
+
+    const fetchReviews = async () => {
+        try {
+            const res = await fetch('/api/supplements?type=PRODUCT_REVIEW');
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                setReviews(data);
+            }
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        } finally {
+            setIsReviewsLoading(false);
+        }
+    };
 
     const fetchCategories = async () => {
         try {
@@ -189,11 +219,12 @@ export default function ProductReviewsAdmin() {
                     >
                         <Plus className="w-4 h-4" /> Add Category
                     </button>
-                    <button
+                    <Link
+                        href="/admin/supplements/create?type=PRODUCT_REVIEW"
                         className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg active:scale-95 text-sm uppercase tracking-widest"
                     >
                         <Plus className="w-4 h-4" /> Create Review
-                    </button>
+                    </Link>
                 </div>
             </div>
 
@@ -282,9 +313,57 @@ export default function ProductReviewsAdmin() {
                         <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Latest Product Reviews</h2>
                     </div>
 
-                    <div className="bg-white rounded-[3rem] border border-gray-100 p-12 text-center">
-                        <p className="text-gray-400 font-bold uppercase tracking-[0.2em] text-xs">Review Management coming soon...</p>
-                    </div>
+                    {isReviewsLoading ? (
+                        <div className="py-20 flex justify-center">
+                            <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
+                        </div>
+                    ) : reviews.length > 0 ? (
+                        <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+                            <table className="w-full text-left">
+                                <thead>
+                                    <tr className="bg-gray-50/50 text-[10px] font-black text-gray-400 uppercase tracking-widest">
+                                        <th className="px-6 py-4">Review Title</th>
+                                        <th className="px-6 py-4">Expert</th>
+                                        <th className="px-6 py-4">Rank</th>
+                                        <th className="px-6 py-4">Date</th>
+                                        <th className="px-6 py-4 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {reviews.map((r) => (
+                                        <tr key={r.id} className="hover:bg-gray-50/50 transition-colors group">
+                                            <td className="px-6 py-5">
+                                                <div className="flex flex-col">
+                                                    <span className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{r.title}</span>
+                                                    <span className="text-[10px] text-gray-400 font-bold">/supplements/{r.slug}</span>
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-5 text-sm font-bold text-gray-700">{r.author.name}</td>
+                                            <td className="px-6 py-5">
+                                                <div className="inline-flex px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-black">
+                                                    {r.rank}/100
+                                                </div>
+                                            </td>
+                                            <td className="px-6 py-5 text-sm font-medium text-gray-500">
+                                                {format(new Date(r.createdAt), 'MMM dd, yyyy')}
+                                            </td>
+                                            <td className="px-6 py-5 text-right">
+                                                <div className="flex items-center justify-end gap-2">
+                                                    <Link href={`/admin/supplements/edit/${r.id}`} className="p-2 text-gray-400 hover:text-gray-600">
+                                                        <Edit2 className="w-4 h-4" />
+                                                    </Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    ) : (
+                        <div className="bg-white rounded-[3rem] border border-gray-100 p-12 text-center">
+                            <p className="text-gray-400 font-bold uppercase tracking-[0.2em] text-xs">No product reviews yet.</p>
+                        </div>
+                    )}
                 </div>
             </div>
 

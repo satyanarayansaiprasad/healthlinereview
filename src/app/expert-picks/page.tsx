@@ -1,36 +1,30 @@
 import { Award, Star, ChevronRight, ExternalLink, ShieldCheck, CheckCircle2, Zap, Heart, Sparkles, UserCheck } from 'lucide-react';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function ExpertPicksPage() {
-    const picks = [
-        {
-            category: "Supplements",
-            title: "Best Multivitamins for Men 2024",
-            item: "Ritual Essential for Men",
-            rating: 4.9,
-            award: "TOP PICK",
-            desc: "Our medical review board analyzed 50+ multivitamins. Ritual stands out for transparency and bioavailable ingredients.",
-            stats: "Lab Purity: 99.8%"
-        },
-        {
-            category: "Mental Health",
-            title: "Top-Rated Meditation Apps",
-            item: "Headspace",
-            rating: 4.8,
-            award: "BEST FOR BEGINNERS",
-            desc: "Based on clinical studies and user performance, Headspace offers the most comprehensive guided meditations.",
-            stats: "User Efficacy: 94%"
-        },
-        {
-            category: "Nutrition",
-            title: "Highest Quality Whey Proteins",
-            item: "Transparent Labs Grass-Fed",
-            rating: 4.9,
-            award: "PURITY AWARD",
-            desc: "Zero artificial sweeteners, third-party tested, and sourced from grass-fed cows for maximum nutrient density.",
-            stats: "Heavy Metal Tested"
-        }
-    ];
+export default async function ExpertPicksPage() {
+    const supplementPicks = await prisma.supplement.findMany({
+        where: { postType: 'EXPERT_PICK' } as any,
+        orderBy: { createdAt: 'desc' },
+        include: { author: true }
+    });
+
+    // Map DB data to pick structure if needed, or use directly
+    const picks = (supplementPicks as any[]).map(s => {
+        const products = s.products as any[] || [];
+        const firstProduct = products[0] || {};
+        return {
+            id: s.id,
+            slug: s.slug,
+            category: "Supplements", // Defaulting for now
+            title: s.title,
+            item: firstProduct.name || "Multiple Products",
+            rating: firstProduct.rating || s.rank / 20 || 0,
+            award: firstProduct.award || "TOP PICK",
+            desc: s.subtitle || firstProduct.content || "Expert analysis and recommendations.",
+            stats: firstProduct.specs?.dosage ? `Dosage: ${firstProduct.specs.dosage}` : "Lab Verified"
+        };
+    });
 
     return (
         <div className="flex flex-col gap-12 md:gap-20 pb-20 bg-[#f8fafc] font-sans">
@@ -108,7 +102,7 @@ export default function ExpertPicksPage() {
             {/* Award Picks Grid */}
             <section className="container mx-auto px-4 md:px-6 -mt-20 md:-mt-24 relative z-20">
                 <div className="grid grid-cols-1 gap-12 md:gap-16">
-                    {picks.map((pick, i) => (
+                    {picks.length > 0 ? picks.map((pick, i) => (
                         <div
                             key={i}
                             className="bg-white rounded-[3rem] shadow-2xl shadow-blue-900/5 p-8 md:p-14 border border-gray-50 flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch hover:translate-y-[-8px] transition-all duration-500 group"
@@ -146,7 +140,7 @@ export default function ExpertPicksPage() {
 
                                 <div className="flex items-center gap-6 py-8 border-y border-gray-50">
                                     <div className="flex text-yellow-400">
-                                        {[...Array(5)].map((_, s) => <Star key={s} className="w-5 h-5 fill-current" />)}
+                                        {[...Array(5)].map((_, s) => <Star key={s} className={`w-5 h-5 fill-current ${s >= Math.floor(pick.rating) ? 'text-gray-100' : ''}`} />)}
                                     </div>
                                     <div className="h-6 w-px bg-gray-200" />
                                     <div className="flex items-center gap-3">
@@ -155,21 +149,25 @@ export default function ExpertPicksPage() {
                                     </div>
                                 </div>
 
-                                <p className="text-lg md:text-xl text-gray-500 leading-relaxed font-medium italic">
+                                <p className="text-lg md:text-xl text-gray-500 leading-relaxed font-medium italic line-clamp-3">
                                     "{pick.desc}"
                                 </p>
 
                                 <div className="flex flex-wrap gap-5 pt-4">
-                                    <button className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
+                                    <Link href={`/supplements/${pick.slug}`} className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
                                         View Rankings <ChevronRight className="w-4 h-4" />
-                                    </button>
+                                    </Link>
                                     <button className="bg-white text-gray-900 border-2 border-gray-100 px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-blue-600 hover:text-blue-600 transition-all transform active:scale-95">
                                         Lab Certificate <ExternalLink className="w-4 h-4" />
                                     </button>
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    )) : (
+                        <div className="py-40 text-center bg-white rounded-[3rem] border border-dashed border-gray-200">
+                            <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No expert picks available yet.</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Footer Engagement */}
