@@ -21,7 +21,7 @@ export default async function Home() {
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src="/hero-bg-v3.png"
+                        src="/hero-student-learning.png"
                         alt="Clean Medical Wellness Background"
                         fill
                         className="object-cover"
@@ -360,7 +360,7 @@ export default async function Home() {
                         {/* Background Elements */}
                         <div className="absolute inset-0 z-0">
                             <Image
-                                src="/newsletter-couple.png"
+                                src="/newsletter-student.png"
                                 alt="Background"
                                 fill
                                 className="object-cover opacity-30 mix-blend-overlay"
