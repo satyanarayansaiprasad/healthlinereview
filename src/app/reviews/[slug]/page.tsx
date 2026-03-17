@@ -245,6 +245,23 @@ export default async function ProductReviewPage({ params }: { params: { slug: st
                         </section>
                     )}
 
+                    {/* Benefits Section - Dynamic */}
+                    {Array.isArray(review.benefitsList) && review.benefitsList.length > 0 && (
+                        <section className="prose prose-lg prose-blue max-w-none">
+                            <h2 className="text-3xl font-black text-gray-900 mb-6 border-b pb-4">Key Benefits</h2>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {review.benefitsList.map((benefit: string, i: number) => (
+                                    <div key={i} className="flex items-center gap-3 bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                                        <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                                            <CheckCircle2 className="w-5 h-5" />
+                                        </div>
+                                        <p className="font-bold text-gray-900 m-0">{benefit}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     {/* Ingredients Section - Dynamic */}
                     {detailedIngredients.length > 0 && (
                         <section className="prose prose-lg prose-blue max-w-none">
