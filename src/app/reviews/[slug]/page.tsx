@@ -260,6 +260,27 @@ export default async function ProductReviewPage({ params }: { params: { slug: st
                         </section>
                     )}
 
+                    {/* Pricing & Offers Section - Dynamic */}
+                    {(review.pricingOffers as any[] || []).length > 0 && (
+                        <section className="prose prose-lg prose-blue max-w-none">
+                            <h2 className="text-3xl font-black text-gray-900 mb-6 border-b pb-4">Pricing & Availability</h2>
+                            <div className="grid sm:grid-cols-2 gap-4">
+                                {(review.pricingOffers as any[] || []).map((offer: any, i: number) => (
+                                    <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex justify-between items-center group hover:border-blue-200 transition-colors">
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Package</p>
+                                            <h4 className="font-bold text-gray-900 group-hover:text-blue-600 transition-colors">{offer.name}</h4>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 mb-1">Price</p>
+                                            <p className="font-black text-blue-600 text-lg">{offer.price}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     {/* FAQs Section - Dynamic */}
                     {faqs.length > 0 && (
                         <section className="prose prose-lg prose-blue max-w-none">

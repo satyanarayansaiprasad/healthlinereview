@@ -279,6 +279,66 @@ export default function AdminProductReviews() {
                             </div>
                         </div>
 
+                        {/* Pricing Packages Manager */}
+                        <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                            <h2 className="text-xl font-bold flex items-center gap-2 border-b pb-4">
+                                <div className="bg-blue-100 p-2 rounded-lg text-blue-600"><Plus className="w-5 h-5"/></div>
+                                Pricing Packages & Offers
+                            </h2>
+                            <div className="space-y-4">
+                                {(formData.pricingOffers as any[] || []).map((offer: any, i: number) => (
+                                    <div key={i} className="p-6 border rounded-xl bg-gray-50 space-y-4 relative group">
+                                        <button 
+                                            onClick={() => {
+                                                const newArr = [...(formData.pricingOffers as any[] || [])];
+                                                newArr.splice(i, 1);
+                                                setFormData({...formData, pricingOffers: newArr});
+                                            }}
+                                            className="absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                        >
+                                            <Trash2 className="w-5 h-5"/>
+                                        </button>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="col-span-1">
+                                                <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Package Name</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={offer.name} 
+                                                    onChange={(e) => {
+                                                        const newArr = [...(formData.pricingOffers as any[] || [])];
+                                                        newArr[i] = { ...newArr[i], name: e.target.value };
+                                                        setFormData({...formData, pricingOffers: newArr});
+                                                    }}
+                                                    placeholder="e.g. 1 Bottle / 3 Bottles"
+                                                    className="w-full p-2 border rounded-md"
+                                                />
+                                            </div>
+                                            <div className="col-span-1">
+                                                <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Price/Deal</label>
+                                                <input 
+                                                    type="text" 
+                                                    value={offer.price} 
+                                                    onChange={(e) => {
+                                                        const newArr = [...(formData.pricingOffers as any[] || [])];
+                                                        newArr[i] = { ...newArr[i], price: e.target.value };
+                                                        setFormData({...formData, pricingOffers: newArr});
+                                                    }}
+                                                    placeholder="e.g. $49.95 / Buy 2 Get 1"
+                                                    className="w-full p-2 border rounded-md"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                                <button 
+                                    onClick={() => setFormData(prev => ({ ...prev, pricingOffers: [...(prev.pricingOffers as any[] || []), { name: '', price: '' }] }))}
+                                    className="w-full py-3 text-blue-600 font-bold border-2 border-blue-50 bg-blue-50/20 rounded-xl hover:bg-blue-50 transition-all"
+                                >
+                                    + Add New Pricing Option
+                                </button>
+                            </div>
+                        </div>
+
                         {/* Pros and Cons */}
                         <div className="bg-white p-8 rounded-xl border border-gray-200">
                             <h2 className="text-xl font-bold border-b pb-4 mb-6">Pros & Cons</h2>
