@@ -50,7 +50,7 @@ export default function AdminSidebar() {
     };
 
     return (
-        <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen fixed">
+        <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen fixed top-0 left-0">
             <div className="p-6 border-b border-gray-800">
                 <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
