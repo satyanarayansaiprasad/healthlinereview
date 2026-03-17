@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
-import { Award, CheckCircle2, ChevronRight, ShieldCheck, Star, ExternalLink, Activity, Target, Zap, ImageIcon, Plus } from 'lucide-react';
+import { Award, CheckCircle2, ChevronRight, ShieldCheck, Star, ExternalLink, Activity, Target, Zap, ImageIcon, Plus, X } from 'lucide-react';
 import Link from 'next/link';
 
 // --- Fetch Data ---
@@ -41,10 +41,10 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
     const guide = await getGuide(params.slug);
 
     // Parse JSON arrays with fallbacks
-    const howWeRanked = (guide.howWeRanked as any[]) || [];
-    const ingredientsAnalysis = (guide.ingredientsAnalysis as any[]) || [];
-    const faqs = (guide.faqs as any[]) || [];
+    const howWeRanked = Array.isArray(guide.howWeRanked) ? guide.howWeRanked : [];
+    const faqs = Array.isArray(guide.faqs) ? guide.faqs : [];
     const finalVerdict = (guide.finalVerdict as any) || null;
+    const buyingGuide = (guide.buyingGuide as any) || null;
 
     return (
         <div className="bg-[#f8fafc] min-h-screen font-sans">
@@ -78,7 +78,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                         {/* Trust Badges - Author & Reviewer */}
                         <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-6 border-t border-gray-100">
                             <div className="flex items-center gap-3">
-                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-500">
+                                <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center font-bold text-gray-500 uppercase">
                                     {guide.author.name.charAt(0)}
                                 </div>
                                 <div className="text-left">
@@ -95,7 +95,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                             {guide.medicalReviewer.imageUrl ? (
                                                 <img src={guide.medicalReviewer.imageUrl} alt={guide.medicalReviewer.name} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
+                                                <div className="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold uppercase">
                                                     {guide.medicalReviewer.name.charAt(0)}
                                                 </div>
                                             )}
@@ -116,7 +116,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
 
             <main className="container mx-auto px-4 md:px-6 py-16 lg:py-24 space-y-24">
                 
-                {/* 2. Quick Summary Table (Consumer Health Digest style) */}
+                {/* 2. Quick Summary Table */}
                 {guide.products.length > 0 && (
                     <section className="max-w-5xl mx-auto">
                         <div className="bg-white rounded-[2rem] shadow-xl shadow-blue-900/5 border border-gray-100 overflow-hidden">
@@ -124,16 +124,15 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                 <Award className="w-8 h-8 text-yellow-400" />
                                 <div>
                                     <h2 className="text-2xl font-black">Top Picks Summary</h2>
-                                    <p className="text-sm font-medium text-gray-400">Quick comparison of our highest-rated selections</p>
+                                    <p className="text-sm font-medium text-gray-400">Our highest-rated joint health selections for 2026</p>
                                 </div>
                             </div>
                             <div className="divide-y divide-gray-100">
-                                {guide.products.slice(0, 5).map((product: any, i: number) => (
+                                {guide.products.map((product: any, i: number) => (
                                     <div key={product.id} className="p-4 md:p-6 flex flex-col md:flex-row items-center gap-6 hover:bg-gray-50 transition-colors">
                                         <div className="w-12 h-12 shrink-0 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black text-xl">
                                             #{product.rank}
                                         </div>
-                                        {/* Image placeholder in table if exists */}
                                         {product.productImage && (
                                             <div className="w-20 h-20 shrink-0 bg-white border border-gray-100 rounded-xl relative overflow-hidden">
                                                 <img src={product.productImage} alt={product.productName} className="object-cover w-full h-full p-2" />
@@ -157,9 +156,14 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                             <span className="font-black text-gray-900">{product.rating.toFixed(1)}</span>
                                         </div>
                                         <div className="shrink-0 w-full md:w-auto">
+                                            <Link href={`#product-${product.rank}`} className="block w-full text-center border-2 border-blue-600 text-blue-600 px-6 py-2.5 rounded-xl font-bold hover:bg-blue-50 transition text-sm">
+                                                Read Review
+                                            </Link>
+                                        </div>
+                                        <div className="shrink-0 w-full md:w-auto">
                                             <a href={product.buyLink || '#'} target="_blank" rel="noopener noreferrer" 
-                                               className="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition lg:text-sm">
-                                                Check Price
+                                               className="block w-full text-center bg-blue-600 text-white px-6 py-3 rounded-xl font-bold hover:bg-blue-700 transition text-sm">
+                                                Shop Official
                                             </a>
                                         </div>
                                     </div>
@@ -171,10 +175,10 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
 
                 {/* 3. Detailed Product Cards */}
                 <section className="max-w-4xl mx-auto space-y-16">
-                    <h2 className="text-3xl font-black text-center mb-12">Deep Dive: Our Top Recommendations</h2>
+                    <h2 className="text-3xl font-black text-center mb-12">Expert Analysis & Reviews</h2>
                     
                     {guide.products.map((product: any) => (
-                        <div key={product.id} className="bg-white rounded-[2rem] border border-gray-200 shadow-sm overflow-hidden flex flex-col pt-8 relative">
+                        <div key={product.id} id={`product-${product.rank}`} className="bg-white rounded-[2rem] border border-gray-200 shadow-sm overflow-hidden flex flex-col pt-8 relative">
                             {/* Rank Badge */}
                             <div className="absolute top-0 left-8 -translate-y-1/2 bg-gray-900 text-white px-6 py-2 rounded-full font-black flex items-center gap-2 border-4 border-[#f8fafc]">
                                 <span className="text-yellow-400">#</span>{product.rank}
@@ -188,7 +192,6 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
 
                             <div className="p-8 md:p-10 space-y-8">
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
-                                    {/* Product Image */}
                                     <div className="w-full md:w-1/3 aspect-square bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center p-6">
                                         {product.productImage ? (
                                             <img src={product.productImage} alt={product.productName} className="w-full h-full object-contain mix-blend-multiply" />
@@ -200,7 +203,6 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                         )}
                                     </div>
 
-                                    {/* Product Info */}
                                     <div className="flex-1 space-y-6">
                                         <div>
                                             <h3 className="text-3xl font-black text-gray-900 leading-tight mb-3">
@@ -216,7 +218,6 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                             </div>
                                         </div>
 
-                                        {/* Highlights */}
                                         {product.highlights.length > 0 && (
                                             <ul className="space-y-3">
                                                 {product.highlights.map((highlight: string, idx: number) => (
@@ -230,7 +231,6 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                     </div>
                                 </div>
 
-                                {/* Pros & Cons Box */}
                                 <div className="grid md:grid-cols-2 gap-px bg-gray-200 border border-gray-200 rounded-2xl overflow-hidden">
                                     <div className="bg-white p-6 space-y-4">
                                         <h4 className="font-black text-emerald-600 uppercase tracking-widest text-sm flex items-center gap-2">
@@ -258,7 +258,6 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                     </div>
                                 </div>
 
-                                {/* Action Bar */}
                                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
                                     <div className="text-center sm:text-left">
                                         {product.price && (
@@ -275,40 +274,98 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     ))}
                 </section>
 
-                {/* 4. Educational Content (How we ranked, Ingredients, etc) */}
-                <section className="max-w-4xl mx-auto space-y-12">
-                    {/* How We Ranked */}
-                    {howWeRanked.length > 0 && (
+                {/* 4. Methodology Section */}
+                {howWeRanked.length > 0 && (
+                    <section className="max-w-4xl mx-auto">
                         <div className="bg-white p-8 md:p-12 rounded-[2rem] border border-gray-200">
-                            <h2 className="text-2xl font-black text-gray-900 mb-8 border-b pb-4">How We Rank (Our Methodology)</h2>
-                            <div className="space-y-6">
+                            <h2 className="text-2xl font-black text-gray-900 mb-8 border-b pb-4">Our Methodology: How We Ranked</h2>
+                            <div className="grid md:grid-cols-2 gap-8">
                                 {howWeRanked.map((criteria: any, i: number) => (
                                     <div key={i} className="flex gap-4">
                                         <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 font-black flex items-center justify-center shrink-0">
                                             {i + 1}
                                         </div>
-                                        <div>
-                                            <h3 className="font-bold text-gray-900">{criteria.title}</h3>
-                                            <p className="text-gray-600 font-medium text-sm mt-1">{criteria.description}</p>
-                                        </div>
+                                        <p className="text-gray-700 font-bold text-sm mt-1">{typeof criteria === 'string' ? criteria : criteria.title}</p>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                    )}
+                    </section>
+                )}
 
-                    {/* Final Verdict */}
-                    {finalVerdict && finalVerdict.summaryText && (
-                        <div className="bg-gray-900 text-white p-8 md:p-12 rounded-[2rem] text-center space-y-6 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]" />
-                            <Award className="w-16 h-16 text-yellow-400 mx-auto relative z-10" />
-                            <h2 className="text-3xl font-black relative z-10">Final Verdict</h2>
-                            <p className="text-lg text-gray-300 font-medium leading-relaxed relative z-10 max-w-2xl mx-auto">
-                                {finalVerdict.summaryText}
-                            </p>
+                {/* 5. Buying Guide */}
+                {buyingGuide && (
+                    <section className="max-w-4xl mx-auto bg-blue-50/50 p-8 md:p-12 rounded-[2rem] border border-blue-100">
+                        <h2 className="text-2xl font-black text-gray-900 mb-8 text-center uppercase tracking-widest">Buying Guide</h2>
+                        <div className="grid md:grid-cols-2 gap-12">
+                            <div>
+                                <h3 className="text-emerald-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
+                                    <CheckCircle2 className="w-4 h-4" /> What to Look For
+                                </h3>
+                                <ul className="space-y-4">
+                                    {(buyingGuide.whatToLookFor || []).map((item: string, i: number) => (
+                                        <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-emerald-50">
+                                            <span className="text-emerald-500 font-bold">✓</span> {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
+                                    <X className="w-4 h-4" /> What to Avoid
+                                </h3>
+                                <ul className="space-y-4">
+                                    {(buyingGuide.whatToAvoid || []).map((item: string, i: number) => (
+                                        <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-red-50">
+                                            <span className="text-red-500 font-bold">✕</span> {item}
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
                         </div>
-                    )}
-                </section>
+                    </section>
+                )}
+
+                {/* 6. FAQs */}
+                {faqs.length > 0 && (
+                    <section className="max-w-4xl mx-auto">
+                        <h2 className="text-3xl font-black text-center mb-12">Frequently Asked Questions</h2>
+                        <div className="space-y-4">
+                            {faqs.map((faq: any, i: number) => (
+                                <div key={i} className="bg-white p-6 rounded-2xl border border-gray-200">
+                                    <h4 className="text-lg font-bold text-gray-900 mb-3 flex items-start gap-3">
+                                        <span className="text-blue-600 font-black shrink-0">Q.</span> {faq.question}
+                                    </h4>
+                                    <p className="text-gray-600 font-medium pl-8 border-l-2 border-blue-50 leading-relaxed italic">
+                                        "{faq.answer}"
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* 7. Final Verdict */}
+                {finalVerdict && (
+                    <section className="max-w-4xl mx-auto bg-gray-900 text-white p-8 md:p-16 rounded-[3rem] text-center space-y-8 relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]" />
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-900/40 rounded-full blur-[80px]" />
+                        
+                        <div className="relative z-10 space-y-6">
+                            <Award className="w-20 h-20 text-yellow-400 mx-auto animate-bounce-slow" />
+                            <h2 className="text-4xl font-black uppercase tracking-tighter">Final Verdict</h2>
+                            <p className="text-xl text-gray-300 font-medium leading-relaxed max-w-2xl mx-auto">
+                                {typeof finalVerdict === 'string' ? finalVerdict : finalVerdict.summary || finalVerdict.summaryText}
+                            </p>
+                            {finalVerdict.winner && (
+                                <div className="inline-block bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/20 mt-4">
+                                    <p className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-1">Editor's Choice</p>
+                                    <p className="text-2xl font-black">{finalVerdict.winner}</p>
+                                </div>
+                            )}
+                        </div>
+                    </section>
+                )}
             </main>
         </div>
     );
