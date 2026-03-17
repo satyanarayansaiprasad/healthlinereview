@@ -212,20 +212,20 @@ export default function ProductReviewsAdmin() {
                         <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-md text-[9px] font-bold">{categories.length} Categories</span>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
                         {categories.map((cat) => (
-                            <div key={cat.id} className="bg-white rounded-3xl border border-gray-100 overflow-hidden group hover:border-blue-100 transition-all hover:shadow-2xl hover:shadow-blue-900/5">
-                                <div className="aspect-square relative overflow-hidden bg-gray-50">
+                            <div key={cat.id} className="bg-white rounded-2xl border border-gray-100 overflow-hidden group hover:border-blue-100 transition-all hover:shadow-xl hover:shadow-blue-900/5">
+                                <div className="aspect-[4/3] relative overflow-hidden bg-gray-50">
                                     {cat.imageUrl ? (
                                         <Image
                                             src={cat.imageUrl}
                                             alt={cat.name}
                                             fill
-                                            className="object-cover group-hover:scale-110 transition-transform duration-700"
+                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-200">
-                                            <ImageIcon className="w-10 h-10" />
+                                            <ImageIcon className="w-6 h-6" />
                                         </div>
                                     )}
                                     {cat.isStarred && (
@@ -260,12 +260,12 @@ export default function ProductReviewsAdmin() {
                         {/* Direct Creation Card */}
                         <button
                             onClick={() => handleOpenForm()}
-                            className="bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-8 gap-4 hover:bg-white hover:border-blue-200 transition-all group"
+                            className="bg-gray-50 rounded-2xl border-2 border-dashed border-gray-100 flex flex-col items-center justify-center p-4 gap-2 hover:bg-white hover:border-blue-100 transition-all group aspect-[4/3]"
                         >
-                            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all">
-                                <Plus className="w-6 h-6 text-gray-300 group-hover:text-white" />
+                            <div className="w-8 h-8 rounded-xl bg-white flex items-center justify-center shadow-sm group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all text-gray-300">
+                                <Plus className="w-4 h-4" />
                             </div>
-                            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Add New Category</span>
+                            <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Add New</span>
                         </button>
                     </div>
                 </div>
