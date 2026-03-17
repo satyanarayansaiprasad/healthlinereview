@@ -52,15 +52,12 @@ export default function AdminSidebar() {
     return (
         <aside className="w-64 bg-gray-900 text-white flex flex-col h-screen fixed">
             <div className="p-6 border-b border-gray-800">
-                <Link href="/" className="flex items-center space-x-3 group">
-                    <div className="relative w-40 h-12">
-                        <img
-                            src="/logo.png"
-                            alt="Health Line Review Logo"
-                            className="w-full h-full object-contain filter brightness-0 invert"
-                        />
+                <div className="flex items-center space-x-3">
+                    <div className="w-8 h-8 bg-blue-600 rounded flex items-center justify-center">
+                        <span className="font-bold">H</span>
                     </div>
-                </Link>
+                    <span className="text-xl font-bold">Admin CMS</span>
+                </div>
             </div>
 
             <nav className="flex-1 overflow-y-auto py-6 space-y-1">

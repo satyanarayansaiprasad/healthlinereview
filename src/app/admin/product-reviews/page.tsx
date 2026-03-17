@@ -177,22 +177,17 @@ export default function ProductReviewsAdmin() {
     return (
         <div className="max-w-6xl mx-auto pb-20 space-y-12">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-between items-center bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight uppercase">Product Reviews Admin</h1>
-                    <p className="text-gray-500 font-medium">Manage your clinical directory and categories</p>
+                    <h1 className="text-2xl font-bold text-gray-900 tracking-tight">Product Reviews Admin</h1>
+                    <p className="text-sm text-gray-500">Manage your clinical directory and categories</p>
                 </div>
                 <div className="flex gap-4">
                     <button
                         onClick={() => handleOpenForm()}
-                        className="bg-gray-900 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-black transition-all shadow-xl active:scale-95 text-sm uppercase tracking-widest"
+                        className="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-black transition-all active:scale-95 text-xs uppercase tracking-widest"
                     >
                         <Plus className="w-4 h-4" /> Add Category
-                    </button>
-                    <button
-                        className="bg-blue-600 text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-blue-700 transition-all shadow-lg active:scale-95 text-sm uppercase tracking-widest"
-                    >
-                        <Plus className="w-4 h-4" /> Create Review
                     </button>
                 </div>
             </div>
@@ -209,12 +204,12 @@ export default function ProductReviewsAdmin() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 {/* Categories Section */}
                 <div className="lg:col-span-12 space-y-6">
-                    <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                         <div className="flex items-center gap-3">
-                            <Grid className="w-6 h-6 text-blue-600" />
-                            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Product Review Categories</h2>
+                            <Grid className="w-5 h-5 text-blue-600" />
+                            <h2 className="text-lg font-bold text-gray-900 uppercase tracking-tight">Product Review Categories</h2>
                         </div>
-                        <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[10px] font-black">{categories.length} Categories</span>
+                        <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded-md text-[9px] font-bold">{categories.length} Categories</span>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -255,9 +250,9 @@ export default function ProductReviewsAdmin() {
                                         </button>
                                     </div>
                                 </div>
-                                <div className="p-5">
-                                    <h3 className="text-sm font-black text-gray-900 uppercase tracking-tight truncate">{cat.name}</h3>
-                                    <p className="text-[10px] text-gray-400 font-bold tracking-widest mt-1">/{cat.slug}</p>
+                                <div className="p-4">
+                                    <h3 className="text-xs font-bold text-gray-900 uppercase tracking-tight truncate">{cat.name}</h3>
+                                    <p className="text-[9px] text-gray-400 font-bold tracking-widest mt-0.5">/{cat.slug}</p>
                                 </div>
                             </div>
                         ))}
@@ -291,14 +286,14 @@ export default function ProductReviewsAdmin() {
             {/* Modal Form */}
             {isFormOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/40 backdrop-blur-sm animate-fade-in">
-                    <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden animate-slide-in-top">
-                        <div className="p-8 md:p-12 space-y-8">
+                    <div className="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-slide-in-top">
+                        <div className="p-8 space-y-6">
                             <div className="flex justify-between items-center">
-                                <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tighter">
+                                <h2 className="text-xl font-bold text-gray-900 uppercase tracking-tight">
                                     {editingCategory ? 'Update' : 'Create'} Category
                                 </h2>
-                                <button onClick={handleCloseForm} className="p-3 hover:bg-gray-100 rounded-2xl text-gray-400 transition-colors">
-                                    <X className="w-6 h-6" />
+                                <button onClick={handleCloseForm} className="p-2 hover:bg-gray-100 rounded-lg text-gray-400 transition-colors">
+                                    <X className="w-5 h-5" />
                                 </button>
                             </div>
 
@@ -312,12 +307,12 @@ export default function ProductReviewsAdmin() {
                             <form onSubmit={handleSubmit} className="space-y-8">
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-gray-400 ml-4">Category Name</label>
+                                        <label className="text-[10px] font-bold uppercase tracking-widest text-gray-400 ml-1">Category Name</label>
                                         <input
                                             type="text"
                                             value={name}
                                             onChange={(e) => setName(e.target.value)}
-                                            className="w-full px-8 py-5 bg-gray-50 border border-transparent focus:border-blue-600 focus:bg-white rounded-2xl outline-none transition-all font-bold text-gray-900"
+                                            className="w-full px-4 py-3 bg-gray-50 border border-gray-100 focus:border-blue-500 focus:bg-white rounded-lg outline-none transition-all font-medium text-gray-900 text-sm"
                                             placeholder="e.g., Weight Loss"
                                             required
                                         />
@@ -380,9 +375,9 @@ export default function ProductReviewsAdmin() {
                                 <button
                                     type="submit"
                                     disabled={isSaving || isUploading}
-                                    className="w-full bg-blue-600 text-white py-6 rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs hover:bg-blue-700 shadow-2xl shadow-blue-200 transition-all flex items-center justify-center gap-4 disabled:opacity-50"
+                                    className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold uppercase tracking-widest text-xs hover:bg-blue-700 shadow-lg shadow-blue-100 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
                                 >
-                                    {isSaving ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+                                    {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                                     {editingCategory ? 'Update Changes' : 'Initialize Category'}
                                 </button>
                             </form>
