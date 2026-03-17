@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 export default async function ExpertPickGuidePage({ params }: { params: { slug: string } }) {
     const guide = await getGuide(params.slug);
 
-    // Parse JSON arrays with fallbacks
+    // Parse JSON arrays with fallbacks - Ensure strictly dynamic data usage
     const howWeRanked = Array.isArray(guide.howWeRanked) ? guide.howWeRanked : [];
     const faqs = Array.isArray(guide.faqs) ? guide.faqs : [];
     const finalVerdict = (guide.finalVerdict as any) || null;
@@ -124,7 +124,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                                 <Award className="w-8 h-8 text-yellow-400" />
                                 <div>
                                     <h2 className="text-2xl font-black">Top Picks Summary</h2>
-                                    <p className="text-sm font-medium text-gray-400">Our highest-rated joint health selections for 2026</p>
+                                    <p className="text-sm font-medium text-gray-400">Our highest-rated selections</p>
                                 </div>
                             </div>
                             <div className="divide-y divide-gray-100">
@@ -274,18 +274,20 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     ))}
                 </section>
 
-                {/* 4. Methodology Section */}
+                {/* 4. Methodology Section - Strictly Dynamic */}
                 {howWeRanked.length > 0 && (
                     <section className="max-w-4xl mx-auto">
                         <div className="bg-white p-8 md:p-12 rounded-[2rem] border border-gray-200">
-                            <h2 className="text-2xl font-black text-gray-900 mb-8 border-b pb-4">Our Methodology: How We Ranked</h2>
+                            <h2 className="text-2xl font-black text-gray-900 mb-8 border-b pb-4">Our Methodology</h2>
                             <div className="grid md:grid-cols-2 gap-8">
                                 {howWeRanked.map((criteria: any, i: number) => (
                                     <div key={i} className="flex gap-4">
                                         <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 font-black flex items-center justify-center shrink-0">
                                             {i + 1}
                                         </div>
-                                        <p className="text-gray-700 font-bold text-sm mt-1">{typeof criteria === 'string' ? criteria : criteria.title}</p>
+                                        <p className="text-gray-700 font-bold text-sm mt-1">
+                                            {typeof criteria === 'string' ? criteria : (criteria.title || criteria.name || JSON.stringify(criteria))}
+                                        </p>
                                     </div>
                                 ))}
                             </div>
@@ -293,40 +295,44 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     </section>
                 )}
 
-                {/* 5. Buying Guide */}
+                {/* 5. Buying Guide - Strictly Dynamic */}
                 {buyingGuide && (
                     <section className="max-w-4xl mx-auto bg-blue-50/50 p-8 md:p-12 rounded-[2rem] border border-blue-100">
                         <h2 className="text-2xl font-black text-gray-900 mb-8 text-center uppercase tracking-widest">Buying Guide</h2>
                         <div className="grid md:grid-cols-2 gap-12">
-                            <div>
-                                <h3 className="text-emerald-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
-                                    <CheckCircle2 className="w-4 h-4" /> What to Look For
-                                </h3>
-                                <ul className="space-y-4">
-                                    {(buyingGuide.whatToLookFor || []).map((item: string, i: number) => (
-                                        <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-emerald-50">
-                                            <span className="text-emerald-500 font-bold">✓</span> {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
-                                    <X className="w-4 h-4" /> What to Avoid
-                                </h3>
-                                <ul className="space-y-4">
-                                    {(buyingGuide.whatToAvoid || []).map((item: string, i: number) => (
-                                        <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-red-50">
-                                            <span className="text-red-500 font-bold">✕</span> {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                            {buyingGuide.whatToLookFor && (
+                                <div>
+                                    <h3 className="text-emerald-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4" /> What to Look For
+                                    </h3>
+                                    <ul className="space-y-4">
+                                        {Array.isArray(buyingGuide.whatToLookFor) && buyingGuide.whatToLookFor.map((item: string, i: number) => (
+                                            <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-emerald-50">
+                                                <span className="text-emerald-500 font-bold">✓</span> {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                            {buyingGuide.whatToAvoid && (
+                                <div>
+                                    <h3 className="text-red-700 font-black uppercase text-xs tracking-widest mb-4 flex items-center gap-2">
+                                        <X className="w-4 h-4" /> What to Avoid
+                                    </h3>
+                                    <ul className="space-y-4">
+                                        {Array.isArray(buyingGuide.whatToAvoid) && buyingGuide.whatToAvoid.map((item: string, i: number) => (
+                                            <li key={i} className="text-sm font-medium text-gray-700 flex items-start gap-2 bg-white/50 p-3 rounded-xl border border-red-50">
+                                                <span className="text-red-500 font-bold">✕</span> {item}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
                         </div>
                     </section>
                 )}
 
-                {/* 6. FAQs */}
+                {/* 6. FAQs - Strictly Dynamic */}
                 {faqs.length > 0 && (
                     <section className="max-w-4xl mx-auto">
                         <h2 className="text-3xl font-black text-center mb-12">Frequently Asked Questions</h2>
@@ -345,17 +351,17 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     </section>
                 )}
 
-                {/* 7. Final Verdict */}
+                {/* 7. Final Verdict - Strictly Dynamic */}
                 {finalVerdict && (
                     <section className="max-w-4xl mx-auto bg-gray-900 text-white p-8 md:p-16 rounded-[3rem] text-center space-y-8 relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]" />
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-900/40 rounded-full blur-[80px]" />
                         
                         <div className="relative z-10 space-y-6">
-                            <Award className="w-20 h-20 text-yellow-400 mx-auto animate-bounce-slow" />
+                            <Award className="w-20 h-20 text-yellow-400 mx-auto" />
                             <h2 className="text-4xl font-black uppercase tracking-tighter">Final Verdict</h2>
                             <p className="text-xl text-gray-300 font-medium leading-relaxed max-w-2xl mx-auto">
-                                {typeof finalVerdict === 'string' ? finalVerdict : finalVerdict.summary || finalVerdict.summaryText}
+                                {typeof finalVerdict === 'string' ? finalVerdict : (finalVerdict.summary || finalVerdict.summaryText || finalVerdict.text || "")}
                             </p>
                             {finalVerdict.winner && (
                                 <div className="inline-block bg-white/10 backdrop-blur-md px-8 py-4 rounded-2xl border border-white/20 mt-4">
