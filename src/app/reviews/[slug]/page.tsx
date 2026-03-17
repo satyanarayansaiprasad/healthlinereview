@@ -245,6 +245,38 @@ export default async function ProductReviewPage({ params }: { params: { slug: st
                         </section>
                     )}
 
+                    {/* Ingredients Section - Dynamic */}
+                    {detailedIngredients.length > 0 && (
+                        <section className="prose prose-lg prose-blue max-w-none">
+                            <h2 className="text-3xl font-black text-gray-900 mb-6 border-b pb-4">Ingredient Analysis</h2>
+                            <div className="grid gap-4">
+                                {detailedIngredients.map((ingredient: any, i: number) => (
+                                    <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                                        <h4 className="text-lg font-black text-blue-600 mb-1">{ingredient.name || ingredient.title}</h4>
+                                        <p className="text-gray-600 font-medium text-sm">{ingredient.description || ingredient.benefit || ingredient.content}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
+                    {/* FAQs Section - Dynamic */}
+                    {faqs.length > 0 && (
+                        <section className="prose prose-lg prose-blue max-w-none">
+                            <h2 className="text-3xl font-black text-gray-900 mb-6 border-b pb-4">Frequently Asked Questions</h2>
+                            <div className="space-y-4">
+                                {faqs.map((faq: any, i: number) => (
+                                    <div key={i} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
+                                        <h4 className="text-lg font-bold text-gray-900 mb-2">Q. {faq.question}</h4>
+                                        <p className="text-gray-600 font-medium leading-relaxed italic border-l-2 border-blue-50 pl-4">
+                                            "{faq.answer}"
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+                    )}
+
                     {/* Final CTA Box */}
                     <section className="bg-gray-900 text-white rounded-[2rem] p-8 md:p-12 text-center relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/20 rounded-full blur-[80px]" />
@@ -253,9 +285,11 @@ export default async function ProductReviewPage({ params }: { params: { slug: st
                         <div className="relative z-10 max-w-2xl mx-auto space-y-8">
                             <div>
                                 <h2 className="text-3xl md:text-4xl font-black mb-4">Ready to try {review.productName}?</h2>
-                                <p className="text-gray-300 font-medium text-lg">
-                                    {review.recommendation || "Based on our expert review, this product stands out in its category. Remember to consult your healthcare provider before starting any new supplement regimen."}
-                                </p>
+                                {review.recommendation && (
+                                    <p className="text-gray-300 font-medium text-lg">
+                                        {review.recommendation}
+                                    </p>
+                                )}
                             </div>
                             
                             <div className="flex flex-col items-center gap-4">
