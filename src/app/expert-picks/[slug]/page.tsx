@@ -295,6 +295,31 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     </section>
                 )}
 
+                {/* 4.5 Ingredients Analysis - Strictly Dynamic */}
+                {Array.isArray(guide.ingredientsAnalysis) && (guide.ingredientsAnalysis as any[]).length > 0 && (
+                    <section className="max-w-4xl mx-auto">
+                        <div className="bg-white p-8 md:p-12 rounded-[2rem] border border-gray-200">
+                            <h2 className="text-2xl font-black text-gray-900 mb-8 border-b pb-4">Key Ingredients to Look For</h2>
+                            <div className="grid gap-6">
+                                {(guide.ingredientsAnalysis as any[]).map((ingredient: any, i: number) => (
+                                    <div key={i} className="flex flex-col md:flex-row md:items-center gap-4 bg-gray-50/50 p-6 rounded-2xl border border-gray-100">
+                                        <div className="flex-1 space-y-1">
+                                            <h3 className="text-lg font-black text-blue-600">{ingredient.name}</h3>
+                                            <p className="text-gray-600 font-medium">{ingredient.benefit}</p>
+                                        </div>
+                                        {ingredient.rating && (
+                                            <div className="shrink-0 bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm">
+                                                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 block mb-0.5">Expert Rating</span>
+                                                <span className="font-bold text-gray-900">{ingredient.rating}</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+                )}
+
                 {/* 5. Buying Guide - Strictly Dynamic */}
                 {buyingGuide && (
                     <section className="max-w-4xl mx-auto bg-blue-50/50 p-8 md:p-12 rounded-[2rem] border border-blue-100">
