@@ -6,6 +6,9 @@ import { ShieldCheck, Star, ExternalLink, Activity, Info, AlertTriangle, CheckCi
 
 // --- Fetch Data ---
 async function getReview(slug: string) {
+    if (!('productReview' in prisma)) {
+        notFound();
+    }
     const review = await (prisma as any).productReview.findUnique({
         where: { slug },
         include: {

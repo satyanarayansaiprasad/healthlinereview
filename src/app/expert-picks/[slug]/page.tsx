@@ -7,6 +7,10 @@ import Link from 'next/link';
 
 // --- Fetch Data ---
 async function getGuide(slug: string) {
+    if (!('expertPicksGuide' in prisma)) {
+        notFound();
+    }
+    
     const guide = await (prisma as any).expertPicksGuide.findUnique({
         where: { slug },
         include: {

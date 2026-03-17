@@ -4,9 +4,9 @@ import Image from 'next/image';
 import { Star, ChevronRight, ShieldCheck, Zap, Heart, Search, Filter, ArrowRight, Award, CheckCircle2 } from 'lucide-react';
 
 export default async function ProductReviewsIndex() {
-    const reviews = await prisma.productReview.findMany({
+    const reviews = ('productReview' in prisma) ? await (prisma as any).productReview.findMany({
         orderBy: { createdAt: 'desc' }
-    });
+    }) : [];
 
     return (
         <div className="flex flex-col gap-12 md:gap-20 pb-20 bg-[#fbfcfd] font-sans">
@@ -92,7 +92,7 @@ export default async function ProductReviewsIndex() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-                    {reviews.map((review, i) => (
+                    {reviews.map((review: any, i: number) => (
                         <Link
                             key={review.id}
                             href={`/reviews/${review.slug}`}
@@ -131,7 +131,7 @@ export default async function ProductReviewsIndex() {
                                 </h3>
 
                                 <div className="flex flex-wrap gap-2 mb-8">
-                                    {review.pros?.slice(0, 2).map((pro, index) => (
+                                    {review.pros?.slice(0, 2).map((pro: string, index: number) => (
                                         <span key={index} className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-wider">
                                             <CheckCircle2 className="w-3 h-3" /> {pro}
                                         </span>

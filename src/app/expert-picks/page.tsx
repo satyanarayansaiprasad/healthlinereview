@@ -4,7 +4,7 @@ import { prisma } from '@/lib/prisma';
 
 export default async function ExpertPicksPage() {
     // Fetch all guides with their category and basic stats
-    const guides = await (prisma as any).expertPicksGuide.findMany({
+    const guides = ('expertPicksGuide' in prisma) ? await (prisma as any).expertPicksGuide.findMany({
         include: {
             category: true,
             products: {
@@ -12,7 +12,7 @@ export default async function ExpertPicksPage() {
             }
         },
         orderBy: { createdAt: 'desc' }
-    });
+    }) : [];
 
     return (
         <div className="flex flex-col gap-12 md:gap-20 pb-20 bg-[#f8fafc] font-sans">

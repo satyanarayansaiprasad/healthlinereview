@@ -139,7 +139,7 @@ export default async function Home() {
                     </h2>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                        {(await (prisma as any).expertPickProduct.findMany({
+                        {('expertPickProduct' in prisma) ? (await (prisma as any).expertPickProduct.findMany({
                             take: 4,
                             orderBy: { rating: 'desc' },
                             include: { guide: true }
@@ -176,7 +176,11 @@ export default async function Home() {
                                     View Full Guide
                                 </Link>
                             </div>
-                        ))}
+                        )) : (
+                            <div className="col-span-full py-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-gray-100">
+                                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">Expert recommendations coming soon</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>
@@ -338,7 +342,7 @@ export default async function Home() {
                                     <span className="text-gray-900 font-black ml-1 text-[10px]">{item.rating}</span>
                                 </div>
                                 <h4 className="font-black text-lg text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight line-clamp-2">{item.productName}</h4>
-                                <p className="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">{item.brand || 'Expert Verified'}</p>
+                                            <p className="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">{(item as any).brand || 'Expert Verified'}</p>
                                 <div className="mt-auto">
                                     <Link href={`/reviews/${item.slug}`} className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-3 transition-all">
                                         Read Analysis <ArrowRight className="w-4 h-4" />
