@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Loader2, Save, X, Search, ChevronRight, AlertCircle, GripVertical } from 'lucide-react';
+import { Plus, Edit, Trash2, Loader2, Save, X, Search, ChevronRight, AlertCircle, GripVertical, Award, TrendingUp } from 'lucide-react';
 
 // --- Types based on prisma schema ---
 interface ExpertPicksGuide {
@@ -288,11 +288,290 @@ export default function AdminExpertPicks() {
                             </div>
                         </div>
 
-                        {/* Note: In a full production app, you would add similar complex array editors for howWeRanked, faqs, etc here */}
-                        <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
-                            <p className="text-sm text-yellow-800 font-medium">
-                                <strong>Note:</strong> Structured fields like "How We Ranked", "FAQs", and "Ingredients Analysis" require complex JSON array interfaces. For brevity in this implementation, their data structure is supported by the API, but UI fields remain minimal here. You can expand these arrays programmatically.
-                            </p>
+                        {/* 2.5 Structured JSON Content (The "Dynamic" Parts) */}
+                        <div className="space-y-8">
+                            {/* Methodology (howWeRanked) */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold flex items-center gap-2 border-b pb-4">
+                                    <TrendingUp className="w-5 h-5 text-blue-600"/> Methodology (How We Ranked)
+                                </h2>
+                                <div className="flex gap-2">
+                                    <input 
+                                        type="text" 
+                                        id="new-how-we-ranked"
+                                        placeholder="Add ranking criteria..." 
+                                        className="flex-1 p-3 border rounded-lg"
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                e.preventDefault();
+                                                const val = (e.target as HTMLInputElement).value;
+                                                if (val.trim()) {
+                                                    setFormData(prev => ({ ...prev, howWeRanked: [...(prev.howWeRanked || []), val.trim()] }));
+                                                    (e.target as HTMLInputElement).value = '';
+                                                }
+                                            }
+                                        }}
+                                    />
+                                    <button 
+                                        type="button"
+                                        onClick={() => {
+                                            const input = document.getElementById('new-how-we-ranked') as HTMLInputElement;
+                                            if (input.value.trim()) {
+                                                setFormData(prev => ({ ...prev, howWeRanked: [...(prev.howWeRanked || []), input.value.trim()] }));
+                                                input.value = '';
+                                            }
+                                        }}
+                                        className="bg-blue-50 text-blue-600 px-4 py-2 rounded-lg font-bold"
+                                    >
+                                        Add
+                                    </button>
+                                </div>
+                                <ul className="space-y-2">
+                                    {(formData.howWeRanked || []).map((item, i) => (
+                                        <li key={i} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg group">
+                                            <span className="text-sm font-medium text-gray-700">{i + 1}. {item}</span>
+                                            <button 
+                                                onClick={() => {
+                                                    const newArr = [...(formData.howWeRanked || [])];
+                                                    newArr.splice(i, 1);
+                                                    setFormData({...formData, howWeRanked: newArr});
+                                                }}
+                                                className="text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 className="w-4 h-4"/>
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+
+                            {/* FAQs Manager */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold border-b pb-4">Frequently Asked Questions</h2>
+                                <div className="space-y-4">
+                                    {(formData.faqs || []).map((faq, i) => (
+                                        <div key={i} className="p-4 border rounded-lg bg-gray-50 space-y-3 relative group">
+                                            <button 
+                                                onClick={() => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs.splice(i, 1);
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                className="absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X className="w-4 h-4"/>
+                                            </button>
+                                            <input 
+                                                type="text" 
+                                                value={faq.question} 
+                                                onChange={(e) => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs[i] = { ...newFaqs[i], question: e.target.value };
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                placeholder="Question" 
+                                                className="w-full p-2 border rounded bg-white text-sm font-bold"
+                                            />
+                                            <textarea 
+                                                value={faq.answer} 
+                                                onChange={(e) => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs[i] = { ...newFaqs[i], answer: e.target.value };
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                placeholder="Answer" 
+                                                className="w-full p-2 border rounded bg-white text-sm h-20"
+                                            />
+                                        </div>
+                                    ))}
+                                    <button 
+                                        onClick={() => setFormData(prev => ({ ...prev, faqs: [...(prev.faqs || []), { question: '', answer: '' }] }))}
+                                        className="w-full py-3 border-2 border-dashed border-gray-300 text-gray-400 font-bold rounded-xl hover:border-gray-400 hover:text-gray-600 transition-all"
+                                    >
+                                        + Add FAQ Item
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Ingredients Analysis Manager */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold border-b pb-4">Key Ingredients Analysis</h2>
+                                <div className="space-y-4">
+                                    {(formData.ingredientsAnalysis || []).map((item, i) => (
+                                        <div key={i} className="p-6 border rounded-xl bg-gray-50 space-y-4 relative group">
+                                            <button 
+                                                onClick={() => {
+                                                    const newArr = [...(formData.ingredientsAnalysis || [])];
+                                                    newArr.splice(i, 1);
+                                                    setFormData({...formData, ingredientsAnalysis: newArr});
+                                                }}
+                                                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 className="w-5 h-5"/>
+                                            </button>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="col-span-1">
+                                                    <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Ingredient Name</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={item.name} 
+                                                        onChange={(e) => {
+                                                            const newArr = [...(formData.ingredientsAnalysis || [])];
+                                                            newArr[i] = { ...newArr[i], name: e.target.value };
+                                                            setFormData({...formData, ingredientsAnalysis: newArr});
+                                                        }}
+                                                        className="w-full p-2 border rounded-md"
+                                                    />
+                                                </div>
+                                                <div className="col-span-1">
+                                                    <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Expert Rating</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={item.rating} 
+                                                        onChange={(e) => {
+                                                            const newArr = [...(formData.ingredientsAnalysis || [])];
+                                                            newArr[i] = { ...newArr[i], rating: e.target.value };
+                                                            setFormData({...formData, ingredientsAnalysis: newArr});
+                                                        }}
+                                                        className="w-full p-2 border rounded-md"
+                                                    />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Benefit Summary</label>
+                                                    <textarea 
+                                                        value={item.benefit} 
+                                                        onChange={(e) => {
+                                                            const newArr = [...(formData.ingredientsAnalysis || [])];
+                                                            newArr[i] = { ...newArr[i], benefit: e.target.value };
+                                                            setFormData({...formData, ingredientsAnalysis: newArr});
+                                                        }}
+                                                        className="w-full p-2 border rounded-md h-20"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button 
+                                        onClick={() => setFormData(prev => ({ ...prev, ingredientsAnalysis: [...(prev.ingredientsAnalysis || []), { name: '', rating: '', benefit: '' }] }))}
+                                        className="w-full py-4 bg-gray-900 text-white rounded-xl font-bold hover:bg-black transition-all"
+                                    >
+                                        + Add Ingredient Profile
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Buying Guide (howToLookFor, howToAvoid) */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold border-b pb-4">Buying Guide (Dos & Don'ts)</h2>
+                                <div className="grid grid-cols-2 gap-8">
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-black text-emerald-600 uppercase">What to Look For</h3>
+                                        <div className="flex gap-2">
+                                            <input 
+                                                type="text" 
+                                                id="new-look-for"
+                                                className="flex-1 p-2 border rounded-md text-sm"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        const val = (e.target as HTMLInputElement).value;
+                                                        if (val.trim()) {
+                                                            const currentBG = (formData.buyingGuide as any) || { whatToLookFor: [], whatToAvoid: [] };
+                                                            const newBG = { ...currentBG, whatToLookFor: [...(currentBG.whatToLookFor || []), val.trim()] };
+                                                            setFormData({...formData, buyingGuide: newBG});
+                                                            (e.target as HTMLInputElement).value = '';
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <ul className="space-y-2">
+                                            {((formData.buyingGuide as any)?.whatToLookFor || []).map((item: string, i: number) => (
+                                                <li key={i} className="flex items-center justify-between bg-emerald-50 text-emerald-800 p-2 rounded-md text-xs group">
+                                                    <span>✓ {item}</span>
+                                                    <button 
+                                                        onClick={() => {
+                                                            const currentBG = (formData.buyingGuide as any);
+                                                            const newArr = [...currentBG.whatToLookFor];
+                                                            newArr.splice(i, 1);
+                                                            setFormData({...formData, buyingGuide: { ...currentBG, whatToLookFor: newArr }});
+                                                        }}
+                                                        className="text-emerald-400 hover:text-red-500 opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="w-3 h-3"/>
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    <div className="space-y-4">
+                                        <h3 className="text-sm font-black text-red-600 uppercase">What to Avoid</h3>
+                                        <div className="flex gap-2">
+                                            <input 
+                                                type="text" 
+                                                id="new-avoid"
+                                                className="flex-1 p-2 border rounded-md text-sm"
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') {
+                                                        e.preventDefault();
+                                                        const val = (e.target as HTMLInputElement).value;
+                                                        if (val.trim()) {
+                                                            const currentBG = (formData.buyingGuide as any) || { whatToLookFor: [], whatToAvoid: [] };
+                                                            const newBG = { ...currentBG, whatToAvoid: [...(currentBG.whatToAvoid || []), val.trim()] };
+                                                            setFormData({...formData, buyingGuide: newBG});
+                                                            (e.target as HTMLInputElement).value = '';
+                                                        }
+                                                    }
+                                                }}
+                                            />
+                                        </div>
+                                        <ul className="space-y-2">
+                                            {((formData.buyingGuide as any)?.whatToAvoid || []).map((item: string, i: number) => (
+                                                <li key={i} className="flex items-center justify-between bg-red-50 text-red-800 p-2 rounded-md text-xs group">
+                                                    <span>✕ {item}</span>
+                                                    <button 
+                                                        onClick={() => {
+                                                            const currentBG = (formData.buyingGuide as any);
+                                                            const newArr = [...currentBG.whatToAvoid];
+                                                            newArr.splice(i, 1);
+                                                            setFormData({...formData, buyingGuide: { ...currentBG, whatToAvoid: newArr }});
+                                                        }}
+                                                        className="text-red-400 hover:text-red-500 opacity-0 group-hover:opacity-100"
+                                                    >
+                                                        <Trash2 className="w-3 h-3"/>
+                                                    </button>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Final Verdict Editor */}
+                            <div className="bg-gray-900 p-8 rounded-[2rem] text-white space-y-6">
+                                <h2 className="text-xl font-bold flex items-center gap-2 border-b border-white/10 pb-4">
+                                    <Award className="w-6 h-6 text-yellow-500"/> Final Verdict
+                                </h2>
+                                <div>
+                                    <label className="block text-xs font-black uppercase text-gray-500 mb-2 tracking-widest">Verdict Summary</label>
+                                    <textarea 
+                                        value={(formData.finalVerdict as any)?.summary || ''} 
+                                        onChange={(e) => setFormData({...formData, finalVerdict: { ...(formData.finalVerdict as any), summary: e.target.value }})}
+                                        className="w-full p-4 border rounded-xl bg-white/5 border-white/10 h-32 focus:border-blue-500 outline-none" 
+                                        placeholder="The final conclusion for the guide..."
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-black uppercase text-gray-500 mb-2 tracking-widest">Winner Product Name</label>
+                                    <input 
+                                        type="text" 
+                                        value={(formData.finalVerdict as any)?.winner || ''} 
+                                        onChange={(e) => setFormData({...formData, finalVerdict: { ...(formData.finalVerdict as any), winner: e.target.value }})}
+                                        className="w-full p-3 border rounded-xl bg-white/5 border-white/10 outline-none focus:border-blue-500" 
+                                        placeholder="Name of the #1 picking"
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
 

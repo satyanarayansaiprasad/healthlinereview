@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Loader2, Save, X, Search, AlertCircle } from 'lucide-react';
+import { Plus, Edit, Trash2, Loader2, Save, X, Search, AlertCircle, Activity, HelpCircle } from 'lucide-react';
 
 // --- Types based on prisma schema ---
 interface ProductReview {
@@ -374,10 +374,115 @@ export default function AdminProductReviews() {
                             </div>
                         </div>
 
-                         <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
-                            <p className="text-sm text-yellow-800 font-medium">
-                                Structured fields like "Detailed Ingredients" and "Pricing Packages" are supported by the API. Expand these in the UI as needed.
-                            </p>
+                        {/* 4. Structured JSON Content */}
+                        <div className="space-y-8">
+                            {/* Detailed Ingredients Manager */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold flex items-center gap-2 border-b pb-4">
+                                    <Activity className="w-5 h-5 text-blue-600"/> Detailed Ingredient Analysis
+                                </h2>
+                                <div className="space-y-4">
+                                    {(formData.detailedIngredients || []).map((ingredient: any, i: number) => (
+                                        <div key={i} className="p-6 border rounded-xl bg-gray-50 space-y-4 relative group">
+                                            <button 
+                                                onClick={() => {
+                                                    const newArr = [...(formData.detailedIngredients || [])];
+                                                    newArr.splice(i, 1);
+                                                    setFormData({...formData, detailedIngredients: newArr});
+                                                }}
+                                                className="absolute top-4 right-4 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <Trash2 className="w-5 h-5"/>
+                                            </button>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div className="col-span-2">
+                                                    <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Ingredient Name</label>
+                                                    <input 
+                                                        type="text" 
+                                                        value={ingredient.name} 
+                                                        onChange={(e) => {
+                                                            const newArr = [...(formData.detailedIngredients || [])];
+                                                            newArr[i] = { ...newArr[i], name: e.target.value };
+                                                            setFormData({...formData, detailedIngredients: newArr});
+                                                        }}
+                                                        placeholder="e.g. Glucosamine Sulfate"
+                                                        className="w-full p-2 border rounded-md"
+                                                    />
+                                                </div>
+                                                <div className="col-span-2">
+                                                    <label className="block text-[10px] font-black uppercase text-gray-400 mb-1">Expert Benefit / Content Details</label>
+                                                    <textarea 
+                                                        value={ingredient.benefit || ingredient.description || ingredient.content} 
+                                                        onChange={(e) => {
+                                                            const newArr = [...(formData.detailedIngredients || [])];
+                                                            newArr[i] = { ...newArr[i], benefit: e.target.value };
+                                                            setFormData({...formData, detailedIngredients: newArr});
+                                                        }}
+                                                        placeholder="Describe why this ingredient matters..."
+                                                        className="w-full p-2 border rounded-md h-20"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                    <button 
+                                        onClick={() => setFormData(prev => ({ ...prev, detailedIngredients: [...(prev.detailedIngredients || []), { name: '', benefit: '' }] }))}
+                                        className="w-full py-4 border-2 border-dashed border-gray-300 text-gray-400 font-bold rounded-xl hover:border-gray-400 hover:text-gray-600 transition-all"
+                                    >
+                                        + Add Ingredient Profile
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* FAQs Manager */}
+                            <div className="bg-white p-8 rounded-xl border border-gray-200 space-y-6">
+                                <h2 className="text-xl font-bold flex items-center gap-2 border-b pb-4">
+                                    <HelpCircle className="w-5 h-5 text-blue-600"/> Product FAQs
+                                </h2>
+                                <div className="space-y-4">
+                                    {(formData.faqs || []).map((faq: any, i: number) => (
+                                        <div key={i} className="p-4 border rounded-lg bg-gray-50 space-y-3 relative group">
+                                            <button 
+                                                onClick={() => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs.splice(i, 1);
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                className="absolute top-2 right-2 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <X className="w-4 h-4"/>
+                                            </button>
+                                            <input 
+                                                type="text" 
+                                                value={faq.question} 
+                                                onChange={(e) => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs[i] = { ...newFaqs[i], question: e.target.value };
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                placeholder="Question" 
+                                                className="w-full p-2 border rounded bg-white text-sm font-bold"
+                                            />
+                                            <textarea 
+                                                value={faq.answer} 
+                                                onChange={(e) => {
+                                                    const newFaqs = [...(formData.faqs || [])];
+                                                    newFaqs[i] = { ...newFaqs[i], answer: e.target.value };
+                                                    setFormData({...formData, faqs: newFaqs});
+                                                }}
+                                                placeholder="Answer" 
+                                                className="w-full p-2 border rounded bg-white text-sm h-20"
+                                            />
+                                        </div>
+                                    ))}
+                                    <button 
+                                        onClick={() => setFormData(prev => ({ ...prev, faqs: [...(prev.faqs || []), { question: '', answer: '' }] }))}
+                                        className="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition-all"
+                                    >
+                                        + Add FAQ Item
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
