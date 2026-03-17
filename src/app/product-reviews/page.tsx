@@ -95,7 +95,7 @@ export default async function ProductReviewsIndex() {
                     {reviews.map((review, i) => (
                         <Link
                             key={review.id}
-                            href={`/product-reviews/${review.slug}`}
+                            href={`/reviews/${review.slug}`}
                             className="group flex flex-col bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:border-blue-100 transition-all duration-500 overflow-hidden"
                         >
                             <div className="aspect-square relative bg-[#fdfefe] flex items-center justify-center p-12 group-hover:bg-white transition-colors">

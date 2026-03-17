@@ -47,7 +47,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
     const buyingGuide = (guide.buyingGuide as any) || null;
 
     return (
-        <div className="bg-[#f8fafc] min-h-screen font-sans">
+        <div className="bg-[#f8fafc] min-h-screen font-sans scroll-smooth">
             {/* 1. Hero Section */}
             <header className="bg-white pt-32 pb-16 md:pt-40 md:pb-24 border-b border-gray-100 relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-[40%] h-full bg-blue-50/50 -skew-x-12 translate-x-1/2" />
@@ -178,7 +178,7 @@ export default async function ExpertPickGuidePage({ params }: { params: { slug: 
                     <h2 className="text-3xl font-black text-center mb-12">Expert Analysis & Reviews</h2>
                     
                     {guide.products.map((product: any) => (
-                        <div key={product.id} id={`product-${product.rank}`} className="bg-white rounded-[2rem] border border-gray-200 shadow-sm overflow-hidden flex flex-col pt-8 relative">
+                        <div key={product.id} id={`product-${product.rank}`} className="bg-white rounded-[2rem] border border-gray-200 shadow-sm overflow-hidden flex flex-col pt-8 relative scroll-mt-32 md:scroll-mt-40">
                             {/* Rank Badge */}
                             <div className="absolute top-0 left-8 -translate-y-1/2 bg-gray-900 text-white px-6 py-2 rounded-full font-black flex items-center gap-2 border-4 border-[#f8fafc]">
                                 <span className="text-yellow-400">#</span>{product.rank}

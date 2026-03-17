@@ -139,37 +139,42 @@ export default async function Home() {
                     </h2>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-                        {[
-                            { name: 'Ultimate H2', desc: 'Boost Of Energy', rating: 4.9, img: 'https://m.media-amazon.com/images/I/71L+3U5ZaAL._AC_SL1500_.jpg', bg: 'bg-blue-50/50' },
-                            { name: 'Polyphenol Olive Oil', desc: 'High-Quality & Rich', rating: 4.9, img: 'https://m.media-amazon.com/images/I/61SBCf15vbS._SL1500_.jpg', bg: 'bg-emerald-50/50' },
-                            { name: 'Morning Kick', desc: 'Healthy Digestion', rating: 4.8, img: 'https://m.media-amazon.com/images/I/81INSpJczkL._AC_SL1500_.jpg', bg: 'bg-orange-50/50' },
-                            { name: 'MCT Wellness', desc: 'Healthy Metabolism', rating: 4.9, img: 'https://m.media-amazon.com/images/I/71P9S1Nk4hL._AC_SL1500_.jpg', bg: 'bg-purple-50/50' },
-                        ].map((product, i) => (
-                            <div key={i} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center group flex flex-col h-full transform hover:-translate-y-2">
-                                <div className={`aspect-square mb-6 rounded-2xl overflow-hidden relative ${product.bg} flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500`}>
+                        {(await (prisma as any).expertPickProduct.findMany({
+                            take: 4,
+                            orderBy: { rating: 'desc' },
+                            include: { guide: true }
+                        })).map((product: any, i: number) => (
+                            <div key={product.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center group flex flex-col h-full transform hover:-translate-y-2">
+                                <div className={`aspect-square mb-6 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500`}>
                                     <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700">
-                                        <Image
-                                            src={product.img}
-                                            alt={product.name}
-                                            fill
-                                            className="object-contain drop-shadow-2xl"
-                                        />
+                                        {product.productImage ? (
+                                            <Image
+                                                src={product.productImage}
+                                                alt={product.productName}
+                                                fill
+                                                className="object-contain drop-shadow-2xl"
+                                            />
+                                        ) : (
+                                            <div className="text-6xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                                💊
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border border-gray-100/50">
                                         Expert Choice
                                     </div>
                                 </div>
                                 <div className="space-y-1 mb-4 flex-grow">
-                                    <h3 className="font-black text-xl text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">{product.name}</h3>
-                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">{product.desc}</p>
+                                    <h3 className="font-black text-xl text-gray-900 leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{product.productName}</h3>
+                                    <p className="text-gray-400 text-xs font-bold uppercase tracking-widest">{product.guide?.title || 'Expert Review'}</p>
                                 </div>
                                 <div className="flex items-center justify-center gap-1 text-yellow-400 mb-8 bg-gray-50/80 py-2.5 rounded-2xl w-full">
-                                    {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3.5 h-3.5 fill-current" />)}
+                                    {[1, 2, 3, 4, 5].map(s => <Star key={s} className={`w-3.5 h-3.5 ${s <= Math.floor(product.rating) ? 'fill-current' : 'text-gray-200'}`} />)}
                                     <span className="text-gray-900 font-extrabold text-xs ml-1">{product.rating} <span className="text-gray-300 font-medium">/ 5.0</span></span>
                                 </div>
-                                <button className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 active:scale-95">
-                                    Check Price
-                                </button>
+                                <Link href={`/expert-picks/${product.guide?.slug}#product-${product.rank}`} className="w-full py-4 bg-gray-900 text-white rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-blue-600 transition-all shadow-xl shadow-gray-200 active:scale-95 text-center">
+                                    View Full Guide
+                                </Link>
                             </div>
                         ))}
                     </div>
@@ -309,34 +314,43 @@ export default async function Home() {
                 <div className="container mx-auto px-4 md:px-6">
                     <h2 className="section-title">Trusted Product Reviews</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {[
-                            { name: 'Organic Whey Protein Plus', brand: 'Verified Quality • Non-GMO', rating: 4.8, slug: 'organic-whey', img: 'https://m.media-amazon.com/images/I/7181KquqcpL._SX679_.jpg', color: 'bg-blue-50/50' },
-                            { name: 'Focus Factor Nootropic', brand: 'Brain Performance', rating: 4.2, slug: 'focus-factor', img: 'https://m.media-amazon.com/images/I/71zYzdGgvdL._AC_SL1500_.jpg', color: 'bg-purple-50/50' },
-                            { name: 'Digestive Enzymes', brand: 'Gut Health Mastery', rating: 4.7, slug: 'digestive-enzymes', img: 'https://m.media-amazon.com/images/I/71Z46KZaq-L._SL1500_.jpg', color: 'bg-emerald-50/50' },
-                            { name: 'Advanced Collagen', brand: 'Skin & Joint Support', rating: 4.9, slug: 'collagen', img: 'https://m.media-amazon.com/images/I/51yvBiyU6NL._SL1080_.jpg', color: 'bg-pink-50/50' },
-                        ].map((item, i) => (
-                            <div key={i} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
-                                <div className={`w-full aspect-square ${item.color} rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
-                                    <Image
-                                        src={item.img}
-                                        alt={item.name}
-                                        fill
-                                        className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
-                                    />
+                        {(await prisma.productReview.findMany({
+                            take: 4,
+                            orderBy: { createdAt: 'desc' }
+                        })).map((item, i) => (
+                            <div key={item.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
+                                <div className={`w-full aspect-square bg-gray-50 rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
+                                    {item.featuredImage ? (
+                                        <Image
+                                            src={item.featuredImage}
+                                            alt={item.productName}
+                                            fill
+                                            className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                                        />
+                                    ) : (
+                                        <div className="text-4xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                            💊
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex items-center gap-1 text-yellow-400 mb-4 bg-gray-50/80 py-1.5 px-3 rounded-full w-fit">
-                                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-3 h-3 fill-current" />)}
+                                    {[1, 2, 3, 4, 5].map((s) => <Star key={s} className={`w-3 h-3 ${s <= Math.floor(item.rating) ? 'fill-current' : 'text-gray-200'}`} />)}
                                     <span className="text-gray-900 font-black ml-1 text-[10px]">{item.rating}</span>
                                 </div>
-                                <h4 className="font-black text-lg text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight line-clamp-2">{item.name}</h4>
-                                <p className="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">{item.brand}</p>
+                                <h4 className="font-black text-lg text-gray-900 mb-2 leading-tight group-hover:text-blue-600 transition-colors uppercase tracking-tight line-clamp-2">{item.productName}</h4>
+                                <p className="text-[10px] font-bold text-gray-400 mb-8 uppercase tracking-widest">{item.brand || 'Expert Verified'}</p>
                                 <div className="mt-auto">
-                                    <Link href={`/product-reviews/${item.slug}`} className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-3 transition-all">
+                                    <Link href={`/reviews/${item.slug}`} className="text-blue-600 text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2 group-hover:gap-3 transition-all">
                                         Read Analysis <ArrowRight className="w-4 h-4" />
                                     </Link>
                                 </div>
                             </div>
                         ))}
+                        {(await prisma.productReview.count()) === 0 && (
+                            <div className="col-span-full py-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-gray-100">
+                                <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No product reviews available yet</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

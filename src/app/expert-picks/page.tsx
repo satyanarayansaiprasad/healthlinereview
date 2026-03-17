@@ -1,36 +1,18 @@
 import { Award, Star, ChevronRight, ExternalLink, ShieldCheck, CheckCircle2, Zap, Heart, Sparkles, UserCheck } from 'lucide-react';
 import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
 
-export default function ExpertPicksPage() {
-    const picks = [
-        {
-            category: "Supplements",
-            title: "Best Multivitamins for Men 2024",
-            item: "Ritual Essential for Men",
-            rating: 4.9,
-            award: "TOP PICK",
-            desc: "Our medical review board analyzed 50+ multivitamins. Ritual stands out for transparency and bioavailable ingredients.",
-            stats: "Lab Purity: 99.8%"
+export default async function ExpertPicksPage() {
+    // Fetch all guides with their category and basic stats
+    const guides = await (prisma as any).expertPicksGuide.findMany({
+        include: {
+            category: true,
+            products: {
+                select: { rating: true }
+            }
         },
-        {
-            category: "Mental Health",
-            title: "Top-Rated Meditation Apps",
-            item: "Headspace",
-            rating: 4.8,
-            award: "BEST FOR BEGINNERS",
-            desc: "Based on clinical studies and user performance, Headspace offers the most comprehensive guided meditations.",
-            stats: "User Efficacy: 94%"
-        },
-        {
-            category: "Nutrition",
-            title: "Highest Quality Whey Proteins",
-            item: "Transparent Labs Grass-Fed",
-            rating: 4.9,
-            award: "PURITY AWARD",
-            desc: "Zero artificial sweeteners, third-party tested, and sourced from grass-fed cows for maximum nutrient density.",
-            stats: "Heavy Metal Tested"
-        }
-    ];
+        orderBy: { createdAt: 'desc' }
+    });
 
     return (
         <div className="flex flex-col gap-12 md:gap-20 pb-20 bg-[#f8fafc] font-sans">
@@ -108,68 +90,78 @@ export default function ExpertPicksPage() {
             {/* Award Picks Grid */}
             <section className="container mx-auto px-4 md:px-6 -mt-20 md:-mt-24 relative z-20">
                 <div className="grid grid-cols-1 gap-12 md:gap-16">
-                    {picks.map((pick, i) => (
-                        <div
-                            key={i}
-                            className="bg-white rounded-[3rem] shadow-2xl shadow-blue-900/5 p-8 md:p-14 border border-gray-50 flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch hover:translate-y-[-8px] transition-all duration-500 group"
-                        >
-                            <div className="w-full lg:w-1/3 aspect-square bg-[#fcfdff] rounded-[2.5rem] flex items-center justify-center p-12 relative overflow-hidden">
-                                <div className="absolute inset-0 bg-blue-50/20 group-hover:bg-transparent transition-colors" />
-
-                                <div className="absolute top-6 left-6 z-10">
-                                    <div className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-[0.2em] uppercase shadow-xl shadow-blue-600/30 group-hover:scale-110 transition-transform">
-                                        {pick.award}
-                                    </div>
-                                </div>
-
-                                <div className="w-full h-full bg-gradient-to-br from-gray-50 to-blue-50 rounded-[2rem] flex items-center justify-center text-8xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                                    {pick.category === 'Supplements' ? '💊' : pick.category === 'Mental Health' ? '🧠' : '🥗'}
-                                </div>
-
-                                <div className="absolute bottom-6 right-6">
-                                    <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 border border-blue-50 shadow-sm uppercase tracking-widest">
-                                        {pick.stats}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="flex-1 flex flex-col justify-center space-y-8">
-                                <div className="space-y-4">
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em]">{pick.category}</span>
-                                        <div className="h-0.5 w-12 bg-blue-100" />
-                                    </div>
-                                    <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
-                                        {pick.title}
-                                    </h2>
-                                </div>
-
-                                <div className="flex items-center gap-6 py-8 border-y border-gray-50">
-                                    <div className="flex text-yellow-400">
-                                        {[...Array(5)].map((_, s) => <Star key={s} className="w-5 h-5 fill-current" />)}
-                                    </div>
-                                    <div className="h-6 w-px bg-gray-200" />
-                                    <div className="flex items-center gap-3">
-                                        <UserCheck className="w-5 h-5 text-gray-300" />
-                                        <span className="text-sm font-black text-gray-900">{pick.rating} / 5.0</span>
-                                    </div>
-                                </div>
-
-                                <p className="text-lg md:text-xl text-gray-500 leading-relaxed font-medium italic">
-                                    "{pick.desc}"
-                                </p>
-
-                                <div className="flex flex-wrap gap-5 pt-4">
-                                    <button className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
-                                        View Rankings <ChevronRight className="w-4 h-4" />
-                                    </button>
-                                    <button className="bg-white text-gray-900 border-2 border-gray-100 px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-blue-600 hover:text-blue-600 transition-all transform active:scale-95">
-                                        Lab Certificate <ExternalLink className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </div>
+                    {guides.length === 0 ? (
+                        <div className="bg-white p-12 rounded-[3rem] text-center border-2 border-dashed border-gray-100">
+                            <p className="text-gray-400 font-bold uppercase tracking-widest">No expert picks available yet</p>
                         </div>
-                    ))}
+                    ) : (
+                        guides.map((guide: any) => {
+                            const avgRating = guide.products.reduce((acc: number, p: any) => acc + p.rating, 0) / (guide.products.length || 1);
+                            
+                            return (
+                                <div
+                                    key={guide.id}
+                                    className="bg-white rounded-[3rem] shadow-2xl shadow-blue-900/5 p-8 md:p-14 border border-gray-50 flex flex-col lg:flex-row gap-12 lg:gap-20 items-stretch hover:translate-y-[-8px] transition-all duration-500 group"
+                                >
+                                    <div className="w-full lg:w-1/3 aspect-square bg-[#fcfdff] rounded-[2.5rem] flex items-center justify-center p-12 relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-blue-50/20 group-hover:bg-transparent transition-colors" />
+
+                                        <div className="absolute top-6 left-6 z-10">
+                                            <div className="bg-blue-600 text-white px-5 py-2.5 rounded-2xl text-[10px] font-black tracking-[0.2em] uppercase shadow-xl shadow-blue-600/30 group-hover:scale-110 transition-transform">
+                                                Certified Review
+                                            </div>
+                                        </div>
+
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-50 to-blue-50 rounded-[2rem] flex items-center justify-center text-8xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
+                                            {guide.category?.name?.includes('Supplement') ? '💊' : guide.category?.name?.includes('Mental') ? '🧠' : '🥗'}
+                                        </div>
+
+                                        <div className="absolute bottom-6 right-6">
+                                            <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 border border-blue-50 shadow-sm uppercase tracking-widest">
+                                                {guide.products.length} Products Tested
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="flex-1 flex flex-col justify-center space-y-8">
+                                        <div className="space-y-4">
+                                            <div className="flex items-center gap-3">
+                                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.3em]">{guide.category?.name || 'Expert Pick'}</span>
+                                                <div className="h-0.5 w-12 bg-blue-100" />
+                                            </div>
+                                            <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight group-hover:text-blue-600 transition-colors">
+                                                {guide.title}
+                                            </h2>
+                                        </div>
+
+                                        <div className="flex items-center gap-6 py-8 border-y border-gray-50">
+                                            <div className="flex text-yellow-400">
+                                                {[...Array(5)].map((_, s) => <Star key={s} className={`w-5 h-5 ${s < Math.floor(avgRating) ? 'fill-current' : 'text-gray-200'}`} />)}
+                                            </div>
+                                            <div className="h-6 w-px bg-gray-200" />
+                                            <div className="flex items-center gap-3">
+                                                <UserCheck className="w-5 h-5 text-gray-300" />
+                                                <span className="text-sm font-black text-gray-900">{avgRating.toFixed(1)} / 5.0</span>
+                                            </div>
+                                        </div>
+
+                                        <p className="text-lg md:text-xl text-gray-500 leading-relaxed font-medium italic line-clamp-3">
+                                            "{guide.description}"
+                                        </p>
+
+                                        <div className="flex flex-wrap gap-5 pt-4">
+                                            <Link href={`/expert-picks/${guide.slug}`} className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
+                                                View Rankings <ChevronRight className="w-4 h-4" />
+                                            </Link>
+                                            <button className="bg-white text-gray-900 border-2 border-gray-100 px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-blue-600 hover:text-blue-600 transition-all transform active:scale-95">
+                                                Lab Certificate <ExternalLink className="w-4 h-4" />
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
 
                 {/* Footer Engagement */}
