@@ -25,6 +25,7 @@ export default function AdminHealthTopicsPage() {
     const [uploading, setUploading] = useState(false);
     const [isFetching, setIsFetching] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
 
     useEffect(() => {
         fetchExperts();
@@ -330,8 +331,19 @@ export default function AdminHealthTopicsPage() {
                                 filteredExperts.map((expert) => (
                                     <div key={expert.id} className="bg-white p-4 flex items-center justify-between hover:bg-gray-50 transition-colors group">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 bg-blue-50 rounded-full border border-gray-100 flex items-center justify-center relative overflow-hidden">
-                                                <img src={expert.imageUrl} alt={expert.name} className="w-full h-full object-cover" />
+                                            <div className="shrink-0 w-12 h-12 bg-blue-50 rounded-full border border-blue-100 flex items-center justify-center relative overflow-hidden">
+                                                {imageErrors[expert.id] ? (
+                                                    <span className="font-black text-blue-600 text-sm tracking-widest">
+                                                        {expert.name.replace(/^Dr\.?\s+/i, '').substring(0, 2).toUpperCase()}
+                                                    </span>
+                                                ) : (
+                                                    <img 
+                                                        src={expert.imageUrl} 
+                                                        alt={expert.name} 
+                                                        className="w-full h-full object-cover" 
+                                                        onError={() => setImageErrors(prev => ({ ...prev, [expert.id]: true }))}
+                                                    />
+                                                )}
                                             </div>
                                             <div>
                                                 <h4 className="font-bold text-gray-900">{expert.name}</h4>
