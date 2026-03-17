@@ -16,6 +16,7 @@ model User {
   createdAt      DateTime        @default(now())
   articles       Article[]
   productReviews ProductReview[]
+  expertGuides   ExpertPicksGuide[]
 }
 
 model Category {
@@ -52,18 +53,47 @@ model ProductReview {
   productName   String
   slug          String   @unique
   rating        Float    @default(0)
+  verdict       String?
   pros          String[]
   cons          String[]
   ingredients   String[]
+  
+  brand         String?
+  form          String?
+  price         String?
+  guarantee     String?
   sideEffects   String?
+  
+  description       String?
+  targetAudience    String?
+  workingMechanism  String?
+  safetyInfo        String?
+  warnings          String?
+  
+  detailedIngredients Json?
+  benefitsList      String[]
+  customerReviews   Json?
+  pricingOffers     Json?
+  faqs              Json?
+  
+  finalRating       Float?
+  recommendation    String?
+  
   affiliateLink String?
   featuredImage String?
-  content       String
+  content       String?
+  
+  metaTitle       String?
+  metaDescription String?
+  
   authorId      String
   createdAt     DateTime @default(now())
   author        User            @relation(fields: [authorId], references: [id])
   categoryId    String?
   category      ReviewCategory? @relation(fields: [categoryId], references: [id])
+  
+  medicalReviewerId String?
+  medicalReviewer   HealthExpert?   @relation("ProductReviewMedicalReviewer", fields: [medicalReviewerId], references: [id])
 }
 
 model Comment {
@@ -175,6 +205,7 @@ model ReviewCategory {
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt
   reviews   ProductReview[]
+  expertGuides ExpertPicksGuide[]
 }
 
 model HealthExpert {
@@ -187,6 +218,8 @@ model HealthExpert {
   createdAt       DateTime     @default(now())
   updatedAt       DateTime     @updatedAt
   supplements     Supplement[]
+  reviewedGuides  ExpertPicksGuide[] @relation("GuideMedicalReviewer")
+  reviewedProducts ProductReview[]   @relation("ProductReviewMedicalReviewer")
 }
 
 model Supplement {
@@ -241,4 +274,55 @@ enum AdPlacement {
   SIDEBAR
   INLINE
   FOOTER
+}
+
+model ExpertPicksGuide {
+  id                String   @id @default(uuid())
+  title             String
+  slug              String   @unique
+  description       String?
+  
+  howWeRanked       Json?
+  ingredientsAnalysis Json?
+  buyingGuide       Json?
+  faqs              Json?
+  finalVerdict      Json?
+  
+  metaTitle         String?
+  metaDescription   String?
+  
+  authorId          String
+  author            User            @relation(fields: [authorId], references: [id])
+  
+  medicalReviewerId String?
+  medicalReviewer   HealthExpert?   @relation("GuideMedicalReviewer", fields: [medicalReviewerId], references: [id])
+  
+  categoryId        String?
+  category          ReviewCategory? @relation(fields: [categoryId], references: [id])
+  
+  products          ExpertPickProduct[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model ExpertPickProduct {
+  id              String   @id @default(uuid())
+  guideId         String
+  guide           ExpertPicksGuide @relation(fields: [guideId], references: [id], onDelete: Cascade)
+  
+  rank            Int
+  productName     String
+  shortHighlight  String?
+  rating          Float    @default(0)
+  award           String?
+  pros            String[]
+  cons            String[]
+  price           String?
+  buyLink         String?
+  highlights      String[]
+  productImage    String?
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
