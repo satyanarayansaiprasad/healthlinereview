@@ -7,12 +7,12 @@ import { prisma } from '@/lib/prisma';
 export const dynamic = 'force-dynamic';
 
 export default async function Home() {
-    const brands = await prisma.brand.findMany({
+    const brands = ('brand' in prisma) ? await (prisma as any).brand.findMany({
         take: 6,
         orderBy: {
             createdAt: 'desc'
         }
-    });
+    }) : [];
 
     return (
         <div className="flex flex-col gap-20 pb-20">
@@ -93,11 +93,11 @@ export default async function Home() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-                    {(await prisma.reviewCategory.findMany({
+                    {('reviewCategory' in prisma) ? (await (prisma as any).reviewCategory.findMany({
                         where: { isStarred: true },
                         take: 6,
                         orderBy: { createdAt: 'desc' }
-                    })).map((cat, i) => (
+                    })).map((cat: any, i: number) => (
                         <Link key={cat.id} href={`/product-reviews?category=${cat.slug}`} className="group relative overflow-hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-xl transition-all duration-300 flex items-center gap-6">
                             <div className="absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 bg-blue-50" />
                             <div className="w-16 h-16 flex-shrink-0 relative rounded-2xl overflow-hidden border border-gray-100 group-hover:scale-110 transition-transform">
@@ -116,8 +116,8 @@ export default async function Home() {
                                 <ChevronRight className="w-5 h-5 text-gray-300" />
                             </div>
                         </Link>
-                    ))}
-                    {(await prisma.reviewCategory.count({ where: { isStarred: true } })) === 0 && (
+                    )) : null}
+                    {(!('reviewCategory' in prisma) || (await prisma.reviewCategory.count({ where: { isStarred: true } })) === 0) && (
                         <div className="col-span-full text-center py-20 bg-gray-50 rounded-[3rem] border-2 border-dashed border-gray-100">
                             <Activity className="w-12 h-12 text-gray-200 mx-auto mb-4" />
                             <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No clinical categories featured yet</p>
@@ -204,7 +204,7 @@ export default async function Home() {
 
                     <div className="lg:col-span-8">
                         <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                            {brands.map((brand, i) => (
+                            {brands.map((brand: any, i: number) => (
                                 <Link
                                     key={brand.id}
                                     href={`/brands?search=${encodeURIComponent(brand.name)}`}
@@ -318,10 +318,10 @@ export default async function Home() {
                 <div className="container mx-auto px-4 md:px-6">
                     <h2 className="section-title">Trusted Product Reviews</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {(await prisma.productReview.findMany({
+                        {('productReview' in prisma) ? (await (prisma as any).productReview.findMany({
                             take: 4,
                             orderBy: { createdAt: 'desc' }
-                        })).map((item, i) => (
+                        })).map((item: any, i: number) => (
                             <div key={item.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
                                 <div className={`w-full aspect-square bg-gray-50 rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
                                     {item.featuredImage ? (
@@ -349,8 +349,8 @@ export default async function Home() {
                                     </Link>
                                 </div>
                             </div>
-                        ))}
-                        {(await prisma.productReview.count()) === 0 && (
+                        )) : null}
+                        {(!('productReview' in prisma) || (await prisma.productReview.count()) === 0) && (
                             <div className="col-span-full py-20 text-center bg-white rounded-[2rem] border-2 border-dashed border-gray-100">
                                 <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No product reviews available yet</p>
                             </div>
