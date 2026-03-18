@@ -1,6 +1,8 @@
 import { Award, Star, ChevronRight, ExternalLink, ShieldCheck, CheckCircle2, Zap, Heart, Sparkles, UserCheck } from 'lucide-react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
+import Image from 'next/image';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 export default async function ExpertPicksPage() {
     // Fetch all guides with their category and basic stats
@@ -112,9 +114,12 @@ export default async function ExpertPicksPage() {
                                             </div>
                                         </div>
 
-                                        <div className="w-full h-full bg-gradient-to-br from-gray-50 to-blue-50 rounded-[2rem] flex items-center justify-center text-8xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                                            {guide.category?.name?.includes('Supplement') ? '💊' : guide.category?.name?.includes('Mental') ? '🧠' : '🥗'}
-                                        </div>
+                                        <Image
+                                            src={getPlaceholderImage(guide.category?.name || 'medical')}
+                                            alt={guide.title}
+                                            fill
+                                            className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"
+                                        />
 
                                         <div className="absolute bottom-6 right-6">
                                             <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 border border-blue-50 shadow-sm uppercase tracking-widest">

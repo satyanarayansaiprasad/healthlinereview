@@ -148,18 +148,12 @@ export default async function Home() {
                             <div key={product.id} className="bg-white p-6 rounded-[2rem] shadow-sm border border-gray-100 hover:shadow-2xl transition-all duration-500 text-center group flex flex-col h-full transform hover:-translate-y-2">
                                 <div className={`aspect-square mb-6 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500`}>
                                     <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700">
-                                        {product.productImage ? (
-                                            <Image
-                                                src={product.productImage || getPlaceholderImage(product.guide?.slug)}
-                                                alt={product.productName}
-                                                fill
-                                                className="object-contain drop-shadow-2xl"
-                                            />
-                                        ) : (
-                                            <div className="text-6xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                                                💊
-                                            </div>
-                                        )}
+                                        <Image
+                                            src={product.productImage || getPlaceholderImage(product.productName)}
+                                            alt={product.productName}
+                                            fill
+                                            className={product.productImage ? "object-contain drop-shadow-2xl" : "object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"}
+                                        />
                                     </div>
                                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border border-gray-100/50">
                                         Expert Choice
@@ -325,18 +319,12 @@ export default async function Home() {
                         })).map((item: any, i: number) => (
                             <div key={item.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
                                 <div className={`w-full aspect-square bg-gray-50 rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
-                                    {item.featuredImage ? (
-                                        <Image
-                                            src={item.featuredImage || getPlaceholderImage(item.slug)}
-                                            alt={item.productName}
-                                            fill
-                                            className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
-                                        />
-                                    ) : (
-                                        <div className="text-4xl filter grayscale opacity-20 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700">
-                                            💊
-                                        </div>
-                                    )}
+                                    <Image
+                                        src={item.featuredImage || getPlaceholderImage(item.productName)}
+                                        alt={item.productName}
+                                        fill
+                                        className={item.featuredImage ? "object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110" : "object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"}
+                                    />
                                 </div>
                                 <div className="flex items-center gap-1 text-yellow-400 mb-4 bg-gray-50/80 py-1.5 px-3 rounded-full w-fit">
                                     {[1, 2, 3, 4, 5].map((s) => <Star key={s} className={`w-3 h-3 ${s <= Math.floor(item.rating) ? 'fill-current' : 'text-gray-200'}`} />)}

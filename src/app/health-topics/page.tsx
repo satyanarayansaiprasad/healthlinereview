@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { ShieldCheck, Stethoscope, ClipboardCheck, ArrowRight, User, CheckCircle2, Award, Heart } from 'lucide-react';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -81,13 +82,18 @@ export default async function HealthTopics() {
                     {/* Featured/Popular Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
                         {[
-                            { title: '18 Best Teas For Weight Loss And Boosting Your Metabolism 2026', img: '/topic-low-carb.png', bg: 'bg-green-100' },
-                            { title: '17 Best Supplements To Reduce Cortisol 2026, According to Experts', img: '/topic-fat-burning.png', bg: 'bg-orange-100' },
-                            { title: '17 Best Biotin Supplements For Hair Growth 2026, According to Dermatologists', img: '/topic-low-carb.png', bg: 'bg-blue-100' }
+                            { title: '18 Best Teas For Weight Loss And Boosting Your Metabolism 2026', type: 'weight-loss', bg: 'bg-green-100' },
+                            { title: '17 Best Supplements To Reduce Cortisol 2026, According to Experts', type: 'supplements', bg: 'bg-orange-100' },
+                            { title: '17 Best Biotin Supplements For Hair Growth 2026, According to Dermatologists', type: 'skincare', bg: 'bg-blue-100' }
                         ].map((article, i) => (
                             <div key={i} className="group cursor-pointer">
                                 <div className={`aspect-[16/9] rounded-2xl overflow-hidden ${article.bg} mb-5 relative`}>
-                                    <Image src={article.img} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
+                                    <Image 
+                                        src={getPlaceholderImage(article.type)} 
+                                        alt={article.title} 
+                                        fill 
+                                        className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" 
+                                    />
                                 </div>
                                 <h3 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors leading-snug">
                                     {article.title}
@@ -152,8 +158,13 @@ export default async function HealthTopics() {
                             {featuredExperts && featuredExperts.length > 0 ? (
                                 featuredExperts.map((expert) => (
                                     <div key={expert.id} className="bg-white p-6 rounded-3xl border border-gray-100 flex items-center gap-5 hover:shadow-xl transition-all group cursor-pointer">
-                                        <div className="w-16 h-16 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-all">
-                                            <img src={expert.imageUrl} alt={expert.name} className="w-full h-full object-cover" />
+                                        <div className="w-16 h-16 rounded-full bg-blue-50 flex-shrink-0 flex items-center justify-center overflow-hidden border-2 border-transparent group-hover:border-blue-400 transition-all relative">
+                                            <Image 
+                                                src={expert.imageUrl || getPlaceholderImage('expert')} 
+                                                alt={expert.name} 
+                                                fill 
+                                                className="object-cover" 
+                                            />
                                         </div>
                                         <div className="text-left">
                                             <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors">{expert.name}</h4>

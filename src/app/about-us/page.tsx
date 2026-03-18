@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { getPlaceholderImage } from '@/lib/image-utils';
 import { Shield, Users, Heart, Award, CheckCircle2, Stethoscope, Microscope, Globe } from 'lucide-react';
 
 export default function AboutUs() {
@@ -31,7 +32,7 @@ export default function AboutUs() {
 
                         <div className="hidden lg:block w-1/3 aspect-[4/5] rounded-[3rem] relative overflow-hidden shadow-2xl rotate-3 scale-95 hover:rotate-0 hover:scale-100 transition-all duration-700 group">
                             <Image
-                                src="/about-us-hero.png"
+                                src={getPlaceholderImage('medical research')}
                                 alt="Advanced Medical Research"
                                 fill
                                 className="object-cover group-hover:scale-110 transition-transform duration-[2s]"

@@ -3,6 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Pill, Search, ChevronRight, Loader2, Star, TrendingUp, X } from 'lucide-react';
+import Image from 'next/image';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 interface Supplement {
     id: string;
@@ -82,11 +84,12 @@ export default function SupplementsPage() {
                     </div>
                     <div className="flex-1 relative hidden lg:block">
                         <div className="absolute inset-0 bg-blue-100/50 rounded-[4rem] rotate-3 scale-95" />
-                        <div className="relative z-10 bg-white p-4 rounded-[4rem] shadow-2xl border border-gray-100">
-                            <img
-                                src="/images/supplements-hero.png"
+                        <div className="relative z-10 bg-white p-4 rounded-[4rem] shadow-2xl border border-gray-100 overflow-hidden aspect-[4/3]">
+                            <Image
+                                src={getPlaceholderImage('supplements')}
                                 alt="Supplements"
-                                className="w-full h-auto rounded-[3.5rem] object-cover aspect-[4/3]"
+                                fill
+                                className="rounded-[3.5rem] object-cover"
                             />
                         </div>
                     </div>
@@ -152,9 +155,10 @@ export default function SupplementsPage() {
                                 className="group bg-white rounded-[3.5rem] border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 overflow-hidden flex flex-col"
                             >
                                 <div className="aspect-[1.2/1] relative overflow-hidden">
-                                    <img
-                                        src={s.featuredImage || 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&q=80'}
+                                    <Image
+                                        src={s.featuredImage || getPlaceholderImage('supplements')}
                                         alt={s.title}
+                                        fill
                                         className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                                     />
                                     <div className="absolute top-8 left-8 px-5 py-2.5 bg-white/95 backdrop-blur rounded-2xl text-[10px] font-black uppercase tracking-widest text-blue-600 shadow-xl flex items-center gap-2">

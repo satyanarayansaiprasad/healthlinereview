@@ -29,12 +29,14 @@ export function getPlaceholderImage(type?: string): string {
     
     // Fuzzy match for common health terms
     const lowerType = type.toLowerCase();
-    if (lowerType.includes('joint') || lowerType.includes('bone')) return FALLBACK_IMAGES['joint-pain'];
-    if (lowerType.includes('weight') || lowerType.includes('keto')) return FALLBACK_IMAGES['weight-loss'];
-    if (lowerType.includes('vitamin') || lowerType.includes('supplement')) return FALLBACK_IMAGES['supplements'];
-    if (lowerType.includes('brain') || lowerType.includes('mind')) return FALLBACK_IMAGES['mental-health'];
-    if (lowerType.includes('skin') || lowerType.includes('beauty')) return FALLBACK_IMAGES['skincare'];
-    if (lowerType.includes('fit') || lowerType.includes('gym') || lowerType.includes('muscle')) return FALLBACK_IMAGES['fitness'];
+    if (lowerType.includes('joint') || lowerType.includes('bone') || lowerType.includes('move')) return FALLBACK_IMAGES['joint-pain'];
+    if (lowerType.includes('weight') || lowerType.includes('keto') || lowerType.includes('fat')) return FALLBACK_IMAGES['weight-loss'];
+    if (lowerType.includes('vitamin') || lowerType.includes('supplement') || lowerType.includes('pill') || lowerType.includes('health')) return FALLBACK_IMAGES['supplements'];
+    if (lowerType.includes('brain') || lowerType.includes('mind') || lowerType.includes('mood') || lowerType.includes('mental')) return FALLBACK_IMAGES['mental-health'];
+    if (lowerType.includes('skin') || lowerType.includes('beauty') || lowerType.includes('face') || lowerType.includes('hair') || lowerType.includes('biotin')) return FALLBACK_IMAGES['skincare'];
+    if (lowerType.includes('fit') || lowerType.includes('gym') || lowerType.includes('muscle') || lowerType.includes('cardio') || lowerType.includes('testosterone')) return FALLBACK_IMAGES['fitness'];
+    if (lowerType.includes('nutrition') || lowerType.includes('food') || lowerType.includes('tea') || lowerType.includes('gut') || lowerType.includes('diet')) return FALLBACK_IMAGES['nutrition'];
+    if (lowerType.includes('wellness') || lowerType.includes('lifestyle')) return FALLBACK_IMAGES['wellness'];
     
     return FALLBACK_IMAGES['generic-medical'];
 }
