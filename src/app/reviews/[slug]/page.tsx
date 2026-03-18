@@ -23,8 +23,9 @@ async function getReview(slug: string) {
 }
 
 // --- Dynamic SEO ---
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const review = await getReview(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const review = await getReview(slug);
     return {
         title: review.metaTitle ?? `${review.productName} Review (2026) | HealthlineReview`,
         description: review.metaDescription ?? review.verdict ?? undefined,
@@ -37,8 +38,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // --- Page Component ---
-export default async function ProductReviewPage({ params }: { params: { slug: string } }) {
-    const review = await getReview(params.slug);
+export default async function ProductReviewPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const review = await getReview(slug);
 
     // Parse JSON arrays with fallbacks
     const pros = (review.pros as string[]) || [];

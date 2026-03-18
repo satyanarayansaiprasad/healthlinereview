@@ -27,8 +27,9 @@ async function getGuide(slug: string) {
 }
 
 // --- Dynamic SEO ---
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-    const guide = await getGuide(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const guide = await getGuide(slug);
     return {
         title: guide.metaTitle ?? `${guide.title} | Expert Picks`,
         description: guide.metaDescription ?? guide.description ?? undefined,
@@ -41,8 +42,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 }
 
 // --- Page Component ---
-export default async function ExpertPickGuidePage({ params }: { params: { slug: string } }) {
-    const guide = await getGuide(params.slug);
+export default async function ExpertPickGuidePage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const guide = await getGuide(slug);
 
     // Parse JSON arrays with fallbacks - Ensure strictly dynamic data usage
     const howWeRanked = Array.isArray(guide.howWeRanked) ? guide.howWeRanked : [];
