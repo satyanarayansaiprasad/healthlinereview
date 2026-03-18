@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { ChevronRight, Star, Clock, User, ArrowRight, Activity, Heart, Brain, Eye, Zap } from 'lucide-react';
 import FeaturedTopics from '@/components/home/FeaturedTopics';
 import { prisma } from '@/lib/prisma';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -102,7 +103,7 @@ export default async function Home() {
                             <div className="absolute right-0 top-0 w-24 h-24 -mr-6 -mt-6 rounded-full opacity-10 transition-transform group-hover:scale-150 bg-blue-50" />
                             <div className="w-16 h-16 flex-shrink-0 relative rounded-2xl overflow-hidden border border-gray-100 group-hover:scale-110 transition-transform">
                                 <Image
-                                    src={cat.imageUrl}
+                                    src={cat.imageUrl || getPlaceholderImage(cat.slug)}
                                     alt={cat.name}
                                     fill
                                     className="object-cover"
@@ -149,7 +150,7 @@ export default async function Home() {
                                     <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700">
                                         {product.productImage ? (
                                             <Image
-                                                src={product.productImage}
+                                                src={product.productImage || getPlaceholderImage(product.guide?.slug)}
                                                 alt={product.productName}
                                                 fill
                                                 className="object-contain drop-shadow-2xl"
@@ -246,7 +247,7 @@ export default async function Home() {
                             </div>
                             <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group cursor-pointer h-full border border-gray-100">
                                 <div className="relative aspect-[4/3] overflow-hidden">
-                                    <Image src="/topic-low-carb.png" alt="Healthy Teas" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <Image src={getPlaceholderImage('weight-loss')} alt="Healthy Teas" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                                     <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
                                         Weight Loss
                                     </div>
@@ -297,7 +298,7 @@ export default async function Home() {
                                 ].map((article, i) => (
                                     <div key={i} className="flex gap-5 group cursor-pointer bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
                                         <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0">
-                                            <Image src={`/topic-fat-burning.png`} alt={article.title} fill className="object-cover" />
+                                            <Image src={getPlaceholderImage(article.cat)} alt={article.title} fill className="object-cover" />
                                         </div>
                                         <div className="py-1">
                                             <span className="text-blue-500 font-bold text-xs uppercase tracking-widest mb-2 block">{article.cat}</span>
@@ -326,7 +327,7 @@ export default async function Home() {
                                 <div className={`w-full aspect-square bg-gray-50 rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
                                     {item.featuredImage ? (
                                         <Image
-                                            src={item.featuredImage}
+                                            src={item.featuredImage || getPlaceholderImage(item.slug)}
                                             alt={item.productName}
                                             fill
                                             className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
@@ -378,7 +379,7 @@ export default async function Home() {
                         {/* Background Elements */}
                         <div className="absolute inset-0 z-0">
                             <Image
-                                src="/newsletter-couple.png"
+                                src={getPlaceholderImage('wellness')}
                                 alt="Background"
                                 fill
                                 className="object-cover opacity-30 mix-blend-overlay"

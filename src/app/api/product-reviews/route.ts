@@ -7,10 +7,11 @@ export async function GET(req: NextRequest) {
     try {
         const { searchParams } = new URL(req.url);
         const slug = searchParams.get('slug');
+        const id = searchParams.get('id');
 
-        if (slug) {
+        if (slug || id) {
             const review = await (prisma as any).productReview.findUnique({
-                where: { slug },
+                where: slug ? { slug } : { id },
                 include: {
                     author: { select: { name: true, id: true } },
                     medicalReviewer: { select: { name: true, imageUrl: true, designation: true } },
@@ -127,7 +128,7 @@ export async function PATCH(req: NextRequest) {
             id, productName, slug, verdict, brand, form, price, guarantee, sideEffects,
             description, targetAudience, workingMechanism, safetyInfo, warnings,
             recommendation, affiliateLink, featuredImage, content, metaTitle,
-            metaDescription, categoryId, medicalReviewerId
+            metaDescription, categoryId, medicalReviewerId, authorId
         } = data;
         
         if (!id) {
@@ -168,6 +169,7 @@ export async function PATCH(req: NextRequest) {
                 metaDescription,
                 categoryId,
                 medicalReviewerId,
+                authorId,
             }
         });
 

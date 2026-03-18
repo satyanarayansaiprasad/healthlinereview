@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import Link from 'next/link';
 
 interface Category {
     id: string;
@@ -18,9 +19,20 @@ interface Category {
     isStarred: boolean;
 }
 
+interface ProductReview {
+    id: string;
+    productName: string;
+    slug: string;
+    rating: number;
+    createdAt: string;
+    category?: { name: string; slug: string };
+    author: { name: string };
+}
+
 export default function ProductReviewsAdmin() {
     const router = useRouter();
     const [categories, setCategories] = useState<Category[]>([]);
+    const [reviews, setReviews] = useState<ProductReview[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isSaving, setIsSaving] = useState(false);
     const [status, setStatus] = useState<{ type: 'success' | 'error', message: string } | null>(null);
@@ -36,8 +48,20 @@ export default function ProductReviewsAdmin() {
     const fileInputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        fetchCategories();
+        Promise.all([fetchCategories(), fetchReviews()]).finally(() => setIsLoading(false));
     }, []);
+
+    const fetchReviews = async () => {
+        try {
+            const res = await fetch('/api/product-reviews');
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                setReviews(data);
+            }
+        } catch (error) {
+            console.error('Error fetching reviews:', error);
+        }
+    };
 
     const fetchCategories = async () => {
         try {
@@ -147,6 +171,25 @@ export default function ProductReviewsAdmin() {
         }
     };
 
+    const handleDeleteReview = async (id: string) => {
+        if (!confirm('Are you sure you want to delete this review?')) return;
+
+        try {
+            const res = await fetch(`/api/product-reviews?id=${id}`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setReviews(reviews.filter(r => r.id !== id));
+                setStatus({ type: 'success', message: 'Review deleted successfully!' });
+            } else {
+                throw new Error('Failed to delete review');
+            }
+        } catch (error) {
+            setStatus({ type: 'error', message: 'Could not delete review.' });
+        }
+    };
+
     const handleDelete = async (id: string) => {
         if (!confirm('Are you sure you want to delete this category?')) return;
 
@@ -183,6 +226,12 @@ export default function ProductReviewsAdmin() {
                     <p className="text-sm text-gray-500">Manage your clinical directory and categories</p>
                 </div>
                 <div className="flex gap-4">
+                    <Link
+                        href="/admin/product-reviews/create"
+                        className="bg-blue-600 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-blue-700 transition-all active:scale-95 text-xs uppercase tracking-widest shadow-lg shadow-blue-100"
+                    >
+                        <Plus className="w-4 h-4" /> New Review
+                    </Link>
                     <button
                         onClick={() => handleOpenForm()}
                         className="bg-gray-900 text-white px-5 py-2.5 rounded-lg font-bold flex items-center gap-2 hover:bg-black transition-all active:scale-95 text-xs uppercase tracking-widest"
@@ -270,15 +319,92 @@ export default function ProductReviewsAdmin() {
                     </div>
                 </div>
 
-                {/* Placeholder for Product Reviews Table */}
+                {/* Product Reviews Table */}
                 <div className="lg:col-span-12 space-y-6 pt-10">
-                    <div className="flex items-center gap-3 border-b border-gray-100 pb-4">
-                        <MessageSquare className="w-6 h-6 text-blue-600" />
-                        <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Latest Product Reviews</h2>
+                    <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                        <div className="flex items-center gap-3">
+                            <MessageSquare className="w-6 h-6 text-blue-600" />
+                            <h2 className="text-xl font-black text-gray-900 uppercase tracking-tight">Active Product Reviews</h2>
+                        </div>
+                        <span className="bg-gray-100 text-gray-500 px-3 py-1 rounded-full text-[10px] font-black">{reviews.length} Total Reviews</span>
                     </div>
 
-                    <div className="bg-white rounded-[3rem] border border-gray-100 p-12 text-center">
-                        <p className="text-gray-400 font-bold uppercase tracking-[0.2em] text-xs">Review Management coming soon...</p>
+                    <div className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm">
+                        {reviews.length === 0 ? (
+                            <div className="p-20 text-center">
+                                <p className="text-gray-400 font-bold uppercase tracking-[0.2em] text-xs">No reviews found. Click "New Review" to start.</p>
+                            </div>
+                        ) : (
+                            <div className="overflow-x-auto">
+                                <table className="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr className="bg-gray-50/50">
+                                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Product Info</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Category</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Rating</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Author</th>
+                                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-50">
+                                        {reviews.map((review) => (
+                                            <tr key={review.id} className="hover:bg-gray-50/30 transition-colors group">
+                                                <td className="px-8 py-6">
+                                                    <div className="flex flex-col gap-1">
+                                                        <span className="text-sm font-black text-gray-900 group-hover:text-blue-600 transition-colors">{review.productName}</span>
+                                                        <span className="text-[10px] text-gray-400 font-bold tracking-widest">/reviews/{review.slug}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <span className="inline-flex px-3 py-1 bg-gray-100 text-gray-600 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                                                        {review.category?.name || 'Uncategorized'}
+                                                    </span>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-1.5 text-yellow-500">
+                                                        <Star className="w-3.5 h-3.5 fill-current" />
+                                                        <span className="text-sm font-black text-gray-900">{review.rating.toFixed(1)}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-[10px] font-black border border-blue-100">
+                                                            {review.author.name.charAt(0)}
+                                                        </div>
+                                                        <span className="text-xs font-bold text-gray-700">{review.author.name}</span>
+                                                    </div>
+                                                </td>
+                                                <td className="px-8 py-6">
+                                                    <div className="flex items-center gap-2">
+                                                        <button
+                                                            onClick={() => router.push(`/admin/product-reviews/edit/${review.id}`)}
+                                                            className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all"
+                                                            title="Edit Review"
+                                                        >
+                                                            <Edit2 className="w-4 h-4" />
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteReview(review.id)}
+                                                            className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                                                            title="Delete Review"
+                                                        >
+                                                            <Trash2 className="w-4 h-4" />
+                                                        </button>
+                                                        <a
+                                                            href={`/reviews/${review.slug}`}
+                                                            target="_blank"
+                                                            className="p-2 text-gray-400 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all"
+                                                        >
+                                                            <ExternalLink className="w-4 h-4" />
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

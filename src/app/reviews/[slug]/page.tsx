@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
 import { ShieldCheck, Star, ExternalLink, Activity, Info, AlertTriangle, CheckCircle2, TrendingUp, HelpCircle, ImageIcon } from 'lucide-react';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 // --- Fetch Data ---
 async function getReview(slug: string) {
@@ -117,7 +118,7 @@ export default async function ProductReviewPage({ params }: { params: Promise<{ 
                                           {review.medicalReviewer.imageUrl ? (
                                                 <img src={review.medicalReviewer.imageUrl} alt={review.medicalReviewer.name} className="w-full h-full object-cover" />
                                             ) : (
-                                                <span className="font-bold text-xs">{review.medicalReviewer.name.charAt(0)}</span>
+                                                <img src={getPlaceholderImage('expert')} alt={review.medicalReviewer.name} className="w-full h-full object-cover" />
                                             )}
                                     </div>
                                     <div>
@@ -148,7 +149,7 @@ export default async function ProductReviewPage({ params }: { params: Promise<{ 
                     <div className="p-6 md:p-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 bg-white relative">
                         {review.featuredImage && (
                             <div className="absolute opacity-5 -right-10 -bottom-10 w-64 h-64 mix-blend-multiply pointer-events-none">
-                                <img src={review.featuredImage} alt="background" className="w-full h-full object-contain" />
+                                <img src={review.featuredImage || getPlaceholderImage(review.productName)} alt="background" className="w-full h-full object-contain" />
                             </div>
                         )}
 

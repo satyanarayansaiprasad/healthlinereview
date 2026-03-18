@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
 import { Award, CheckCircle2, ChevronRight, ShieldCheck, Star, ExternalLink, Activity, Target, Zap, ImageIcon, Plus, X } from 'lucide-react';
 import Link from 'next/link';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 // --- Fetch Data ---
 async function getGuide(slug: string) {
@@ -101,9 +102,7 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
                                             {guide.medicalReviewer.imageUrl ? (
                                                 <img src={guide.medicalReviewer.imageUrl} alt={guide.medicalReviewer.name} className="w-full h-full object-cover" />
                                             ) : (
-                                                <div className="w-full h-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold uppercase">
-                                                    {guide.medicalReviewer.name.charAt(0)}
-                                                </div>
+                                                <img src={getPlaceholderImage('expert')} alt={guide.medicalReviewer.name} className="w-full h-full object-cover" />
                                             )}
                                         </div>
                                         <div className="text-left py-2">
@@ -141,7 +140,7 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
                                         </div>
                                         {product.productImage && (
                                             <div className="w-20 h-20 shrink-0 bg-white border border-gray-100 rounded-xl relative overflow-hidden">
-                                                <img src={product.productImage} alt={product.productName} className="object-cover w-full h-full p-2" />
+                                                <img src={product.productImage || getPlaceholderImage(product.productName)} alt={product.productName} className="object-cover w-full h-full p-2" />
                                             </div>
                                         )}
                                         <div className="flex-1 text-center md:text-left space-y-1">
@@ -199,14 +198,7 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
                             <div className="p-8 md:p-10 space-y-8">
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
                                     <div className="w-full md:w-1/3 aspect-square bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center p-6">
-                                        {product.productImage ? (
-                                            <img src={product.productImage} alt={product.productName} className="w-full h-full object-contain mix-blend-multiply" />
-                                        ) : (
-                                            <div className="text-gray-300 flex flex-col items-center gap-2">
-                                                <ImageIcon className="w-12 h-12" />
-                                                <span className="text-xs font-bold uppercase tracking-widest">No Image</span>
-                                            </div>
-                                        )}
+                                        <img src={product.productImage || getPlaceholderImage(product.productName)} alt={product.productName} className="w-full h-full object-contain mix-blend-multiply" />
                                     </div>
 
                                     <div className="flex-1 space-y-6">
