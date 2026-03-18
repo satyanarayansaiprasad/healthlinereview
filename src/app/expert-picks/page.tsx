@@ -149,13 +149,10 @@ export default async function ExpertPicksPage() {
                                             "{guide.description}"
                                         </p>
 
-                                        <div className="flex flex-wrap gap-5 pt-4">
-                                            <Link href={`/expert-picks/${guide.slug}`} className="bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
+                                        <div className="pt-4">
+                                            <Link href={`/expert-picks/${guide.slug}`} className="inline-flex bg-blue-600 text-white px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] items-center gap-3 hover:bg-blue-700 transition-all shadow-2xl shadow-blue-600/30 transform active:scale-95">
                                                 View Rankings <ChevronRight className="w-4 h-4" />
                                             </Link>
-                                            <button className="bg-white text-gray-900 border-2 border-gray-100 px-10 py-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] flex items-center gap-3 hover:border-blue-600 hover:text-blue-600 transition-all transform active:scale-95">
-                                                Lab Certificate <ExternalLink className="w-4 h-4" />
-                                            </button>
                                         </div>
                                     </div>
                                 </div>
