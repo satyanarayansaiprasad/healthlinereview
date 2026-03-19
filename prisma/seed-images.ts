@@ -5,15 +5,19 @@ const prisma = new PrismaClient();
 async function main() {
     console.log('--- Enhancing Database with High-Quality Images ---');
 
-    // 1. Update Review Categories with stunning Unsplash visuals
+    // 1. Update Review Categories with stunning local visuals
     const categoryImages: Record<string, string> = {
-        'supplements': 'https://images.unsplash.com/photo-1471864190281-a93a3072467a?auto=format&fit=crop&q=80&w=800',
-        'joint-pain': 'https://images.unsplash.com/photo-1559757175-0eb30cd8c063?auto=format&fit=crop&q=80&w=800',
-        'weight-loss': 'https://images.unsplash.com/photo-1517861962386-353ba039d67e?auto=format&fit=crop&q=80&w=800',
+        'supplements': '/images/supplements-hero.png',
+        'joint-pain': '/cat-joint-pain.png',
+        'weight-loss': '/cat-weight-loss.png',
         'vitamins': 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?auto=format&fit=crop&q=80&w=800',
         'wellness': 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800',
         'mental-health': 'https://images.unsplash.com/photo-1523348834469-65fc06be220f?auto=format&fit=crop&q=80&w=800',
-        'fitness': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800'
+        'fitness': 'https://images.unsplash.com/photo-1517836357463-d25dfeac3438?auto=format&fit=crop&q=80&w=800',
+        'anti-aging': '/cat-anti-aging.png',
+        'brain-health': '/cat-brain-health.png',
+        'mens-health': '/cat-mens-health.png',
+        'eye-cream': '/cat-eye-cream.png'
     };
 
     for (const [slug, url] of Object.entries(categoryImages)) {
@@ -22,21 +26,35 @@ async function main() {
                 where: { slug },
                 data: { imageUrl: url }
             });
-            console.log(`Updated Review Category: ${slug}`);
+            console.log(`Updated Review Category: ${slug} -> ${url}`);
         } catch (e) {
             // Might not exist yet, skip
         }
     }
 
-    // 2. Update Product Reviews with professional product shots
+    // 2. Update Product Reviews with professional local product shots if available
+    const productAssetMap: Record<string, string> = {
+        'mct-wellness': '/products/mct-wellness.png',
+        'morning-kick': '/products/morning-kick.png',
+        'polyphenol-olive-oil': '/products/polyphenol-olive-oil.png',
+        'ultimate-h2': '/products/ultimate-h2.png'
+    };
+
     const reviews = await (prisma as any).productReview.findMany();
     for (const review of reviews) {
-        if (!review.featuredImage || review.featuredImage.includes('placeholder')) {
+        const localPath = productAssetMap[review.slug];
+        if (localPath) {
+            await (prisma as any).productReview.update({
+                where: { id: review.id },
+                data: { featuredImage: localPath }
+            });
+            console.log(`Updated Product Review local image for: ${review.productName}`);
+        } else if (!review.featuredImage || review.featuredImage.includes('placeholder')) {
             await (prisma as any).productReview.update({
                 where: { id: review.id },
                 data: { featuredImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=800' }
             });
-            console.log(`Updated Product Review image for: ${review.productName}`);
+            console.log(`Updated Product Review fallback image for: ${review.productName}`);
         }
     }
 
