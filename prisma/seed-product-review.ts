@@ -83,7 +83,7 @@ async function main() {
       ],
       recommendation: 'FlexiMove Plus is one of the most effective joint supplements available today. It is highly recommended for individuals suffering from joint pain and stiffness.',
       affiliateLink: 'https://example.com/fleximove-official',
-      featuredImage: '/cat-joint-pain.png',
+      featuredImage: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?auto=format&fit=crop&q=80&w=800',
       metaTitle: 'FlexiMove Plus Review 2026: Does It Really Work for Joint Pain?',
       metaDescription: 'Read our expert review of FlexiMove Plus. We analyze ingredients, benefits, safety, and pricing to see if this joint supplement is worth it.',
       authorId: author.id,

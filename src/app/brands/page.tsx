@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 import { Search, Star, Loader2, ArrowRight, Activity } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { getPlaceholderImage } from '@/lib/image-utils';
 
 interface Brand {
     id: string;
@@ -88,12 +87,7 @@ export default function BrandsPage() {
                             {starredBrands.map((brand) => (
                                 <div key={brand.id} className="bg-white p-6 border border-gray-100 rounded-2xl flex flex-col items-center justify-center hover:shadow-xl transition-all h-40 group cursor-pointer text-center">
                                     <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform flex items-center justify-center">
-                                        <Image 
-                                            src={brand.logoUrl || getPlaceholderImage(brand.name)} 
-                                            alt={brand.name} 
-                                            fill 
-                                            className="max-w-full max-h-full object-contain" 
-                                        />
+                                        <img src={brand.logoUrl} alt={brand.name} className="max-w-full max-h-full object-contain" />
                                     </div>
                                     <h3 className="font-bold text-gray-900 text-sm">{brand.name}</h3>
                                 </div>
@@ -132,12 +126,7 @@ export default function BrandsPage() {
                         {filteredBrands.map((brand) => (
                             <div key={brand.id} className="bg-white p-6 border border-gray-100 rounded-2xl flex flex-col items-center justify-center hover:shadow-xl transition-all h-40 group cursor-pointer text-center">
                                 <div className="relative w-20 h-20 mb-3 transform group-hover:scale-110 transition-transform flex items-center justify-center">
-                                    <Image 
-                                        src={brand.logoUrl || getPlaceholderImage(brand.name)} 
-                                        alt={brand.name} 
-                                        fill 
-                                        className="max-w-full max-h-full object-contain" 
-                                    />
+                                    <img src={brand.logoUrl} alt={brand.name} className="max-w-full max-h-full object-contain" />
                                 </div>
                                 <h3 className="font-bold text-gray-900 text-sm">{brand.name}</h3>
                             </div>

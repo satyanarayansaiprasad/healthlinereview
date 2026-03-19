@@ -1,5 +1,4 @@
 import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/image-utils';
 import { ClipboardCheck, Star, Shield, Zap, Award, Search, CheckCircle2, FlaskConical, Scale, BookOpen } from 'lucide-react';
 
 export default function ReviewGuidelines() {
@@ -10,7 +9,7 @@ export default function ReviewGuidelines() {
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0">
                     <Image
-                        src={getPlaceholderImage('laboratory')}
+                        src="/review-guidelines-hero.png"
                         alt="Clinical Research Environment"
                         fill
                         className="object-cover opacity-15"

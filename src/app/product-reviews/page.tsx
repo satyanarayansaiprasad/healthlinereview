@@ -102,26 +102,22 @@ export default async function ProductReviewsIndex() {
                             <div className="aspect-square relative bg-[#fdfefe] flex items-center justify-center p-12 group-hover:bg-white transition-colors">
                                 <div className="absolute inset-0 bg-blue-50/10 group-hover:bg-transparent transition-colors" />
 
-                                {review.featuredImage ? (
+                                {/* Product Image with Robust Fallback */}
+                                <div className={`w-full h-full rounded-2xl flex items-center justify-center shadow-inner relative overflow-hidden transition-transform duration-700 group-hover:scale-105 ${i % 2 === 0 ? 'bg-gradient-to-br from-indigo-50 to-blue-50' : 'bg-gradient-to-br from-emerald-50 to-teal-50'
+                                    }`}>
                                     <Image
-                                        src={review.featuredImage}
+                                        src={review.featuredImage || getPlaceholderImage(review.productName || review.slug, i)}
                                         alt={review.productName}
                                         fill
-                                        className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+                                        unoptimized
+                                        className="object-contain p-8 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
                                     />
-                                ) : (
-                                    <Image
-                                        src={getPlaceholderImage(review.productName)}
-                                        alt={review.productName}
-                                        fill
-                                        className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"
-                                    />
-                                )}
 
-                                {/* Score Badge */}
-                                <div className="absolute top-6 right-6 w-16 h-16 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-2 border-blue-600/10 group-hover:border-blue-600 transition-all z-10">
-                                    <span className="text-[10px] font-black text-blue-600 leading-none">SCORE</span>
-                                    <span className="text-xl font-black text-gray-900 leading-none mt-1">{review.rating}</span>
+                                    {/* Score Badge */}
+                                    <div className="absolute top-6 right-6 w-16 h-16 rounded-full bg-white shadow-xl flex flex-col items-center justify-center border-2 border-blue-600/10 group-hover:border-blue-600 transition-all z-10">
+                                        <span className="text-[10px] font-black text-blue-600 leading-none">SCORE</span>
+                                        <span className="text-xl font-black text-gray-900 leading-none mt-1">{review.rating}</span>
+                                    </div>
                                 </div>
                             </div>
 

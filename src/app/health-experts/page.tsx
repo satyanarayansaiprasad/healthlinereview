@@ -1,7 +1,5 @@
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
-import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/image-utils';
 import { User, Award, Stethoscope, ChevronLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -34,13 +32,8 @@ export default async function HealthExpertsDirectory() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {experts.map((expert) => (
                             <div key={expert.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all group flex flex-col items-center text-center">
-                                <div className="w-32 h-32 rounded-full bg-blue-50 mb-6 overflow-hidden border-4 border-white shadow-md group-hover:border-blue-100 transition-all flex flex-shrink-0 items-center justify-center relative">
-                                    <Image 
-                                        src={expert.imageUrl || getPlaceholderImage('expert')} 
-                                        alt={expert.name} 
-                                        fill 
-                                        className="object-cover" 
-                                    />
+                                <div className="w-32 h-32 rounded-full bg-blue-50 mb-6 overflow-hidden border-4 border-white shadow-md group-hover:border-blue-100 transition-all flex flex-shrink-0 items-center justify-center">
+                                    <img src={expert.imageUrl} alt={expert.name} className="w-full h-full object-cover" />
                                 </div>
 
                                 <h3 className="text-2xl font-extrabold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">

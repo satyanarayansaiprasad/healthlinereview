@@ -1,6 +1,5 @@
 import { prisma } from '@/lib/prisma';
 import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/image-utils';
 import { Mail, Phone, MapPin, Send, MessageSquare, ChevronDown, Clock, ShieldCheck, Star } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -107,7 +106,7 @@ export default async function ContactUs() {
                             <div className="absolute -inset-4 bg-gradient-to-tr from-blue-100 to-indigo-100 rounded-[4.5rem] blur-2xl opacity-50 group-hover:opacity-100 transition-opacity duration-1000" />
                             <div className="aspect-[5/6] rounded-[4rem] relative overflow-hidden shadow-2xl bg-white border-8 border-white">
                                 <Image
-                                    src={getPlaceholderImage('medical consultation')}
+                                    src="/contact-us-sidebar.png"
                                     alt="Medical Consultation"
                                     fill
                                     className="object-cover transition-transform duration-[3s] group-hover:scale-110"

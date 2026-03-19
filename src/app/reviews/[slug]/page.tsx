@@ -114,13 +114,12 @@ export default async function ProductReviewPage({ params }: { params: Promise<{ 
                             </div>
                             {review.medicalReviewer && (
                                 <div className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-blue-600 relative">
-                                        <Image 
-                                            src={review.medicalReviewer.imageUrl || getPlaceholderImage('expert')} 
-                                            alt={review.medicalReviewer.name} 
-                                            fill 
-                                            className="object-cover" 
-                                        />
+                                    <div className="w-8 h-8 rounded-full overflow-hidden bg-blue-100 flex items-center justify-center text-blue-600">
+                                          {review.medicalReviewer.imageUrl ? (
+                                                <img src={review.medicalReviewer.imageUrl} alt={review.medicalReviewer.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <img src={getPlaceholderImage('expert')} alt={review.medicalReviewer.name} className="w-full h-full object-cover" />
+                                            )}
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 flex items-center gap-1">
@@ -148,14 +147,11 @@ export default async function ProductReviewPage({ params }: { params: Promise<{ 
                     </div>
                     
                     <div className="p-6 md:p-8 grid sm:grid-cols-2 md:grid-cols-3 gap-6 md:gap-8 bg-white relative">
-                        <div className="absolute opacity-5 -right-10 -bottom-10 w-64 h-64 mix-blend-multiply pointer-events-none">
-                            <Image 
-                                src={review.featuredImage || getPlaceholderImage(review.productName)} 
-                                alt="background" 
-                                fill 
-                                className="object-contain" 
-                            />
-                        </div>
+                        {review.featuredImage && (
+                            <div className="absolute opacity-5 -right-10 -bottom-10 w-64 h-64 mix-blend-multiply pointer-events-none">
+                                <img src={review.featuredImage || getPlaceholderImage(review.productName)} alt="background" className="w-full h-full object-contain" />
+                            </div>
+                        )}
 
                         <div className="space-y-1 relative z-10">
                             <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 flex items-center gap-1"><Info className="w-3 h-3"/> Brand</span>

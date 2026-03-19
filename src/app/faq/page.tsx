@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/image-utils';
 import { HelpCircle, ChevronRight, Search, Plus, Minus, MessageCircle, HelpCircleIcon, Loader2 } from 'lucide-react';
 
 interface FAQItem {
@@ -135,7 +134,7 @@ export default function FAQ() {
                 <div className="bg-gray-900 rounded-[4rem] p-12 md:p-20 text-center relative overflow-hidden group">
                     <div className="absolute inset-0 z-0">
                         <Image
-                            src={getPlaceholderImage('support team')}
+                            src="/faq-support-team.png"
                             alt="Support Team"
                             fill
                             className="object-cover opacity-20 group-hover:scale-110 transition-transform duration-[5s]"
@@ -144,11 +143,12 @@ export default function FAQ() {
                     </div>
 
                     <div className="relative z-10 space-y-10 animate-fade-in">
-                        <div className="w-24 h-24 mx-auto rounded-[2rem] overflow-hidden border-2 border-white/20 shadow-2xl relative">
+                        <div className="w-24 h-24 mx-auto rounded-[2rem] overflow-hidden border-2 border-white/20 shadow-2xl">
                             <Image
-                                src={getPlaceholderImage('support member')}
+                                src="/faq-support-team.png"
                                 alt="Support Avatar"
-                                fill
+                                width={100}
+                                height={100}
                                 className="object-cover"
                             />
                         </div>

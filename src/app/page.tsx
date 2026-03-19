@@ -149,10 +149,11 @@ export default async function Home() {
                                 <div className={`aspect-square mb-6 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center p-8 group-hover:scale-[1.02] transition-transform duration-500`}>
                                     <div className="relative w-full h-full transform group-hover:scale-110 transition-transform duration-700">
                                         <Image
-                                            src={product.productImage || getPlaceholderImage(product.productName)}
+                                            src={product.productImage || getPlaceholderImage(product.productName || product.guide?.slug, i)}
                                             alt={product.productName}
                                             fill
-                                            className={product.productImage ? "object-contain drop-shadow-2xl" : "object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"}
+                                            unoptimized
+                                            className="object-contain drop-shadow-2xl"
                                         />
                                     </div>
                                     <div className="absolute top-4 right-4 bg-white/95 backdrop-blur px-3 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest shadow-sm border border-gray-100/50">
@@ -241,7 +242,7 @@ export default async function Home() {
                             </div>
                             <div className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 group cursor-pointer h-full border border-gray-100">
                                 <div className="relative aspect-[4/3] overflow-hidden">
-                                    <Image src={getPlaceholderImage('weight-loss')} alt="Healthy Teas" fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                                    <Image src={getPlaceholderImage('weight-loss', 99)} alt="Healthy Teas" fill unoptimized className="object-cover group-hover:scale-105 transition-transform duration-700" />
                                     <div className="absolute top-4 left-4 bg-orange-500 text-white text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wide">
                                         Weight Loss
                                     </div>
@@ -292,7 +293,7 @@ export default async function Home() {
                                 ].map((article, i) => (
                                     <div key={i} className="flex gap-5 group cursor-pointer bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
                                         <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0">
-                                            <Image src={getPlaceholderImage(article.cat)} alt={article.title} fill className="object-cover" />
+                                            <Image src={getPlaceholderImage(article.cat, i + 5)} alt={article.title} fill unoptimized className="object-cover" />
                                         </div>
                                         <div className="py-1">
                                             <span className="text-blue-500 font-bold text-xs uppercase tracking-widest mb-2 block">{article.cat}</span>
@@ -320,10 +321,11 @@ export default async function Home() {
                             <div key={item.id} className="bg-white p-8 rounded-[2rem] border border-gray-100 hover:shadow-2xl transition-all duration-500 group flex flex-col h-full">
                                 <div className={`w-full aspect-square bg-gray-50 rounded-2xl mb-8 flex items-center justify-center relative overflow-hidden group-hover:scale-[1.02] transition-transform duration-500 shadow-inner`}>
                                     <Image
-                                        src={item.featuredImage || getPlaceholderImage(item.productName)}
+                                        src={item.featuredImage || getPlaceholderImage(item.productName || item.slug, i)}
                                         alt={item.productName}
                                         fill
-                                        className={item.featuredImage ? "object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110" : "object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"}
+                                        unoptimized
+                                        className="object-contain p-6 mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
                                     />
                                 </div>
                                 <div className="flex items-center gap-1 text-yellow-400 mb-4 bg-gray-50/80 py-1.5 px-3 rounded-full w-fit">

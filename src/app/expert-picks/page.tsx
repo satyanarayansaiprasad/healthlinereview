@@ -1,8 +1,8 @@
 import { Award, Star, ChevronRight, ExternalLink, ShieldCheck, CheckCircle2, Zap, Heart, Sparkles, UserCheck } from 'lucide-react';
 import Link from 'next/link';
 import { prisma } from '@/lib/prisma';
-import Image from 'next/image';
 import { getPlaceholderImage } from '@/lib/image-utils';
+import Image from 'next/image';
 
 export default async function ExpertPicksPage() {
     // Fetch all guides with their category and basic stats
@@ -97,7 +97,7 @@ export default async function ExpertPicksPage() {
                             <p className="text-gray-400 font-bold uppercase tracking-widest">No expert picks available yet</p>
                         </div>
                     ) : (
-                        guides.map((guide: any) => {
+                        guides.map((guide: any, i: number) => {
                             const avgRating = guide.products.reduce((acc: number, p: any) => acc + p.rating, 0) / (guide.products.length || 1);
                             
                             return (
@@ -114,12 +114,15 @@ export default async function ExpertPicksPage() {
                                             </div>
                                         </div>
 
-                                        <Image
-                                            src={getPlaceholderImage(guide.category?.name || 'medical')}
-                                            alt={guide.title}
-                                            fill
-                                            className="object-cover opacity-60 group-hover:opacity-100 transition-opacity duration-700"
-                                        />
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-50 to-blue-50 rounded-[2rem] flex items-center justify-center relative overflow-hidden">
+                                            <Image
+                                                src={getPlaceholderImage(guide.title || guide.category?.name, i)}
+                                                alt={guide.title}
+                                                fill
+                                                unoptimized
+                                                className="object-cover mix-blend-multiply opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all duration-700"
+                                            />
+                                        </div>
 
                                         <div className="absolute bottom-6 right-6">
                                             <div className="bg-white/90 backdrop-blur px-4 py-2 rounded-xl text-[9px] font-black text-blue-600 border border-blue-50 shadow-sm uppercase tracking-widest">

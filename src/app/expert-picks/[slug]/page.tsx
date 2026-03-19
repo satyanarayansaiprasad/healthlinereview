@@ -98,13 +98,12 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
                                 <>
                                     <div className="hidden sm:block w-px h-10 bg-gray-200" />
                                     <div className="flex items-center gap-3 bg-blue-50/50 pr-6 rounded-full border border-blue-100">
-                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm relative">
-                                            <Image 
-                                                src={guide.medicalReviewer.imageUrl || getPlaceholderImage('expert')} 
-                                                alt={guide.medicalReviewer.name} 
-                                                fill 
-                                                className="object-cover" 
-                                            />
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                                            {guide.medicalReviewer.imageUrl ? (
+                                                <img src={guide.medicalReviewer.imageUrl} alt={guide.medicalReviewer.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <img src={getPlaceholderImage('expert')} alt={guide.medicalReviewer.name} className="w-full h-full object-cover" />
+                                            )}
                                         </div>
                                         <div className="text-left py-2">
                                             <p className="text-[10px] font-black uppercase tracking-widest text-blue-600 flex items-center gap-1">
@@ -139,14 +138,11 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
                                         <div className="w-12 h-12 shrink-0 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center font-black text-xl">
                                             #{product.rank}
                                         </div>
-                                        <div className="w-20 h-20 shrink-0 bg-white border border-gray-100 rounded-xl relative overflow-hidden">
-                                            <Image 
-                                                src={product.productImage || getPlaceholderImage(product.productName)} 
-                                                alt={product.productName} 
-                                                fill 
-                                                className="object-contain p-2" 
-                                            />
-                                        </div>
+                                        {product.productImage && (
+                                            <div className="w-20 h-20 shrink-0 bg-white border border-gray-100 rounded-xl relative overflow-hidden">
+                                                <img src={product.productImage || getPlaceholderImage(product.productName)} alt={product.productName} className="object-cover w-full h-full p-2" />
+                                            </div>
+                                        )}
                                         <div className="flex-1 text-center md:text-left space-y-1">
                                             {product.award && (
                                                 <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2 py-1 rounded-md">
@@ -201,13 +197,8 @@ export default async function ExpertPickGuidePage({ params }: { params: Promise<
 
                             <div className="p-8 md:p-10 space-y-8">
                                 <div className="flex flex-col md:flex-row gap-8 items-start">
-                                    <div className="w-full md:w-1/3 aspect-square bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center p-6 relative overflow-hidden">
-                                        <Image 
-                                            src={product.productImage || getPlaceholderImage(product.productName)} 
-                                            alt={product.productName} 
-                                            fill 
-                                            className="object-contain mix-blend-multiply" 
-                                        />
+                                    <div className="w-full md:w-1/3 aspect-square bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-center p-6">
+                                        <img src={product.productImage || getPlaceholderImage(product.productName)} alt={product.productName} className="w-full h-full object-contain mix-blend-multiply" />
                                     </div>
 
                                     <div className="flex-1 space-y-6">

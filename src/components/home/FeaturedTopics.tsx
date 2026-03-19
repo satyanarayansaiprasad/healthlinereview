@@ -4,6 +4,7 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 const topics = [
     {
@@ -97,7 +98,7 @@ export default function FeaturedTopics() {
                         >
                             <div className="aspect-[4/3] relative rounded-2xl overflow-hidden mb-4">
                                 <Image
-                                    src={topic.image}
+                                    src={getPlaceholderImage(topic.title)}
                                     alt={topic.title}
                                     fill
                                     className="object-cover group-hover/card:scale-110 transition-transform duration-500"

@@ -8,8 +8,6 @@ import {
     CheckCircle, XCircle, ArrowRight, Star, Link as LinkIcon
 } from 'lucide-react';
 import ShareButtons from '@/components/supplements/ShareButtons';
-import Image from 'next/image';
-import { getPlaceholderImage } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -83,13 +81,8 @@ export default async function SupplementDetailPage({ params }: Props) {
                         <div className="flex flex-col sm:flex-row sm:items-center gap-6 sm:gap-12 py-10 border-t border-gray-100 mt-12">
                             {/* Author Card */}
                             <div className="flex items-center gap-4 bg-gray-50/50 p-3 pr-6 rounded-2xl border border-gray-100 w-fit">
-                                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-lg relative">
-                                    <Image 
-                                        src={supplement.author.imageUrl || getPlaceholderImage('expert')} 
-                                        alt={supplement.author.name} 
-                                        fill 
-                                        className="object-cover" 
-                                    />
+                                <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-white shadow-lg">
+                                    <img src={supplement.author.imageUrl} alt={supplement.author.name} className="w-full h-full object-cover" />
                                 </div>
                                 <div>
                                     <p className="text-sm font-black text-gray-900 leading-tight">{supplement.author.name}</p>
@@ -123,23 +116,9 @@ export default async function SupplementDetailPage({ params }: Props) {
                     {/* Content Section */}
                     <div className="flex-1 order-1 lg:order-2 space-y-16">
                         {/* Featured Image */}
-                        {supplement.featuredImage ? (
-                            <div className="rounded-[3rem] overflow-hidden shadow-2xl shadow-blue-50 border border-gray-50 relative aspect-video">
-                                <Image 
-                                    src={supplement.featuredImage} 
-                                    alt={supplement.title} 
-                                    fill 
-                                    className="object-cover" 
-                                />
-                            </div>
-                        ) : (
-                            <div className="rounded-[3rem] overflow-hidden shadow-2xl shadow-blue-50 border border-gray-100 relative aspect-video">
-                                <Image 
-                                    src={getPlaceholderImage('supplements')} 
-                                    alt={supplement.title} 
-                                    fill 
-                                    className="object-cover opacity-60" 
-                                />
+                        {supplement.featuredImage && (
+                            <div className="rounded-[3rem] overflow-hidden shadow-2xl shadow-blue-50 border border-gray-50">
+                                <img src={supplement.featuredImage} alt={supplement.title} className="w-full h-auto" />
                             </div>
                         )}
 
@@ -246,12 +225,7 @@ export default async function SupplementDetailPage({ params }: Props) {
                                             className="group bg-white p-6 rounded-[2rem] border border-gray-100 hover:shadow-xl transition-all"
                                         >
                                             <div className="aspect-square bg-blue-50 rounded-2xl mb-4 overflow-hidden relative">
-                                                <Image 
-                                                    src={art.featuredImage || getPlaceholderImage(art.category.name)} 
-                                                    alt={art.title} 
-                                                    fill 
-                                                    className="object-cover group-hover:scale-110 transition-transform duration-500" 
-                                                />
+                                                {art.featuredImage && <img src={art.featuredImage} alt={art.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />}
                                             </div>
                                             <h4 className="font-extrabold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-2 leading-snug">
                                                 {art.title}
