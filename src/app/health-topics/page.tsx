@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { prisma } from '@/lib/prisma';
 import { ShieldCheck, Stethoscope, ClipboardCheck, ArrowRight, User, CheckCircle2, Award, Heart } from 'lucide-react';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 export const dynamic = 'force-dynamic';
 
@@ -80,20 +81,47 @@ export default async function HealthTopics() {
 
                     {/* Featured/Popular Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-                        {[
-                            { title: '18 Best Teas For Weight Loss And Boosting Your Metabolism 2026', img: '/topic-low-carb.png', bg: 'bg-green-100' },
-                            { title: '17 Best Supplements To Reduce Cortisol 2026, According to Experts', img: '/topic-fat-burning.png', bg: 'bg-orange-100' },
-                            { title: '17 Best Biotin Supplements For Hair Growth 2026, According to Dermatologists', img: '/topic-low-carb.png', bg: 'bg-blue-100' }
-                        ].map((article, i) => (
-                            <div key={i} className="group cursor-pointer">
-                                <div className={`aspect-[16/9] rounded-2xl overflow-hidden ${article.bg} mb-5 relative`}>
-                                    <Image src={article.img} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500 opacity-90" />
-                                </div>
-                                <h3 className="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors leading-snug">
-                                    {article.title}
-                                </h3>
-                            </div>
-                        ))}
+                        {(async () => {
+                            const articles = await prisma.article.findMany({
+                                where: { status: 'PUBLISHED' },
+                                take: 6,
+                                orderBy: { createdAt: 'desc' },
+                                include: { category: true }
+                            });
+
+                            if (articles.length === 0) {
+                                return (
+                                    <div className="col-span-full py-20 bg-white/50 border-2 border-dashed border-gray-100 rounded-[2rem] flex flex-col items-center justify-center text-center">
+                                        <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-400 mb-4">
+                                            <Heart className="w-8 h-8" />
+                                        </div>
+                                        <p className="text-gray-400 font-bold">No articles published yet. Check back soon!</p>
+                                    </div>
+                                );
+                            }
+
+                            const colors = ['bg-green-100', 'bg-orange-100', 'bg-blue-100', 'bg-purple-100', 'bg-rose-100'];
+
+                            return articles.map((article, i) => (
+                                <Link key={article.id} href={`/health-topics/${article.slug}`} className="group">
+                                    <div className={`aspect-[16/9] rounded-2xl overflow-hidden ${colors[i % colors.length]} mb-5 relative shadow-sm group-hover:shadow-md transition-all`}>
+                                        <Image 
+                                            src={article.featuredImage || getPlaceholderImage(article.category?.slug || 'health', i)} 
+                                            alt={article.title} 
+                                            fill 
+                                            unoptimized
+                                            className="object-cover group-hover:scale-105 transition-transform duration-700" 
+                                        />
+                                        <div className="absolute top-4 left-4 bg-white/95 backdrop-blur px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-widest text-gray-900 shadow-sm border border-white/50">
+                                            {article.category?.name || 'Article'}
+                                        </div>
+                                    </div>
+                                    <h3 className="text-xl font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">
+                                        {article.title}
+                                    </h3>
+                                </Link>
+                            ));
+                        })()}
                     </div>
 
                     {/* Expert Perspective Section */}

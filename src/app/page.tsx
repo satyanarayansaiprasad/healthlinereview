@@ -286,23 +286,17 @@ export default async function Home() {
                                 <h3 className="text-xl font-extrabold text-gray-900 uppercase tracking-widest">Latest Articles</h3>
                             </div>
                             <div className="space-y-6">
-                                {[
-                                    { cat: "Women's Health", title: "24 Best Supplements and Vitamins for Hormones" },
-                                    { cat: "Gut Health", title: "The 20 Best Prebiotic Supplements for 2026" },
-                                    { cat: "Nutrition", title: "6 Best Supplements for Kidney Health Guide" }
-                                ].map((article, i) => (
-                                    <div key={i} className="flex gap-5 group cursor-pointer bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
-                                        <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0">
-                                            <Image src={getPlaceholderImage(article.cat, i + 5)} alt={article.title} fill unoptimized className="object-cover" />
-                                        </div>
-                                        <div className="py-1">
-                                            <span className="text-blue-500 font-bold text-xs uppercase tracking-widest mb-2 block">{article.cat}</span>
-                                            <h4 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight">
-                                                {article.title}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                ))}
+                                {(() => {
+                                    // Use a self-invoking function to await prisma call in server component
+                                    // Wait, this is not a server component or it is one but I can just do it before the return
+                                    // Actually src/app/page.tsx is a server component by default
+                                    return (
+                                        <>
+                                            {/* @ts-expect-error Server Component */}
+                                            <LatestArticlesList />
+                                        </>
+                                    )
+                                })()}
                             </div>
                         </div>
                     </div>
@@ -441,5 +435,46 @@ export default async function Home() {
 
             <FeaturedTopics />
         </div>
+    );
+}
+
+async function LatestArticlesList() {
+    const articles = await prisma.article.findMany({
+        where: { status: 'PUBLISHED' },
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        include: { category: true }
+    });
+
+    if (articles.length === 0) {
+        return (
+            <div className="py-12 bg-gray-50 rounded-2xl border border-dashed border-gray-100 flex flex-col items-center justify-center text-center">
+                <p className="text-gray-400 font-bold">New articles arriving soon!</p>
+            </div>
+        );
+    }
+
+    return (
+        <>
+            {articles.map((article, i) => (
+                <Link key={article.id} href={`/health-topics/${article.category.slug}/${article.slug}`} className="flex gap-5 group cursor-pointer bg-white p-4 rounded-2xl hover:shadow-lg transition-all border border-transparent hover:border-gray-100">
+                    <div className="w-24 h-24 relative rounded-xl overflow-hidden flex-shrink-0">
+                        <Image 
+                            src={article.featuredImage || getPlaceholderImage(article.category.slug, i + 10)} 
+                            alt={article.title} 
+                            fill 
+                            unoptimized 
+                            className="object-cover" 
+                        />
+                    </div>
+                    <div className="py-1">
+                        <span className="text-blue-500 font-bold text-xs uppercase tracking-widest mb-2 block">{article.category.name}</span>
+                        <h4 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors leading-tight line-clamp-2">
+                            {article.title}
+                        </h4>
+                    </div>
+                </Link>
+            ))}
+        </>
     );
 }

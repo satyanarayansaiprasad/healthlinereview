@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { ChevronRight, ArrowLeft, Clock, BookOpen, Share2 } from 'lucide-react';
+import { getPlaceholderImage } from '@/lib/image-utils';
 
 interface Props {
     params: Promise<{ slug: string }>;
@@ -86,9 +87,10 @@ export default async function TopicDetail({ params }: Props) {
                         >
                             <div className="aspect-[16/10] relative overflow-hidden bg-gray-50">
                                 <Image
-                                    src={i % 2 === 0 ? '/topic-low-carb.png' : '/topic-fat-burning.png'}
+                                    src={article.featuredImage || getPlaceholderImage(category.slug || 'health', i)}
                                     alt={article.title}
                                     fill
+                                    unoptimized
                                     className="object-cover group-hover:scale-110 transition-transform duration-700 opacity-90"
                                 />
                                 <div className="absolute bottom-4 left-4">

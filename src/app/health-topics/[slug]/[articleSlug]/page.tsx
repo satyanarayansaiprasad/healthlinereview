@@ -104,10 +104,12 @@ export default async function ArticleDetailPage({ params }: Props) {
                     {/* Main Content Body */}
                     <div className="flex-1 order-1 lg:order-2">
                         <div className="bg-white rounded-[2.5rem] p-8 md:p-16 shadow-sm border border-gray-50 prose prose-lg prose-slate max-w-none prose-headings:text-gray-900 prose-headings:font-black prose-p:text-gray-600 prose-p:leading-relaxed prose-strong:text-gray-900 prose-a:text-blue-600 prose-a:font-bold hover:prose-a:text-blue-700">
-                            {typeof article.content === 'string' ? (
+                            {article.content && typeof article.content === 'object' && (article.content as any).text ? (
+                                <div dangerouslySetInnerHTML={{ __html: (article.content as any).text }} />
+                            ) : typeof article.content === 'string' ? (
                                 <div dangerouslySetInnerHTML={{ __html: article.content }} />
                             ) : (
-                                <p className="text-red-500 font-bold">Unable to render article content.</p>
+                                <p className="text-gray-400 font-medium">No content available for this article yet.</p>
                             )}
                         </div>
 
